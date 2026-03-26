@@ -1,0 +1,7 @@
+[service]
+name = "spokestack-agent-runtime"
+healthcheck = "/health"
+startCommand = "node dist/runtime/server.js"
+
+[deploy]
+numReplicas = 2
