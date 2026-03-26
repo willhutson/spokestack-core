@@ -205,13 +205,13 @@ function handleSlashCommand(
       // Fire and forget — the response will print before next prompt
       (async () => {
         const { post: apiPost } = await import("../api.js");
-        const res = await apiPost<{ status: string }>("/api/v1/agents/ask", {
+        const res = await apiPost<{ response: string }>("/api/v1/agents/ask", {
           message: "Give me a quick workspace status update.",
           surface: "CLI",
         });
         if (res.ok) {
           const state = getState();
-          ui.agentMessage(state.agentName, (res.data as { response: string }).response);
+          ui.agentMessage(state.agentName, res.data.response);
         }
         rl.prompt();
       })();

@@ -229,7 +229,7 @@ export class OpenRouterClient {
   async complete(params: LLMStreamParams): Promise<LLMCompleteResult> {
     const body = this.buildRequestBody(params, false);
     const response = await this.fetchWithRetry(body);
-    const json = await response.json();
+    const json = (await response.json()) as any;
 
     const choice = json.choices?.[0];
     const message = choice?.message;
