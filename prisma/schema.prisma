@@ -1,0 +1,813 @@
+// SpokeStack Core — Prisma Schema
+// 39 models + 27 enums
+// Full schema, all tiers — gating is application-layer only
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// ENUMS (27)
+// ============================================================================
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum BillingTierType {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum BillingStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  VOID
+}
+
+enum MeterEventType {
+  AGENT_CALL
+  STORAGE_BYTE
+  MODULE_INSTALL
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  ARCHIVED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  ARCHIVED
+}
+
+enum PhaseStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  SKIPPED
+}
+
+enum BriefStatus {
+  DRAFT
+  ACTIVE
+  IN_REVIEW
+  COMPLETED
+  ARCHIVED
+}
+
+enum ArtifactType {
+  DOCUMENT
+  DESIGN
+  VIDEO
+  COPY
+  PRESENTATION
+  OTHER
+}
+
+enum ArtifactStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ReviewStatus {
+  APPROVED
+  REVISION_REQUESTED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum AgentType {
+  ONBOARDING
+  TASKS
+  PROJECTS
+  BRIEFS
+  ORDERS
+  MODULE
+}
+
+enum SurfaceType {
+  CLI
+  WEB
+  DESKTOP
+  MOBILE
+  WHATSAPP
+}
+
+enum MessageRole {
+  USER
+  AGENT
+  SYSTEM
+}
+
+enum ContextType {
+  ENTITY
+  PATTERN
+  PREFERENCE
+  MILESTONE
+  INSIGHT
+}
+
+enum MilestoneType {
+  CLIENT_ENTITY_DENSITY
+  BRIEF_CYCLE_COUNT
+  SOCIAL_CONTENT_PATTERN
+  PROJECT_TIMELINE_DENSITY
+  ENGAGEMENT_DEPTH
+  COLLABORATION_DENSITY
+}
+
+enum NodeType {
+  START
+  END
+  ACTION
+  CONDITION
+  DELAY
+  APPROVAL
+  NOTIFICATION
+}
+
+enum IntegrationType {
+  SLACK
+  GOOGLE_DRIVE
+  GITHUB
+  TELNYX
+  CUSTOM
+}
+
+enum IntegrationStatus {
+  PENDING
+  ACTIVE
+  ERROR
+  DISABLED
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_COMPLETED
+  BRIEF_REVIEW
+  MILESTONE_DUE
+  AGENT_RECOMMENDATION
+  SYSTEM
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  WHATSAPP
+  SMS
+  IN_APP
+}
+
+enum ModuleType {
+  TASKS
+  PROJECTS
+  BRIEFS
+  ORDERS
+  CRM
+  SOCIAL_PUBLISHING
+  CONTENT_STUDIO
+  ANALYTICS
+  SURVEYS
+  LISTENING
+  MEDIA_BUYING
+  LMS
+  NPS
+  TIME_LEAVE
+  BOARDS
+  FINANCE
+  WORKFLOWS
+  ADMIN
+}
+
+// ============================================================================
+// FOUNDATION MODELS (7)
+// ============================================================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  billingAccount BillingAccount?
+  teams          Team[]
+  members        TeamMember[]
+  settings       OrgSettings?
+  modules        OrgModule[]
+  featureFlags   FeatureFlag[]
+
+  // Data
+  tasks       Task[]
+  taskLists   TaskList[]
+  projects    Project[]
+  briefs      Brief[]
+  orders      Order[]
+  customers   Customer[]
+  invoices    Invoice[]
+
+  // Agent
+  agentSessions  AgentSession[]
+  contextEntries ContextEntry[]
+  milestones     ContextMilestone[]
+
+  // Infrastructure
+  integrations  Integration[]
+  notifications Notification[]
+  fileAssets    FileAsset[]
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  avatarUrl  String?
+  supabaseId String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  memberships   TeamMember[]
+  agentMessages AgentMessage[]
+}
+
+model Team {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  members      TeamMember[]
+}
+
+model TeamMember {
+  id             String     @id @default(cuid())
+  organizationId String
+  userId         String
+  teamId         String?
+  role           MemberRole @default(MEMBER)
+  joinedAt       DateTime   @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  team         Team?        @relation(fields: [teamId], references: [id])
+}
+
+model OrgSettings {
+  id                 String  @id @default(cuid())
+  organizationId     String  @unique
+  timezone           String  @default("UTC")
+  language           String  @default("en")
+  weekStartDay       Int     @default(1)
+  onboardingComplete Boolean @default(false)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model OrgModule {
+  id             String     @id @default(cuid())
+  organizationId String
+  moduleType     ModuleType
+  installedAt    DateTime   @default(now())
+  active         Boolean    @default(true)
+  config         Json?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, moduleType])
+}
+
+model FeatureFlag {
+  id             String  @id @default(cuid())
+  organizationId String
+  flag           String
+  enabled        Boolean @default(false)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, flag])
+}
+
+// ============================================================================
+// BILLING MODELS (4)
+// ============================================================================
+
+model BillingAccount {
+  id               String          @id @default(cuid())
+  organizationId   String          @unique
+  stripeCustomerId String?         @unique
+  tier             BillingTierType @default(FREE)
+  status           BillingStatus   @default(ACTIVE)
+  trialEndsAt      DateTime?
+  currentPeriodEnd DateTime?
+
+  organization Organization       @relation(fields: [organizationId], references: [id])
+  invoices     BillingInvoice[]
+  meterEvents  BillingMeterEvent[]
+}
+
+model BillingTier {
+  id                    String          @id @default(cuid())
+  type                  BillingTierType @unique
+  name                  String
+  priceMonthly          Int // cents
+  maxMembers            Int
+  maxStorageGb          Int
+  maxMarketplaceModules Int
+  surfacesIncluded      String[] // ["cli", "web", "desktop", "mobile", "whatsapp"]
+  modesIncluded         String[] // ["tasks", "projects", "briefs", "orders"]
+}
+
+model BillingMeterEvent {
+  id               String         @id @default(cuid())
+  billingAccountId String
+  eventType        MeterEventType
+  quantity         Int
+  timestamp        DateTime       @default(now())
+  metadata         Json?
+
+  billingAccount BillingAccount @relation(fields: [billingAccountId], references: [id])
+}
+
+model BillingInvoice {
+  id               String        @id @default(cuid())
+  billingAccountId String
+  stripeInvoiceId  String?       @unique
+  amountCents      Int
+  status           InvoiceStatus
+  periodStart      DateTime
+  periodEnd        DateTime
+
+  billingAccount BillingAccount @relation(fields: [billingAccountId], references: [id])
+}
+
+// ============================================================================
+// TASKS MODELS (4)
+// ============================================================================
+
+model TaskList {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  tasks        Task[]
+}
+
+model Task {
+  id             String       @id @default(cuid())
+  organizationId String
+  taskListId     String?
+  title          String
+  description    String?
+  status         TaskStatus   @default(TODO)
+  priority       TaskPriority @default(MEDIUM)
+  assigneeId     String?
+  dueDate        DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  metadata       Json?
+  importSource   String?
+  importSourceId String?
+
+  organization Organization     @relation(fields: [organizationId], references: [id])
+  taskList     TaskList?        @relation(fields: [taskListId], references: [id])
+  comments     TaskComment[]
+  attachments  TaskAttachment[]
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String? // null = agent-generated
+  content   String
+  createdAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id])
+}
+
+model TaskAttachment {
+  id          String   @id @default(cuid())
+  taskId      String
+  fileAssetId String
+  createdAt   DateTime @default(now())
+
+  task      Task      @relation(fields: [taskId], references: [id])
+  fileAsset FileAsset @relation(fields: [fileAssetId], references: [id])
+}
+
+// ============================================================================
+// PROJECTS MODELS (6)
+// ============================================================================
+
+model Project {
+  id             String        @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  status         ProjectStatus @default(PLANNING)
+  startDate      DateTime?
+  endDate        DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  metadata       Json?
+  importSource   String?
+  importSourceId String?
+
+  organization Organization       @relation(fields: [organizationId], references: [id])
+  phases       ProjectPhase[]
+  milestones   ProjectMilestone[]
+  canvas       WfCanvas?
+}
+
+model ProjectPhase {
+  id        String      @id @default(cuid())
+  projectId String
+  name      String
+  position  Int
+  status    PhaseStatus @default(PENDING)
+  startDate DateTime?
+  endDate   DateTime?
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+model ProjectMilestone {
+  id          String    @id @default(cuid())
+  projectId   String
+  name        String
+  dueDate     DateTime?
+  completedAt DateTime?
+  description String?
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+model WfCanvas {
+  id             String   @id @default(cuid())
+  projectId      String?  @unique
+  organizationId String
+  name           String
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  project Project?       @relation(fields: [projectId], references: [id])
+  nodes   WfCanvasNode[]
+  edges   WfCanvasEdge[]
+}
+
+model WfCanvasNode {
+  id        String   @id @default(cuid())
+  canvasId  String
+  type      NodeType
+  label     String
+  positionX Float
+  positionY Float
+  config    Json?
+
+  canvas   WfCanvas       @relation(fields: [canvasId], references: [id])
+  outEdges WfCanvasEdge[] @relation("SourceNode")
+  inEdges  WfCanvasEdge[] @relation("TargetNode")
+}
+
+model WfCanvasEdge {
+  id           String @id @default(cuid())
+  canvasId     String
+  sourceNodeId String
+  targetNodeId String
+  condition    Json?
+
+  canvas     WfCanvas     @relation(fields: [canvasId], references: [id])
+  sourceNode WfCanvasNode @relation("SourceNode", fields: [sourceNodeId], references: [id])
+  targetNode WfCanvasNode @relation("TargetNode", fields: [targetNodeId], references: [id])
+}
+
+// ============================================================================
+// BRIEFS MODELS (4)
+// ============================================================================
+
+model Brief {
+  id             String      @id @default(cuid())
+  organizationId String
+  title          String
+  description    String?
+  status         BriefStatus @default(DRAFT)
+  clientName     String?
+  createdById    String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  metadata       Json?
+  importSource   String?
+  importSourceId String?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  phases       BriefPhase[]
+  artifacts    Artifact[]
+}
+
+model BriefPhase {
+  id         String      @id @default(cuid())
+  briefId    String
+  name       String
+  position   Int
+  status     PhaseStatus @default(PENDING)
+  assigneeId String?
+  dueDate    DateTime?
+
+  brief Brief @relation(fields: [briefId], references: [id])
+}
+
+model Artifact {
+  id               String         @id @default(cuid())
+  briefId          String
+  type             ArtifactType
+  title            String
+  content          Json?
+  status           ArtifactStatus @default(DRAFT)
+  version          Int            @default(1)
+  generatedByAgent Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  fileAssetId      String?
+
+  brief   Brief            @relation(fields: [briefId], references: [id])
+  reviews ArtifactReview[]
+  fileAsset FileAsset?     @relation(fields: [fileAssetId], references: [id])
+}
+
+model ArtifactReview {
+  id         String       @id @default(cuid())
+  artifactId String
+  reviewerId String
+  status     ReviewStatus
+  comments   String?
+  createdAt  DateTime     @default(now())
+
+  artifact Artifact @relation(fields: [artifactId], references: [id])
+}
+
+// ============================================================================
+// ORDERS MODELS (5)
+// ============================================================================
+
+model Customer {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  email          String?
+  phone          String?
+  company        String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  orders       Order[]
+  invoices     Invoice[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  organizationId String
+  customerId     String?
+  status         OrderStatus @default(PENDING)
+  totalCents     Int         @default(0)
+  currency       String      @default("USD")
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  importSource   String?
+  importSourceId String?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  customer     Customer?    @relation(fields: [customerId], references: [id])
+  items        OrderItem[]
+  invoice      Invoice?
+}
+
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  description    String
+  quantity       Int    @default(1)
+  unitPriceCents Int
+  totalCents     Int
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  organizationId String
+  customerId     String?
+  orderId        String?       @unique
+  number         String
+  status         InvoiceStatus @default(DRAFT)
+  totalCents     Int
+  currency       String        @default("USD")
+  issuedAt       DateTime?
+  dueDate        DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  customer     Customer?     @relation(fields: [customerId], references: [id])
+  order        Order?        @relation(fields: [orderId], references: [id])
+  items        InvoiceItem[]
+}
+
+model InvoiceItem {
+  id             String @id @default(cuid())
+  invoiceId      String
+  description    String
+  quantity       Int    @default(1)
+  unitPriceCents Int
+  totalCents     Int
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+// ============================================================================
+// AGENT MODELS (4)
+// ============================================================================
+
+model AgentSession {
+  id             String      @id @default(cuid())
+  organizationId String
+  userId         String?
+  agentType      AgentType
+  surface        SurfaceType
+  startedAt      DateTime    @default(now())
+  endedAt        DateTime?
+  metadata       Json?
+
+  organization Organization   @relation(fields: [organizationId], references: [id])
+  messages     AgentMessage[]
+}
+
+model AgentMessage {
+  id         String      @id @default(cuid())
+  sessionId  String
+  userId     String?
+  role       MessageRole
+  content    String
+  toolCalls  Json?
+  tokenCount Int?
+  createdAt  DateTime    @default(now())
+
+  session AgentSession @relation(fields: [sessionId], references: [id])
+  user    User?        @relation(fields: [userId], references: [id])
+}
+
+/// The shared context graph — the moat
+model ContextEntry {
+  id              String     @id @default(cuid())
+  organizationId  String
+  entryType       ContextType
+  category        String
+  key             String
+  value           Json
+  confidence      Float      @default(0.5)
+  sourceAgentType AgentType?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  expiresAt       DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, category, key])
+  @@index([organizationId, entryType])
+  @@index([organizationId, category])
+}
+
+/// Context milestones — marketplace flywheel triggers
+model ContextMilestone {
+  id                String        @id @default(cuid())
+  organizationId    String
+  milestoneType     MilestoneType
+  threshold         Int
+  currentValue      Int           @default(0)
+  triggered         Boolean       @default(false)
+  triggeredAt       DateTime?
+  recommendedModule String?
+  dismissed         Boolean       @default(false)
+  dismissedAt       DateTime?
+  lastCheckedAt     DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, milestoneType])
+}
+
+// ============================================================================
+// INFRASTRUCTURE MODELS (5)
+// ============================================================================
+
+model Integration {
+  id             String            @id @default(cuid())
+  organizationId String
+  type           IntegrationType
+  status         IntegrationStatus @default(PENDING)
+  config         Json?
+  installedAt    DateTime          @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Notification {
+  id             String              @id @default(cuid())
+  organizationId String
+  userId         String
+  type           NotificationType
+  title          String
+  body           String?
+  channel        NotificationChannel
+  read           Boolean             @default(false)
+  createdAt      DateTime            @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model NotificationPreference {
+  id             String              @id @default(cuid())
+  userId         String
+  organizationId String
+  channel        NotificationChannel
+  enabled        Boolean             @default(true)
+
+  @@unique([userId, organizationId, channel])
+}
+
+model FileAsset {
+  id             String   @id @default(cuid())
+  organizationId String
+  fileName       String
+  mimeType       String
+  sizeBytes      Int
+  storageUrl     String
+  uploadedById   String?
+  createdAt      DateTime @default(now())
+
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  versions        FileVersion[]
+  taskAttachments TaskAttachment[]
+  artifacts       Artifact[]
+}
+
+model FileVersion {
+  id          String   @id @default(cuid())
+  fileAssetId String
+  version     Int
+  storageUrl  String
+  sizeBytes   Int
+  createdAt   DateTime @default(now())
+
+  fileAsset FileAsset @relation(fields: [fileAssetId], references: [id])
+}

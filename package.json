@@ -1,0 +1,58 @@
+{
+  "name": "spokestack-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent-native business infrastructure — SpokeStack Core",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "agent:dev": "npx tsx src/runtime/server.ts",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:seed": "npx tsx prisma/seed.ts",
+    "db:studio": "npx prisma studio",
+    "postinstall": "npx prisma generate"
+  },
+  "keywords": [
+    "erp",
+    "agent",
+    "ai",
+    "project-management",
+    "cli",
+    "productivity"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.11",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "@supabase/supabase-js": "^2.100.1",
+    "@tailwindcss/postcss": "^4.2.2",
+    "hono": "^4.12.9",
+    "next": "^16.2.1",
+    "pg": "^8.20.0",
+    "postcss": "^8.5.8",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "redis": "^5.11.0",
+    "stripe": "^21.0.1",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.1",
+    "prisma": "^7.5.0",
+    "typescript": "^6.0.2"
+  }
+}

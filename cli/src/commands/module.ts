@@ -1,0 +1,133 @@
+import { Command } from "commander";
+import { get, post, del } from "../api.js";
+import * as ui from "../ui.js";
+
+interface Module {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  priceCents: number;
+  currency: string;
+  agentName: string;
+  category: string;
+  installed?: boolean;
+}
+
+export function registerModuleCommand(program: Command): void {
+  const module = program
+    .command("module")
+    .description("Browse and manage marketplace modules");
+
+  // ── module list ───────────────────────────────────────────────────
+
+  module
+    .command("list")
+    .description("Browse available marketplace modules")
+    .option("--installed", "Show only installed modules")
+    .option("--format <fmt>", "Output format: table, json", "table")
+    .action(async (opts) => {
+      const s = ui.spinner("Loading modules...");
+      const params = new URLSearchParams();
+      if (opts.installed) params.set("installed", "true");
+
+      const queryStr = params.toString();
+      const path = `/api/v1/modules${queryStr ? `?${queryStr}` : ""}`;
+      const res = await get<{ modules: Module[] }>(path);
+      s.stop();
+
+      if (ui.handleError(res.error, res.upgradeRequired, res.requiredTier)) {
+        process.exit(1);
+      }
+
+      const modules = res.data.modules;
+
+      if (opts.format === "json") {
+        ui.jsonOutput(modules);
+        return;
+      }
+
+      ui.heading(`Marketplace Modules (${modules.length})`);
+
+      if (modules.length === 0) {
+        ui.line(ui.MUTED("No modules available yet. Check back soon."));
+        ui.blank();
+        return;
+      }
+
+      ui.table(
+        [
+          { key: "slug", label: "Module", width: 18 },
+          { key: "name", label: "Name", width: 22 },
+          {
+            key: "priceCents",
+            label: "Price",
+            width: 10,
+            align: "right" as const,
+            format: (v) => {
+              const cents = v as number;
+              return `${ui.formatCurrency(cents)}/mo`;
+            },
+          },
+          { key: "agentName", label: "Agent", width: 18 },
+          {
+            key: "installed",
+            label: "Status",
+            width: 10,
+            format: (v) =>
+              v ? ui.SUCCESS("installed") : ui.MUTED("available"),
+          },
+        ],
+        modules
+      );
+
+      ui.blank();
+      ui.line(`  Install: ${ui.BOLD("spokestack module add <slug>")}`);
+      ui.blank();
+    });
+
+  // ── module add ────────────────────────────────────────────────────
+
+  module
+    .command("add <slug>")
+    .description("Install a marketplace module")
+    .action(async (slug: string) => {
+      const s = ui.spinner(`Installing ${slug}...`);
+      const res = await post<{ module: Module; message: string }>(
+        `/api/v1/modules/${slug}/install`,
+        {}
+      );
+      s.stop();
+
+      if (ui.handleError(res.error, res.upgradeRequired, res.requiredTier)) {
+        process.exit(1);
+      }
+
+      const m = res.data.module;
+      ui.success(`Module installed: ${ui.BOLD(m.name)}`);
+      ui.line(`  Agent: ${ui.BOLD(m.agentName)} is now active in your workspace.`);
+      ui.line(`  Price: ${ui.formatCurrency(m.priceCents)}/mo added to your subscription.`);
+      ui.blank();
+      ui.line(`  Talk to your new agent: ${ui.BOLD("spokestack agent chat")}`);
+      ui.blank();
+    });
+
+  // ── module remove ─────────────────────────────────────────────────
+
+  module
+    .command("remove <slug>")
+    .description("Uninstall a marketplace module")
+    .action(async (slug: string) => {
+      const s = ui.spinner(`Removing ${slug}...`);
+      const res = await del<{ message: string }>(`/api/v1/modules/${slug}/install`);
+      s.stop();
+
+      if (ui.handleError(res.error, res.upgradeRequired, res.requiredTier)) {
+        process.exit(1);
+      }
+
+      ui.success(`Module removed: ${ui.BOLD(slug)}`);
+      ui.line(`  The module agent has been deactivated. Your data is preserved.`);
+      ui.blank();
+    });
+}

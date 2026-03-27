@@ -1,0 +1,43 @@
+{
+  "name": "spokestack",
+  "version": "0.1.0",
+  "description": "Agent-first work infrastructure — CLI",
+  "type": "module",
+  "bin": {
+    "spokestack": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "erp",
+    "agent",
+    "ai",
+    "project-management",
+    "cli",
+    "productivity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spokestack/spokestack-core"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "inquirer": "^9.3.0",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}
