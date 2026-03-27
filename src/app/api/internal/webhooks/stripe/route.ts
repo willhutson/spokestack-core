@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { json, error } from "@/lib/api";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2026-03-25.dahlia",
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+}
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   // ── Signature Validation ──────────────────────────────────────────────
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    event = getStripe().webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return error(`Webhook signature verification failed: ${message}`, 401);

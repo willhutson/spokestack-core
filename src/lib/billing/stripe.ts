@@ -2,9 +2,13 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { BillingTierType } from "@prisma/client";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2024-12-18.acacia",
-});
+let _stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!_stripe) {
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+  }
+  return _stripe;
+}
 
 /**
  * Stripe price IDs mapped to each paid tier.
@@ -26,7 +30,7 @@ export async function createStripeCustomer(
   orgId: string,
   email: string
 ): Promise<string> {
-  const customer = await stripe.customers.create({
+  const customer = await getStripe().customers.create({
     email,
     metadata: { organizationId: orgId },
   });
@@ -73,7 +77,7 @@ export async function createCheckoutSession(
     throw new Error("No price configured for tier " + targetTier);
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
@@ -152,7 +156,7 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
         });
 
         if (billing) {
-          const periodEnd = new Date(subscription.current_period_end * 1000);
+          const periodEnd = new Date((subscription as any).current_period_end * 1000);
           const statusMap: Record<string, "ACTIVE" | "PAST_DUE" | "CANCELED"> = {
             active: "ACTIVE",
             past_due: "PAST_DUE",
@@ -235,5 +239,5 @@ export function constructWebhookEvent(
   if (!webhookSecret) {
     throw new Error("STRIPE_WEBHOOK_SECRET is not configured");
   }
-  return stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  return getStripe().webhooks.constructEvent(body, signature, webhookSecret);
 }
