@@ -1,15 +1,10 @@
 "use client";
 
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://dufujpalmzbbwtofpgyv.supabase.co";
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1ZnVqcGFsbXpiYnd0b2ZwZ3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MzQ3MzAsImV4cCI6MjA5MDUxMDczMH0.Bd_7ccCEffRjjEdzGMnFeE4sqaKiYPEtAyK3sXC5wh8";
 
 export function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !key) {
-    console.error("Supabase env vars missing:", { url: !!url, key: !!key });
-    throw new Error("Supabase configuration missing");
-  }
-
-  return createBrowserClient(url, key);
+  return createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
