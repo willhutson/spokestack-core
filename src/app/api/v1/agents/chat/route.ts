@@ -1,18 +1,19 @@
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { unauthorized, error } from "@/lib/api";
+import { prisma } from "@/lib/prisma";
 
 /**
  * POST /api/v1/agents/chat
- * Proxy to Railway Agent Runtime for conversational agent interaction (SSE).
- * ModuleGuard is checked by the Agent Runtime based on the agent type.
+ * Proxy to ongoing-agent-builder's /api/v1/core/execute endpoint.
+ * Translates spokestack-core's request shape to agent-builder's expected format.
  */
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
   const body = await req.json();
-  const { message, sessionId, surface } = body;
+  const { message, context } = body;
 
   if (!message) return error("message is required");
 
@@ -23,28 +24,65 @@ export async function POST(req: NextRequest) {
     return error("Agent runtime not configured", 503);
   }
 
-  // Proxy to Railway Agent Runtime with SSE streaming
-  const runtimeResponse = await fetch(`${runtimeUrl}/agent/chat`, {
+  // Fetch org details for agent-builder
+  const org = await prisma.organization.findUnique({
+    where: { id: auth.organizationId },
+    include: { billingAccount: true },
+  });
+
+  const orgTier = org?.billingAccount?.tier ?? "FREE";
+  const orgName = org?.name ?? "";
+
+  // Determine agent type from context hint
+  let agentType: string | undefined;
+  if (context === "onboarding") agentType = "ONBOARDING";
+
+  // Proxy to ongoing-agent-builder /api/v1/core/execute
+  const runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-Agent-Secret": runtimeSecret,
     },
     body: JSON.stringify({
-      message,
-      sessionId,
-      orgId: auth.organizationId,
-      userId: auth.user.id,
-      surface: surface ?? "WEB",
+      task: message,
+      agent_type: agentType,
+      org_id: auth.organizationId,
+      org_name: orgName,
+      org_tier: orgTier,
+      user_id: auth.user.id,
+      stream: false,
     }),
   });
 
   if (!runtimeResponse.ok) {
+    const errText = await runtimeResponse.text().catch(() => "Unknown error");
+    console.error(`Agent runtime error ${runtimeResponse.status}: ${errText}`);
     return error("Agent runtime error", runtimeResponse.status);
   }
 
-  // Forward the SSE stream
-  return new Response(runtimeResponse.body, {
+  const result = await runtimeResponse.json();
+
+  // If the agent is gated, return the upgrade message
+  if (result.status === "gated") {
+    return Response.json({
+      type: "upgrade",
+      content: result.upgrade_message,
+    });
+  }
+
+  // Return agent response as SSE-like format for the frontend
+  const responseText = result.output ?? "I'm not sure how to help with that.";
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "text", content: responseText })}\n\n`));
+      controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
