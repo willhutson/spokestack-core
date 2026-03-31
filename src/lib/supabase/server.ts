@@ -5,10 +5,7 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publi
 
 export function createServiceClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!key) {
-    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
-  }
+  if (!key) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
 
   return createClient(SUPABASE_URL, key, {
     auth: { autoRefreshToken: false, persistSession: false },
