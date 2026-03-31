@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 interface Message {
   id: string;
@@ -18,6 +19,7 @@ interface WorkspacePreview {
 
 export default function OnboardingConversationPage() {
   const router = useRouter();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -35,6 +37,18 @@ export default function OnboardingConversationPage() {
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Check for Supabase session on mount — redirect to signup if none
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.replace("/signup");
+      } else {
+        setAccessToken(session.access_token);
+      }
+    });
+  }, [router]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -51,7 +65,10 @@ export default function OnboardingConversationPage() {
     try {
       const res = await fetch("/api/v1/agents/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify({
           message: text,
           context: "onboarding",

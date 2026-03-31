@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import ChatPanel from "./components/chat-panel";
 
 type TierLevel = "free" | "starter" | "pro" | "business" | "enterprise";
@@ -92,7 +93,28 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [chatOpen, setChatOpen] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.replace("/login");
+      } else {
+        setSessionChecked(true);
+      }
+    });
+  }, [router]);
+
+  if (!sessionChecked) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 rounded-lg bg-indigo-600 animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
