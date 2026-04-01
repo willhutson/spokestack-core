@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ModuleCard from "@/components/marketplace/ModuleCard";
+import { MODULE_DEMOS } from "@/lib/marketplace/demo-data";
 
 interface RegistryModule {
   moduleType: string;
@@ -28,7 +30,12 @@ const CATEGORIES = [
   { key: "analytics", label: "Analytics" },
 ];
 
+function hasDemo(moduleType: string): boolean {
+  return !!MODULE_DEMOS[moduleType.toUpperCase()];
+}
+
 export default function MarketplacePage() {
+  const router = useRouter();
   const [modules, setModules] = useState<RegistryModule[]>([]);
   const [installed, setInstalled] = useState<Set<string>>(new Set());
   const [category, setCategory] = useState("all");
@@ -137,19 +144,29 @@ export default function MarketplacePage() {
       {/* Module grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((m) => (
-          <ModuleCard
+          <div
             key={m.moduleType}
-            moduleType={m.moduleType}
-            name={m.name}
-            description={m.description}
-            category={m.category}
-            minTier={m.minTier}
-            price={m.price}
-            agentName={m.agentName}
-            installed={installed.has(m.moduleType)}
-            installing={installing === m.moduleType}
-            onInstall={() => handleInstall(m.moduleType)}
-          />
+            className="relative cursor-pointer"
+            onClick={() => router.push(`/marketplace/${m.moduleType}`)}
+          >
+            {hasDemo(m.moduleType) && (
+              <span className="absolute top-3 right-3 z-10 text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
+                Preview
+              </span>
+            )}
+            <ModuleCard
+              moduleType={m.moduleType}
+              name={m.name}
+              description={m.description}
+              category={m.category}
+              minTier={m.minTier}
+              price={m.price}
+              agentName={m.agentName}
+              installed={installed.has(m.moduleType)}
+              installing={installing === m.moduleType}
+              onInstall={() => { handleInstall(m.moduleType); }}
+            />
+          </div>
         ))}
       </div>
 
