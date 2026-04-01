@@ -102,6 +102,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sessionChecked, setSessionChecked] = useState(false);
   const [installedModules, setInstalledModules] = useState<InstalledModule[]>([]);
   const [billingTier, setBillingTier] = useState<string>("FREE");
+  const [orgName, setOrgName] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
 
   // Listen for "open chat with context" events from module pages
   useEffect(() => {
@@ -117,55 +119,57 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     const supabase = createClient();
 
-    async function fetchModules(token: string, retries = 2): Promise<void> {
-      try {
-        const res = await fetch("/api/v1/modules/installed", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) {
-          if (retries > 0) {
-            // Retry after a short delay (session may not be ready)
-            await new Promise((r) => setTimeout(r, 500));
-            return fetchModules(token, retries - 1);
-          }
-          console.error("Failed to fetch modules:", res.status);
-          return;
-        }
-        const data = await res.json();
-        if (data.installed) setInstalledModules(data.installed);
-      } catch (err) {
-        if (retries > 0) {
-          await new Promise((r) => setTimeout(r, 500));
-          return fetchModules(token, retries - 1);
-        }
-        console.error("Failed to fetch modules:", err);
-      }
-    }
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         router.replace("/login");
       } else {
         setSessionChecked(true);
+        if (session.user?.email) setUserEmail(session.user.email);
         const authHeaders = { Authorization: `Bearer ${session.access_token}` };
 
-        // Fetch installed modules for the nav
-        fetch("/api/v1/modules/installed", { headers: authHeaders })
-          .then((r) => r.json())
-          .then((data) => {
+        // Fetch installed modules for the nav (with retry)
+        async function fetchModules(retries = 2): Promise<void> {
+          try {
+            const res = await fetch("/api/v1/modules/installed", { headers: authHeaders });
+            if (!res.ok) {
+              if (retries > 0) {
+                await new Promise((r) => setTimeout(r, 500));
+                return fetchModules(retries - 1);
+              }
+              return;
+            }
+            const data = await res.json();
             if (data.installed) setInstalledModules(data.installed);
-          })
-          .catch(() => {});
+          } catch {
+            if (retries > 0) {
+              await new Promise((r) => setTimeout(r, 500));
+              return fetchModules(retries - 1);
+            }
+          }
+        }
+        fetchModules();
 
         // Fetch billing tier for nav lock/unlock logic
         fetch("/api/v1/billing", { headers: authHeaders })
-          .then((r) => r.json())
+          .then((r) => {
+            if (!r.ok) throw new Error("billing fetch failed");
+            return r.json();
+          })
           .then((data) => {
             if (data.tier) setBillingTier(data.tier);
           })
-          .catch(() => {
-            // Default to FREE on failure (already set)
-          });
+          .catch(() => {});
+
+        // Fetch org name for sidebar
+        fetch("/api/v1/settings", { headers: authHeaders })
+          .then((r) => {
+            if (!r.ok) throw new Error("settings fetch failed");
+            return r.json();
+          })
+          .then((data) => {
+            if (data.name) setOrgName(data.name);
+          })
+          .catch(() => {});
       }
     });
   }, [router]);
@@ -185,9 +189,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Workspace header */}
         <div className="h-14 px-4 flex items-center border-b border-gray-200">
           <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold mr-2.5">
-            S
+            {orgName ? orgName.charAt(0).toUpperCase() : "S"}
           </div>
-          <span className="font-semibold text-sm text-gray-900 truncate">My Workspace</span>
+          <span className="font-semibold text-sm text-gray-900 truncate">{orgName || "My Workspace"}</span>
         </div>
 
         {/* Navigation — dynamic, driven by installed modules */}
@@ -202,10 +206,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="border-t border-gray-200 p-3">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-gray-600">
-              U
+              {userEmail ? userEmail.charAt(0).toUpperCase() : "U"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">User</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{userEmail || "User"}</p>
               <p className="text-xs text-gray-500 truncate">{billingTier ? `${billingTier.charAt(0) + billingTier.slice(1).toLowerCase()} plan` : "Loading..."}</p>
             </div>
           </div>
@@ -216,7 +220,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
         <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-          <h1 className="text-sm font-medium text-gray-500">My Workspace</h1>
+          <h1 className="text-sm font-medium text-gray-500">{orgName || "My Workspace"}</h1>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setChatOpen(!chatOpen)}

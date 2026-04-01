@@ -42,7 +42,15 @@ export default function ProjectsPage() {
         const res = await fetch("/api/v1/projects", { headers });
         if (res.ok) {
           const data = await res.json();
-          setProjects(data.projects ?? data ?? []);
+          const raw: Project[] = data.projects ?? data ?? [];
+          // Deduplicate by project ID (includes with relations can cause duplicates)
+          const seen = new Set<string>();
+          const unique = raw.filter((p) => {
+            if (seen.has(p.id)) return false;
+            seen.add(p.id);
+            return true;
+          });
+          setProjects(unique);
         }
       } catch {
         // API not yet available

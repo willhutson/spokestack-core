@@ -11,18 +11,27 @@ export async function GET(req: NextRequest) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
-  let settings = await prisma.orgSettings.findUnique({
-    where: { organizationId: auth.organizationId },
-  });
+  const [org, existingSettings] = await Promise.all([
+    prisma.organization.findUnique({
+      where: { id: auth.organizationId },
+      select: { name: true },
+    }),
+    prisma.orgSettings.findUnique({
+      where: { organizationId: auth.organizationId },
+    }),
+  ]);
 
   // Auto-create defaults if none exist
-  if (!settings) {
-    settings = await prisma.orgSettings.create({
-      data: { organizationId: auth.organizationId },
-    });
-  }
+  const settings = existingSettings ?? await prisma.orgSettings.create({
+    data: { organizationId: auth.organizationId },
+  });
 
-  return json({ settings });
+  return json({
+    settings,
+    name: org?.name ?? "",
+    timezone: settings.timezone,
+    language: settings.language,
+  });
 }
 
 /**

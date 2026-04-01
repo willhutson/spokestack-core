@@ -64,9 +64,9 @@ export default function TasksPage() {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
-      fetch("/api/v1/settings", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      })
+      const authHeaders = { Authorization: `Bearer ${session.access_token}` };
+
+      fetch("/api/v1/settings", { headers: authHeaders })
         .then((r) => r.json())
         .then((data) => {
           const settings = data.settings ?? data;
@@ -76,7 +76,22 @@ export default function TasksPage() {
             setShowSetup(true);
           }
         })
-        .catch(() => setShowSetup(true));
+        .catch(() => {
+          // Fallback: if settings endpoint fails, check billing tier
+          // Established accounts (non-FREE tier) should not see onboarding
+          fetch("/api/v1/billing", { headers: authHeaders })
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.tier && data.tier !== "FREE") {
+                localStorage.setItem("spokestack_setup_dismissed", "true");
+              } else {
+                setShowSetup(true);
+              }
+            })
+            .catch(() => {
+              // If both fail, don't show the checklist to avoid broken UX
+            });
+        });
     });
   }, []);
 
