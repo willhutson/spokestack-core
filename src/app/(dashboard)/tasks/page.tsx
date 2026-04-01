@@ -11,7 +11,6 @@ import TaskCard, { type Task } from "./components/task-card";
 import TaskForm from "./components/task-form";
 import TaskActions from "./components/task-actions";
 import TaskDetailDrawer from "./components/task-detail-drawer";
-import SetupChecklist from "@/components/setup/SetupChecklist";
 import { openChatWithContext } from "@/lib/chat-event";
 import { createClient } from "@/lib/supabase/client";
 
@@ -53,47 +52,7 @@ export default function TasksPage() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [inlineColumn, setInlineColumn] = useState<Task["status"] | null>(null);
   const [inlineValue, setInlineValue] = useState("");
-  const [showSetup, setShowSetup] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-
-  useEffect(() => {
-    const dismissed = localStorage.getItem("spokestack_setup_dismissed");
-    if (dismissed === "true") return;
-
-    // Check DB flag before showing checklist
-    const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      const authHeaders = { Authorization: `Bearer ${session.access_token}` };
-
-      fetch("/api/v1/settings", { headers: authHeaders })
-        .then((r) => r.json())
-        .then((data) => {
-          const settings = data.settings ?? data;
-          if (settings?.onboardingComplete) {
-            localStorage.setItem("spokestack_setup_dismissed", "true");
-          } else {
-            setShowSetup(true);
-          }
-        })
-        .catch(() => {
-          // Fallback: if settings endpoint fails, check billing tier
-          // Established accounts (non-FREE tier) should not see onboarding
-          fetch("/api/v1/billing", { headers: authHeaders })
-            .then((r) => r.json())
-            .then((data) => {
-              if (data.tier && data.tier !== "FREE") {
-                localStorage.setItem("spokestack_setup_dismissed", "true");
-              } else {
-                setShowSetup(true);
-              }
-            })
-            .catch(() => {
-              // If both fail, don't show the checklist to avoid broken UX
-            });
-        });
-    });
-  }, []);
 
   const [currentUser, setCurrentUser] = useState<string | null>(null);
 
@@ -283,16 +242,6 @@ export default function TasksPage() {
 
   return (
     <div className="p-6 h-full flex flex-col">
-      {/* Setup completeness checker */}
-      {showSetup && (
-        <SetupChecklist
-          onDismiss={() => {
-            setShowSetup(false);
-            localStorage.setItem("spokestack_setup_dismissed", "true");
-          }}
-        />
-      )}
-
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
