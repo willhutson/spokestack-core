@@ -98,8 +98,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatInitMessage, setChatInitMessage] = useState("");
   const [sessionChecked, setSessionChecked] = useState(false);
   const [installedModules, setInstalledModules] = useState<InstalledModule[]>([]);
+
+  // Listen for "open chat with context" events from module pages
+  useEffect(() => {
+    function handleOpenChat(e: Event) {
+      const detail = (e as CustomEvent<{ message: string }>).detail;
+      setChatInitMessage(detail.message);
+      setChatOpen(true);
+    }
+    window.addEventListener("spokestack:open-chat", handleOpenChat);
+    return () => window.removeEventListener("spokestack:open-chat", handleOpenChat);
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -183,12 +195,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page content — inject openChatWithContext via window event */}
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
       {/* Chat panel */}
-      {chatOpen && <ChatPanel onClose={() => setChatOpen(false)} />}
+      {chatOpen && (
+        <ChatPanel
+          onClose={() => { setChatOpen(false); setChatInitMessage(""); }}
+          initialMessage={chatInitMessage}
+        />
+      )}
     </div>
   );
 }

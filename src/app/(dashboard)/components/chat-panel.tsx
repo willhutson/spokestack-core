@@ -22,7 +22,7 @@ const AGENT_LABELS: Record<string, string> = {
   core_orders: "Orders Agent",
 };
 
-export default function ChatPanel({ onClose }: { onClose: () => void }) {
+export default function ChatPanel({ onClose, initialMessage }: { onClose: () => void; initialMessage?: string }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -180,6 +180,15 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
     },
     [messages, streaming]
   );
+
+  // Auto-send initial message when opened with context
+  const initialSent = useRef(false);
+  useEffect(() => {
+    if (initialMessage && !initialSent.current) {
+      initialSent.current = true;
+      sendMessage(initialMessage);
+    }
+  }, [initialMessage, sendMessage]);
 
   function handleHandoffSwitch(handoff: HandoffEvent) {
     setPendingHandoff(null);
