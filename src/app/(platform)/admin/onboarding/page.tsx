@@ -25,6 +25,7 @@ const STEPS = [
 const DRAFT_KEY = "spokestack-onboarding-draft";
 
 interface OnboardingData {
+  [key: string]: unknown;
   domain?: string;
   orgName?: string;
   orgType?: string;
