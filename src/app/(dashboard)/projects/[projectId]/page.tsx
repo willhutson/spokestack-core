@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import CanvasView from "../components/canvas-view";
+import { useRouter } from "next/navigation";
+import StatusBadge from "@/components/shared/StatusBadge";
+import PhasesTimeline from "@/components/shared/PhasesTimeline";
+import { openChatWithContext } from "@/lib/chat-event";
+import { createClient } from "@/lib/supabase/client";
 
 interface Phase {
   id: string;
   name: string;
-  status: "pending" | "active" | "completed";
+  status: string;
   order: number;
 }
 
@@ -22,28 +26,43 @@ interface ProjectDetail {
   id: string;
   name: string;
   description?: string;
-  status: "active" | "completed" | "on_hold" | "draft";
+  status: string;
   startDate?: string;
   endDate?: string;
   progress: number;
   phases: Phase[];
   milestones: Milestone[];
-  canvas?: {
-    nodes: { id: string; label: string; x: number; y: number; type?: string }[];
-    edges: { from: string; to: string; label?: string }[];
-  };
 }
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ projectId: string }> }) {
+async function getAuthHeaders() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const headers: Record<string, string> = {};
+  if (session) {
+    headers["Authorization"] = `Bearer ${session.access_token}`;
+  }
+  return headers;
+}
+
+export default function ProjectDetailPage({
+  params,
+}: {
+  params: Promise<{ projectId: string }>;
+}) {
   const { projectId } = use(params);
+  const router = useRouter();
   const [project, setProject] = useState<ProjectDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "canvas">("overview");
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/v1/projects/${projectId}`);
+        const headers = await getAuthHeaders();
+        const res = await fetch(`/api/v1/projects/${projectId}`, {
+          headers,
+        });
         if (res.ok) {
           setProject(await res.json());
         }
@@ -59,7 +78,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ projec
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-sm text-gray-400">Loading project...</div>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-sm text-gray-400">Loading project...</div>
+        </div>
       </div>
     );
   }
@@ -68,176 +89,172 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ projec
     return (
       <div className="p-6">
         <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">Project not found</h3>
-          <p className="text-xs text-gray-500">This project may have been deleted or you don&apos;t have access.</p>
+          <h3 className="text-sm font-medium text-gray-900 mb-1">
+            Project not found
+          </h3>
+          <p className="text-xs text-gray-500">
+            This project may have been deleted or you don&apos;t have access.
+          </p>
         </div>
       </div>
     );
   }
 
-  const PHASE_STYLES = {
-    pending: "bg-gray-100 text-gray-600 border-gray-200",
-    active: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    completed: "bg-green-50 text-green-700 border-green-200",
-  };
+  const sortedPhases = [...project.phases].sort(
+    (a, b) => a.order - b.order
+  );
 
   return (
     <div className="p-6">
+      {/* Back button */}
+      <button
+        onClick={() => router.push("/projects")}
+        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-4"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+        Projects
+      </button>
+
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-          <a href="/projects" className="hover:text-indigo-600 transition-colors">Projects</a>
-          <span>/</span>
-          <span className="text-gray-900">{project.name}</span>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900">{project.name}</h1>
-        {project.description && (
-          <p className="text-sm text-gray-500 mt-1">{project.description}</p>
-        )}
-      </div>
-
-      {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="flex gap-6">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === "overview"
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("canvas")}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === "canvas"
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Canvas
-          </button>
-        </nav>
-      </div>
-
-      {activeTab === "overview" ? (
-        <div className="grid grid-cols-3 gap-6">
-          {/* Phases */}
-          <div className="col-span-2">
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
-            {project.phases.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-xs text-gray-500">No phases defined yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {project.phases
-                  .sort((a, b) => a.order - b.order)
-                  .map((phase) => (
-                    <div
-                      key={phase.id}
-                      className={`border rounded-lg px-4 py-3 flex items-center justify-between ${PHASE_STYLES[phase.status]}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono text-gray-400">{phase.order}</span>
-                        <span className="text-sm font-medium">{phase.name}</span>
-                      </div>
-                      <span className="text-xs font-medium capitalize">{phase.status}</span>
-                    </div>
-                  ))}
-              </div>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {project.name}
+            </h1>
+            <StatusBadge status={project.status} />
+          </div>
+          {project.description && (
+            <p className="text-sm text-gray-500 mt-1">
+              {project.description}
+            </p>
+          )}
+          <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+            {project.startDate && (
+              <span>
+                Start:{" "}
+                {new Date(project.startDate).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
             )}
+            {project.endDate && (
+              <span>
+                End:{" "}
+                {new Date(project.endDate).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            )}
+          </div>
+        </div>
+        <button
+          onClick={() =>
+            openChatWithContext(
+              `Give me a detailed status update on project "${project.name}"`
+            )
+          }
+          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+            />
+          </svg>
+          Ask Agent
+        </button>
+      </div>
 
-            {/* Milestones */}
-            <h2 className="text-sm font-semibold text-gray-900 mb-3 mt-6">Milestones</h2>
-            {project.milestones.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-xs text-gray-500">No milestones defined yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {project.milestones.map((ms) => (
-                  <div
-                    key={ms.id}
-                    className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          ms.completed
-                            ? "border-green-500 bg-green-500"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {ms.completed && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className={`text-sm ${ms.completed ? "text-gray-400 line-through" : "text-gray-900"}`}>
-                        {ms.name}
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      {new Date(ms.dueDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+      {/* Phases Timeline */}
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <PhasesTimeline phases={sortedPhases} />
+        </div>
+      </div>
+
+      {/* Milestones */}
+      <div>
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+          Milestones
+        </h2>
+        {project.milestones.length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
+            <p className="text-xs text-gray-500">
+              No milestones defined yet.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {project.milestones.map((ms) => {
+              const isPast =
+                !ms.completed && new Date(ms.dueDate) < new Date();
+              return (
+                <div
+                  key={ms.id}
+                  className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                        ms.completed
+                          ? "bg-emerald-500"
+                          : isPast
+                            ? "bg-red-400"
+                            : "bg-gray-300"
+                      }`}
+                    />
+                    <span
+                      className={`text-sm ${
+                        ms.completed
+                          ? "text-gray-400 line-through"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {ms.name}
                     </span>
                   </div>
-                ))}
-              </div>
-            )}
+                  <span
+                    className={`text-xs ${
+                      isPast ? "text-red-500 font-medium" : "text-gray-500"
+                    }`}
+                  >
+                    {new Date(ms.dueDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-
-          {/* Sidebar info */}
-          <div>
-            <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Status</label>
-                <p className="text-sm font-medium text-gray-900 mt-0.5 capitalize">{project.status.replace("_", " ")}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</label>
-                <div className="mt-1">
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-500 rounded-full"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">{project.progress}% complete</p>
-                </div>
-              </div>
-              {project.startDate && (
-                <div>
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Start</label>
-                  <p className="text-sm text-gray-900 mt-0.5">
-                    {new Date(project.startDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                  </p>
-                </div>
-              )}
-              {project.endDate && (
-                <div>
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">End</label>
-                  <p className="text-sm text-gray-900 mt-0.5">
-                    {new Date(project.endDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <CanvasView
-          nodes={project.canvas?.nodes ?? []}
-          edges={project.canvas?.edges ?? []}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 }

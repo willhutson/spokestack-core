@@ -56,6 +56,13 @@ export async function POST(req: NextRequest) {
         user_id: auth.user.id,
         surface: surface || "WEB",
         stream: false,
+        metadata: {
+          instructions:
+            "CRITICAL: Only call create_task, create_project, or create_brief ONCE per user request. " +
+            "If the entity was already created in this session and you need to add more details, " +
+            "use update_task, update_project, or update_brief instead. " +
+            "Never create duplicate entities.",
+        },
       }),
     });
   } catch (fetchErr) {
