@@ -85,18 +85,22 @@ export async function POST(req: NextRequest) {
 
   // Register with agent-builder (non-blocking — don't fail install if this fails)
   let agentRegistered = false;
-  const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
-  if (agentBuilderUrl) {
+  const runtimeUrl = process.env.AGENT_RUNTIME_URL;
+  const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
+  if (runtimeUrl) {
     try {
       const res = await fetch(
-        `${agentBuilderUrl}/api/v1/core/modules/register`,
+        `${runtimeUrl}/api/v1/core/modules/register`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(runtimeSecret ? { "X-Agent-Secret": runtimeSecret } : {}),
+          },
           body: JSON.stringify({
-            orgId: auth.organizationId,
-            moduleType: mt,
-            agentDefinition: {
+            org_id: auth.organizationId,
+            module_type: mt,
+            agent_definition: {
               name: registryEntry.agentName,
               description: registryEntry.description,
             },

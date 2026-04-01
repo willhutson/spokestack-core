@@ -1,8 +1,12 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
-import { saveAuth, type AuthData } from "../auth.js";
+import { saveAuth, getConfig, type AuthData } from "../auth.js";
 import { apiPublicRequest } from "../api.js";
 import * as ui from "../ui.js";
+
+// Supabase config — matches spokestack-core's client.ts
+const SUPABASE_URL = "https://dufujpalmzbbwtofpgyv.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_i6oqMxrglFTbVpmzFMtUuA_eehALBQR";
 
 export function registerTenantCommand(program: Command): void {
   const tenant = program
@@ -62,40 +66,69 @@ export function registerTenantCommand(program: Command): void {
 
       const s = ui.spinner("Creating tenant...");
 
-      // 1. Sign up
-      const signupRes = await apiPublicRequest<{
-        user: { id: string; supabaseId: string };
-        session: { access_token: string; refresh_token: string };
-      }>("POST", "/auth/signup", {
-        email: answers.email,
-        password: answers.password,
-      });
+      // 1. Sign up via Supabase directly (matches web signup pattern)
+      let supabaseUser: { id: string };
+      let accessToken: string;
+      let refreshToken: string;
 
-      if (!signupRes.ok) {
+      try {
+        const supabaseRes = await fetch(
+          `${SUPABASE_URL}/auth/v1/signup`,
+          {
+            method: "POST",
+            headers: {
+              "apikey": SUPABASE_ANON_KEY,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: answers.email,
+              password: answers.password,
+            }),
+          }
+        );
+
+        const supabaseData = await supabaseRes.json();
+
+        if (!supabaseRes.ok || supabaseData.error_code) {
+          s.stop();
+          ui.error(supabaseData.msg || supabaseData.message || "Signup failed.");
+          return;
+        }
+
+        // Check if email confirmation is required (no session returned)
+        if (!supabaseData.access_token && !supabaseData.session?.access_token) {
+          s.stop();
+          ui.error("Email confirmation may be required. Check your inbox, then run `spokestack login`.");
+          return;
+        }
+
+        supabaseUser = supabaseData.user || { id: supabaseData.id };
+        accessToken = supabaseData.access_token || supabaseData.session?.access_token;
+        refreshToken = supabaseData.refresh_token || supabaseData.session?.refresh_token || "";
+      } catch (err) {
         s.stop();
-        ui.error(signupRes.error ?? "Signup failed.");
+        ui.error("Could not reach Supabase. Check your network connection.");
         return;
       }
 
-      // 2. Create user record
-      const token = signupRes.data.session?.access_token;
-      if (!token) {
-        s.stop();
-        ui.error("No session returned. Check your email to confirm, then run `spoke login`.");
-        return;
-      }
-
-      await apiPublicRequest("POST", "/api/v1/auth", {
+      // 2. Create SpokeStack user record
+      const userRes = await apiPublicRequest("POST", "/api/v1/auth", {
         email: answers.email,
-        supabaseId: signupRes.data.user.supabaseId ?? signupRes.data.user.id,
+        supabaseId: supabaseUser.id,
         name: answers.email.split("@")[0],
       });
 
-      // 3. Create organization
+      if (!userRes.ok) {
+        s.stop();
+        ui.error(userRes.error ?? "Failed to create user record.");
+        return;
+      }
+
+      // 3. Create organization (seeds core modules based on tier)
       const orgRes = await apiPublicRequest<{
         organization: { id: string; slug: string; name: string };
       }>("PUT", "/api/v1/auth", {
-        supabaseId: signupRes.data.user.supabaseId ?? signupRes.data.user.id,
+        supabaseId: supabaseUser.id,
         orgName: answers.orgName,
       });
 
@@ -110,8 +143,8 @@ export function registerTenantCommand(program: Command): void {
 
       // Save auth
       const authData: AuthData = {
-        accessToken: token,
-        refreshToken: signupRes.data.session.refresh_token ?? "",
+        accessToken,
+        refreshToken,
         expiresAt: Date.now() + 3600 * 1000,
         orgId: org.id,
         orgSlug: org.slug,
