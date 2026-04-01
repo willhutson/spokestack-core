@@ -4,14 +4,11 @@ import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
 import { ModuleType } from "@prisma/client";
 import { getModuleByType, tierCanInstall } from "@/lib/modules/registry";
+import { installModule } from "@/lib/modules/installer";
 
 /**
  * POST /api/v1/modules/install
- * Orchestrates full module install:
- *   1. Validate org tier can install the module
- *   2. Upsert OrgModule record
- *   3. POST to agent-builder to register module agent
- *   4. Return success
+ * Install a single module. Uses shared installer logic.
  */
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
@@ -24,10 +21,11 @@ export async function POST(req: NextRequest) {
     return error("moduleType is required");
   }
 
-  // Validate moduleType is a valid enum value
   const validTypes = Object.values(ModuleType);
   if (!validTypes.includes(moduleType as ModuleType)) {
-    return error(`Invalid moduleType: ${moduleType}. Valid types: ${validTypes.join(", ")}`);
+    return error(
+      `Invalid moduleType: ${moduleType}. Valid types: ${validTypes.join(", ")}`
+    );
   }
 
   const mt = moduleType as ModuleType;
@@ -36,27 +34,12 @@ export async function POST(req: NextRequest) {
     return error(`Module ${moduleType} not found in registry`);
   }
 
-  // Check if already installed and active
-  const existing = await prisma.orgModule.findUnique({
-    where: {
-      organizationId_moduleType: {
-        organizationId: auth.organizationId,
-        moduleType: mt,
-      },
-    },
-  });
-
-  if (existing?.active) {
-    return error(`Module ${registryEntry.name} is already installed`, 400);
-  }
-
-  // Check tier eligibility
   const billing = await prisma.billingAccount.findUnique({
     where: { organizationId: auth.organizationId },
     select: { tier: true },
   });
-
   const tier = billing?.tier ?? "FREE";
+
   if (!tierCanInstall(tier, mt)) {
     return json(
       {
@@ -67,61 +50,31 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Upsert OrgModule (handles reactivation of previously uninstalled modules)
-  const orgModule = await prisma.orgModule.upsert({
+  const result = await installModule(auth.organizationId, mt, tier);
+
+  if (!result.success) {
+    return error(result.error ?? "Install failed", 400);
+  }
+
+  const orgModule = await prisma.orgModule.findUnique({
     where: {
       organizationId_moduleType: {
         organizationId: auth.organizationId,
         moduleType: mt,
       },
     },
-    update: { active: true },
-    create: {
-      organizationId: auth.organizationId,
-      moduleType: mt,
-      active: true,
-    },
   });
-
-  // Register with agent-builder (non-blocking — don't fail install if this fails)
-  let agentRegistered = false;
-  const runtimeUrl = process.env.AGENT_RUNTIME_URL;
-  const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
-  if (runtimeUrl) {
-    try {
-      const res = await fetch(
-        `${runtimeUrl}/api/v1/core/modules/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(runtimeSecret ? { "X-Agent-Secret": runtimeSecret } : {}),
-          },
-          body: JSON.stringify({
-            org_id: auth.organizationId,
-            module_type: mt,
-            agent_definition: {
-              name: registryEntry.agentName,
-              description: registryEntry.description,
-            },
-          }),
-        }
-      );
-      agentRegistered = res.ok;
-    } catch {
-      // Agent-builder unreachable — OrgModule is still created
-      agentRegistered = false;
-    }
-  }
 
   return json({
     success: true,
-    orgModule: {
-      id: orgModule.id,
-      moduleType: orgModule.moduleType,
-      installedAt: orgModule.installedAt.toISOString(),
-      active: orgModule.active,
-    },
-    agentRegistered,
+    orgModule: orgModule
+      ? {
+          id: orgModule.id,
+          moduleType: orgModule.moduleType,
+          installedAt: orgModule.installedAt.toISOString(),
+          active: orgModule.active,
+        }
+      : null,
+    agentRegistered: result.agentRegistered,
   });
 }

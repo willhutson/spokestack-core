@@ -1,7 +1,12 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
 import { saveAuth, getConfig, type AuthData } from "../auth.js";
-import { apiPublicRequest } from "../api.js";
+import { apiPublicRequest, apiRequestWithAuth } from "../api.js";
+
+const VALID_TEMPLATES = [
+  "agency", "saas", "services", "ecommerce",
+  "construction", "consulting", "media", "education",
+];
 import * as ui from "../ui.js";
 
 // Supabase config — matches spokestack-core's client.ts
@@ -16,7 +21,8 @@ export function registerTenantCommand(program: Command): void {
   tenant
     .command("create")
     .description("Create a new tenant workspace")
-    .action(async () => {
+    .option("--template <industry>", `Industry template: ${VALID_TEMPLATES.join(", ")}`)
+    .action(async (opts) => {
       ui.blank();
       ui.heading("Create a New Tenant");
 
@@ -161,6 +167,52 @@ export function registerTenantCommand(program: Command): void {
         `  Core modules (TASKS${answers.tier !== "FREE" ? ", PROJECTS" : ""}${answers.tier === "PRO" || answers.tier === "BUSINESS" ? ", BRIEFS" : ""}${answers.tier === "BUSINESS" ? ", ORDERS" : ""}) have been seeded.`
       );
       ui.blank();
+      // Install template modules if --template provided
+      const template = opts.template as string | undefined;
+      if (template) {
+        if (!VALID_TEMPLATES.includes(template.toLowerCase())) {
+          ui.warn(`Unknown template "${template}". Valid: ${VALID_TEMPLATES.join(", ")}`);
+        } else {
+          ui.blank();
+          const s2 = ui.spinner(`Installing ${template} template modules...`);
+
+          const batchRes = await apiRequestWithAuth<{
+            installed: Array<{ moduleType: string }>;
+            skipped: Array<{ moduleType: string; requiredTier?: string }>;
+            errors: Array<{ moduleType: string; error?: string }>;
+          }>(authData, "POST", "/api/v1/modules/install-batch", {
+            moduleTypes: (() => {
+              const map: Record<string, string[]> = {
+                agency: ["CRM", "CONTENT_STUDIO", "WORKFLOWS", "TIME_LEAVE", "SOCIAL_PUBLISHING"],
+                saas: ["CRM", "ANALYTICS", "WORKFLOWS", "NPS", "FINANCE"],
+                services: ["CRM", "TIME_LEAVE", "FINANCE", "NPS", "WORKFLOWS"],
+                ecommerce: ["CRM", "ANALYTICS", "SOCIAL_PUBLISHING", "FINANCE"],
+                construction: ["TIME_LEAVE", "WORKFLOWS", "FINANCE"],
+                consulting: ["CRM", "TIME_LEAVE", "FINANCE", "ANALYTICS"],
+                media: ["CONTENT_STUDIO", "SOCIAL_PUBLISHING", "ANALYTICS", "CRM"],
+                education: ["LMS", "NPS", "WORKFLOWS", "ANALYTICS"],
+              };
+              return map[template.toLowerCase()] || [];
+            })(),
+          });
+
+          s2.stop();
+
+          if (batchRes.ok) {
+            for (const m of batchRes.data.installed || []) {
+              ui.line(`  ${ui.SUCCESS("\u2714")} ${m.moduleType} installed`);
+            }
+            for (const m of batchRes.data.skipped || []) {
+              ui.line(`  ${ui.MUTED("\u25CB")} ${m.moduleType} skipped (requires ${m.requiredTier})`);
+            }
+          }
+        }
+      }
+
+      ui.blank();
+      if (!template) {
+        ui.line(`  ${ui.MUTED("Tip:")} Use ${ui.BOLD("--template agency")} to install industry modules.`);
+      }
       ui.line(`  Next: ${ui.BOLD("spoke instance configure")} to set up your domain and channels.`);
       ui.blank();
     });

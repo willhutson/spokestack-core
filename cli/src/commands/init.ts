@@ -2,14 +2,23 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import open from "open";
 import { saveAuth, getConfig, type AuthData } from "../auth.js";
-import { apiPublicRequest } from "../api.js";
+import { apiPublicRequest, apiRequest } from "../api.js";
 import * as ui from "../ui.js";
+
+const VALID_TEMPLATES = [
+  "agency", "saas", "services", "ecommerce",
+  "construction", "consulting", "media", "education",
+];
 
 export function registerInitCommand(program: Command): void {
   program
     .command("init")
     .description("Create a new SpokeStack workspace")
-    .action(async () => {
+    .option(
+      "--template <industry>",
+      `Industry template: ${VALID_TEMPLATES.join(", ")}`
+    )
+    .action(async (opts) => {
       ui.welcomeBanner();
       ui.heading("Create your workspace");
       ui.line("Set up a new SpokeStack workspace in under 3 minutes.");
@@ -129,7 +138,78 @@ export function registerInitCommand(program: Command): void {
       saveAuth(authData);
       ui.success("Authenticated and ready");
 
-      // Step 5: Offer onboarding conversation
+      // Step 5: Install template modules if --template provided
+      const template = opts.template as string | undefined;
+      if (template) {
+        if (!VALID_TEMPLATES.includes(template.toLowerCase())) {
+          ui.warn(
+            `Unknown template "${template}". Valid: ${VALID_TEMPLATES.join(", ")}`
+          );
+        } else {
+          const s3 = ui.spinner(
+            `Installing ${template} template modules...`
+          );
+          const recRes = await apiRequest<{
+            label: string;
+            recommended: Array<{
+              moduleType: string;
+              name: string;
+              canInstall: boolean;
+            }>;
+          }>("GET", `/api/v1/modules/recommend?industry=${template.toLowerCase()}`);
+          s3.stop();
+
+          if (recRes.ok && recRes.data.recommended) {
+            const toInstall = recRes.data.recommended
+              .filter((m) => m.canInstall)
+              .map((m) => m.moduleType);
+
+            if (toInstall.length > 0) {
+              const names = recRes.data.recommended
+                .filter((m) => m.canInstall)
+                .map((m) => m.name);
+              ui.info(
+                `Installing ${toInstall.length} modules: ${names.join(", ")}...`
+              );
+
+              const s4 = ui.spinner("Installing modules...");
+              const batchRes = await apiRequest<{
+                installed: Array<{ moduleType: string; success: boolean }>;
+                skipped: Array<{
+                  moduleType: string;
+                  requiredTier?: string;
+                }>;
+              }>("POST", "/api/v1/modules/install-batch", {
+                moduleTypes: toInstall,
+              });
+              s4.stop();
+
+              if (batchRes.ok) {
+                for (const m of batchRes.data.installed) {
+                  ui.success(`${m.moduleType} installed`);
+                }
+                for (const m of batchRes.data.skipped) {
+                  ui.warn(
+                    `${m.moduleType} skipped (requires ${m.requiredTier})`
+                  );
+                }
+              }
+            }
+
+            const skippedNames = recRes.data.recommended
+              .filter((m) => !m.canInstall)
+              .map((m) => `${m.name} (upgrade required)`);
+            if (skippedNames.length > 0) {
+              ui.line(
+                `  ${ui.MUTED("Skipped:")} ${skippedNames.join(", ")}`
+              );
+            }
+          }
+          ui.blank();
+        }
+      }
+
+      // Step 6: Offer onboarding conversation
       ui.blank();
       ui.divider();
       ui.blank();
@@ -173,6 +253,16 @@ export function registerInitCommand(program: Command): void {
         ui.line(`    ${ui.BOLD("spokestack task add")}        ${ui.MUTED("Create your first task")}`);
         ui.line(`    ${ui.BOLD("spokestack agent chat")}      ${ui.MUTED("Talk to your Tasks Agent")}`);
         ui.line(`    ${ui.BOLD("spokestack status")}          ${ui.MUTED("Check workspace health")}`);
+      }
+
+      if (!template) {
+        ui.blank();
+        ui.line(
+          `  ${ui.MUTED("Tip:")} Run ${ui.BOLD("spokestack init --template agency")} to install industry modules.`
+        );
+        ui.line(
+          `  ${ui.MUTED("Templates:")} ${VALID_TEMPLATES.join(", ")}`
+        );
       }
 
       ui.blank();
