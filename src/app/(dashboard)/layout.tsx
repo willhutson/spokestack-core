@@ -103,20 +103,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const supabase = createClient();
+
+    async function fetchModules(token: string, retries = 2): Promise<void> {
+      try {
+        const res = await fetch("/api/v1/modules/installed", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          if (retries > 0) {
+            // Retry after a short delay (session may not be ready)
+            await new Promise((r) => setTimeout(r, 500));
+            return fetchModules(token, retries - 1);
+          }
+          console.error("Failed to fetch modules:", res.status);
+          return;
+        }
+        const data = await res.json();
+        if (data.installed) setInstalledModules(data.installed);
+      } catch (err) {
+        if (retries > 0) {
+          await new Promise((r) => setTimeout(r, 500));
+          return fetchModules(token, retries - 1);
+        }
+        console.error("Failed to fetch modules:", err);
+      }
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         router.replace("/login");
       } else {
         setSessionChecked(true);
-        // Fetch installed modules for the nav
-        fetch("/api/v1/modules/installed", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        })
-          .then((r) => r.json())
-          .then((data) => {
-            if (data.installed) setInstalledModules(data.installed);
-          })
-          .catch(() => {});
+        fetchModules(session.access_token);
       }
     });
   }, [router]);
