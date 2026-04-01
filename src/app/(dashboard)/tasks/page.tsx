@@ -58,7 +58,26 @@ export default function TasksPage() {
 
   useEffect(() => {
     const dismissed = localStorage.getItem("spokestack_setup_dismissed");
-    if (dismissed !== "true") setShowSetup(true);
+    if (dismissed === "true") return;
+
+    // Check DB flag before showing checklist
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      fetch("/api/v1/settings", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          const settings = data.settings ?? data;
+          if (settings?.onboardingComplete) {
+            localStorage.setItem("spokestack_setup_dismissed", "true");
+          } else {
+            setShowSetup(true);
+          }
+        })
+        .catch(() => setShowSetup(true));
+    });
   }, []);
 
   const [currentUser, setCurrentUser] = useState<string | null>(null);

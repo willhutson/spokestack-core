@@ -21,7 +21,14 @@ export async function GET(req: NextRequest) {
     where: { type: billing.tier },
   });
 
-  return json({ billing, tier });
+  return json({
+    billing: {
+      ...billing,
+      tierDetails: tier, // full tier object for consumers that need it
+    },
+    tier: billing.tier,    // string: "FREE", "ENTERPRISE", etc.
+    status: billing.status, // string: "ACTIVE", etc.
+  });
 }
 
 /**

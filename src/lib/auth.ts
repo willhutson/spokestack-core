@@ -26,7 +26,6 @@ export async function authenticate(
       include: {
         memberships: {
           include: { organization: true },
-          take: 1,
           orderBy: { joinedAt: "desc" },
         },
       },
