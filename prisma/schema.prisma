@@ -303,6 +303,9 @@ model OrgSettings {
   language           String  @default("en")
   weekStartDay       Int     @default(1)
   onboardingComplete Boolean @default(false)
+  customDomain       String?
+  channels           Json?
+  branding           Json?
 
   organization Organization @relation(fields: [organizationId], references: [id])
 }
@@ -312,12 +315,14 @@ model OrgModule {
   organizationId String
   moduleType     ModuleType
   installedAt    DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   active         Boolean    @default(true)
   config         Json?
 
   organization Organization @relation(fields: [organizationId], references: [id])
 
   @@unique([organizationId, moduleType])
+  @@index([organizationId, moduleType])
 }
 
 model FeatureFlag {

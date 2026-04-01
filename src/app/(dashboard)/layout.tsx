@@ -5,26 +5,29 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ChatPanel from "./components/chat-panel";
+import ModuleNav from "@/components/dashboard/ModuleNav";
+import { getAvailableModules, type RegistryModule } from "@/lib/modules/registry";
 
-type TierLevel = "free" | "starter" | "pro" | "business" | "enterprise";
-
-const TIER: TierLevel = "free"; // TODO: read from auth/billing context
-
-interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ReactNode;
-  minTier: TierLevel;
-  tierPrice?: string;
+interface InstalledModule {
+  moduleType: string;
+  name: string;
+  active: boolean;
+  category: string;
+  surfaces: string[];
 }
 
-const TIER_ORDER: TierLevel[] = ["free", "starter", "pro", "business", "enterprise"];
+// Static registry data (available at build time)
+const ALL_MODULES = getAvailableModules().map((m) => ({
+  moduleType: m.moduleType,
+  name: m.name,
+  category: m.category,
+  minTier: m.minTier,
+  price: m.price,
+  surfaces: m.surfaces,
+}));
 
-function tierMet(current: TierLevel, required: TierLevel): boolean {
-  return TIER_ORDER.indexOf(current) >= TIER_ORDER.indexOf(required);
-}
-
-const NAV_ITEMS: NavItem[] = [
+// Legacy nav items removed — now driven by ModuleNav
+const _LEGACY_NAV_UNUSED = [
   {
     label: "Tasks",
     href: "/tasks",
@@ -96,6 +99,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [chatOpen, setChatOpen] = useState(false);
   const [sessionChecked, setSessionChecked] = useState(false);
+  const [installedModules, setInstalledModules] = useState<InstalledModule[]>([]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -104,6 +108,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.replace("/login");
       } else {
         setSessionChecked(true);
+        // Fetch installed modules for the nav
+        fetch("/api/v1/modules/installed", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.installed) setInstalledModules(data.installed);
+          })
+          .catch(() => {});
       }
     });
   }, [router]);
@@ -128,49 +141,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <span className="font-semibold text-sm text-gray-900 truncate">My Workspace</span>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
-            const active = pathname.startsWith(item.href);
-            const locked = !tierMet(TIER, item.minTier);
-
-            if (locked) {
-              return (
-                <div
-                  key={item.href}
-                  className="group relative flex items-center gap-2.5 px-2.5 py-2 rounded-md text-gray-400 cursor-not-allowed"
-                >
-                  {item.icon}
-                  <span className="text-sm">{item.label}</span>
-                  <svg className="w-3.5 h-3.5 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                  </svg>
-                  {/* Upgrade tooltip */}
-                  <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 hidden group-hover:block z-50">
-                    <div className="bg-gray-900 text-white text-xs px-3 py-1.5 rounded-md whitespace-nowrap shadow-lg">
-                      Upgrade to unlock &middot; {item.tierPrice}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors ${
-                  active
-                    ? "bg-indigo-50 text-indigo-700 font-medium"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Navigation — dynamic, driven by installed modules */}
+        <ModuleNav
+          installed={installedModules}
+          allModules={ALL_MODULES}
+          currentPath={pathname}
+        />
 
         {/* User section */}
         <div className="border-t border-gray-200 p-3">

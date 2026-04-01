@@ -1,0 +1,182 @@
+[
+  {
+    "moduleType": "TASKS",
+    "name": "Tasks",
+    "description": "Task creation, assignment, tracking, and completion with AI-powered workflow patterns.",
+    "category": "core",
+    "minTier": "FREE",
+    "price": null,
+    "agentName": "Tasks Agent",
+    "surfaces": ["dashboard", "cli", "whatsapp"]
+  },
+  {
+    "moduleType": "PROJECTS",
+    "name": "Projects",
+    "description": "Project planning, workflow canvas, milestone tracking, and execution monitoring.",
+    "category": "core",
+    "minTier": "STARTER",
+    "price": null,
+    "agentName": "Projects Agent",
+    "surfaces": ["dashboard", "cli"]
+  },
+  {
+    "moduleType": "BRIEFS",
+    "name": "Briefs",
+    "description": "Creative and strategic brief lifecycle — intake, artifact generation, review, and approval.",
+    "category": "core",
+    "minTier": "PRO",
+    "price": null,
+    "agentName": "Briefs Agent",
+    "surfaces": ["dashboard", "cli"]
+  },
+  {
+    "moduleType": "ORDERS",
+    "name": "Orders",
+    "description": "Customer management, order processing, invoicing, and commercial intelligence.",
+    "category": "core",
+    "minTier": "BUSINESS",
+    "price": null,
+    "agentName": "Orders Agent",
+    "surfaces": ["dashboard", "cli"]
+  },
+  {
+    "moduleType": "CRM",
+    "name": "CRM",
+    "description": "Customer relationship management — contacts, deals, pipelines, and client intelligence.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1000,
+    "agentName": "CRM Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "SOCIAL_PUBLISHING",
+    "name": "Social Publishing",
+    "description": "Schedule and publish content across social media channels with AI-optimized timing.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1000,
+    "agentName": "Publishing Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "CONTENT_STUDIO",
+    "name": "Content Studio",
+    "description": "AI-powered content creation — copy, visuals, and multimedia asset production.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1500,
+    "agentName": "Content Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "ANALYTICS",
+    "name": "Analytics",
+    "description": "Business intelligence dashboards — approval velocity, project health, revenue trends.",
+    "category": "analytics",
+    "minTier": "PRO",
+    "price": 1000,
+    "agentName": "Analytics Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "SURVEYS",
+    "name": "Surveys",
+    "description": "Create, distribute, and analyze surveys with AI-generated insights.",
+    "category": "ops",
+    "minTier": "PRO",
+    "price": 500,
+    "agentName": "Surveys Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "LISTENING",
+    "name": "Listening",
+    "description": "Social and web listening — track brand mentions, sentiment, and competitive signals.",
+    "category": "marketing",
+    "minTier": "BUSINESS",
+    "price": 1500,
+    "agentName": "Listening Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "MEDIA_BUYING",
+    "name": "Media Buying",
+    "description": "Ad campaign management across platforms with budget optimization.",
+    "category": "marketing",
+    "minTier": "BUSINESS",
+    "price": 1500,
+    "agentName": "Media Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "LMS",
+    "name": "LMS",
+    "description": "Learning management — courses, training modules, and team skill tracking.",
+    "category": "ops",
+    "minTier": "BUSINESS",
+    "price": 1000,
+    "agentName": "LMS Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "NPS",
+    "name": "NPS",
+    "description": "Net Promoter Score tracking with automated survey distribution and trend analysis.",
+    "category": "analytics",
+    "minTier": "PRO",
+    "price": 500,
+    "agentName": "NPS Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "TIME_LEAVE",
+    "name": "Time & Leave",
+    "description": "Team availability, time tracking, leave management, and capacity planning.",
+    "category": "ops",
+    "minTier": "STARTER",
+    "price": 500,
+    "agentName": "Time Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "BOARDS",
+    "name": "Boards",
+    "description": "Shared visual boards for team collaboration — kanban, whiteboard, and planning views.",
+    "category": "ops",
+    "minTier": "STARTER",
+    "price": 500,
+    "agentName": "Boards Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "FINANCE",
+    "name": "Finance",
+    "description": "Financial tracking — budgets, expenses, forecasting, and reporting.",
+    "category": "ops",
+    "minTier": "BUSINESS",
+    "price": 1500,
+    "agentName": "Finance Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "WORKFLOWS",
+    "name": "Workflows (Advanced)",
+    "description": "Advanced automation — multi-step workflows, triggers, and conditional logic beyond the canvas.",
+    "category": "ops",
+    "minTier": "BUSINESS",
+    "price": 1000,
+    "agentName": "Workflows Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "ADMIN",
+    "name": "Admin (Advanced)",
+    "description": "Advanced administration — audit logs, compliance, custom roles, and SSO configuration.",
+    "category": "ops",
+    "minTier": "ENTERPRISE",
+    "price": null,
+    "agentName": "Admin Agent",
+    "surfaces": ["dashboard"]
+  }
+]
