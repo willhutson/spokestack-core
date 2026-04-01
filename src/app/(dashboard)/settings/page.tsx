@@ -45,9 +45,11 @@ const LANGUAGES = [
 ];
 
 const PLANS = [
+  { name: "Free", price: "$0/mo", features: "3 members, Tasks module only" },
   { name: "Starter", price: "$29/mo", features: "10 members, + Projects Agent" },
   { name: "Pro", price: "$59/mo", features: "25 members, + Briefs Agent, 3 marketplace modules" },
   { name: "Business", price: "$149/mo", features: "50 members, + Orders Agent, unlimited modules" },
+  { name: "Enterprise", price: "Custom", features: "Unlimited members, all modules, dedicated support" },
 ];
 
 async function getToken(): Promise<string | null> {
