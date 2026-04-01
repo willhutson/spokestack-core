@@ -182,7 +182,7 @@ async function generateLayout(orgId: string): Promise<LayoutResult> {
       status: o.status,
       totalCents: o.totalCents,
       clientId: o.clientId,
-      customerName: o.client?.name ?? null,
+      clientName: o.client?.name ?? null,
     })),
   });
 }

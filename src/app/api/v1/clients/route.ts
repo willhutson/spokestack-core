@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   if (!guard.allowed) return forbidden(guard.message);
 
   const body = await req.json();
-  const { name, email, phone, company, metadata } = body;
+  const { name, email, phone, company, metadata, industry, logoUrl, website, isActive, accountManagerId } = body;
 
   if (!name) return error("name is required");
 
@@ -64,6 +64,11 @@ export async function POST(req: NextRequest) {
       phone,
       company,
       metadata,
+      industry,
+      logoUrl,
+      website,
+      isActive,
+      accountManagerId,
     },
   });
 

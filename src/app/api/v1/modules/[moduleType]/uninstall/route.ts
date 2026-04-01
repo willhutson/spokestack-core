@@ -45,18 +45,18 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   });
 
   // Notify agent-builder to deregister (non-blocking)
-  const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
-  if (agentBuilderUrl) {
+  const runtimeUrl = process.env.AGENT_RUNTIME_URL;
+  const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
+  if (runtimeUrl) {
     try {
       await fetch(
-        `${agentBuilderUrl}/api/v1/core/modules/deregister`,
+        `${runtimeUrl}/api/v1/core/modules/${auth.organizationId}/${mt}/deregister`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orgId: auth.organizationId,
-            moduleType: mt,
-          }),
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(runtimeSecret ? { "X-Agent-Secret": runtimeSecret } : {}),
+          },
         }
       );
     } catch {

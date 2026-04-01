@@ -51,7 +51,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   });
   if (!existing) return error("Client not found", 404);
 
-  const { name, email, phone, company, metadata } = body;
+  const { name, email, phone, company, metadata, industry, logoUrl, website, isActive, accountManagerId } = body;
 
   const client = await prisma.client.update({
     where: { id: clientId },
@@ -61,6 +61,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       ...(phone !== undefined ? { phone } : {}),
       ...(company !== undefined ? { company } : {}),
       ...(metadata !== undefined ? { metadata } : {}),
+      ...(industry !== undefined ? { industry } : {}),
+      ...(logoUrl !== undefined ? { logoUrl } : {}),
+      ...(website !== undefined ? { website } : {}),
+      ...(isActive !== undefined ? { isActive } : {}),
+      ...(accountManagerId !== undefined ? { accountManagerId } : {}),
     },
   });
 

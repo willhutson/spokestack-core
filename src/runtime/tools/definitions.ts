@@ -450,7 +450,7 @@ export const ORDERS_TOOLS: LLMTool[] = [
     parameters: {
       type: "object",
       properties: {
-        customerId: { type: "string", description: "ID of the customer" },
+        clientId: { type: "string", description: "ID of the client" },
         items: {
           type: "array",
           items: {
@@ -510,7 +510,7 @@ export const ORDERS_TOOLS: LLMTool[] = [
           type: "string",
           enum: ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELED"],
         },
-        customerId: { type: "string" },
+        clientId: { type: "string" },
         limit: { type: "number" },
       },
     },

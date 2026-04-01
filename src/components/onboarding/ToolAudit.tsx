@@ -13,6 +13,7 @@ export interface ToolAuditEntry {
 interface ToolAuditProps {
   onSubmit: (entries: ToolAuditEntry[]) => void;
   isSubmitting?: boolean;
+  orgId?: string;
 }
 
 const TOOL_CATEGORIES = [
@@ -75,7 +76,27 @@ const DATA_VOLUME_OPTIONS = [
 export default function ToolAudit({
   onSubmit,
   isSubmitting = false,
+  orgId,
 }: ToolAuditProps) {
+  const [connectingProvider, setConnectingProvider] = useState<string | null>(null);
+
+  const handleConnect = async (provider: string) => {
+    setConnectingProvider(provider);
+    try {
+      const res = await fetch('/api/v1/integrations/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider, organizationId: orgId }),
+      });
+      const data = await res.json();
+      if (data.authUrl) {
+        window.open(data.authUrl, '_blank', 'width=600,height=700');
+      }
+    } finally {
+      setConnectingProvider(null);
+    }
+  };
+
   const [entries, setEntries] = useState<Record<string, ToolAuditEntry>>(
     Object.fromEntries(
       TOOL_CATEGORIES.map((c) => [
@@ -164,16 +185,11 @@ export default function ToolAudit({
                   return (
                     <button
                       type="button"
-                      onClick={() => {
-                        window.open(
-                          `/api/v1/integrations/connect?provider=${mapping.nangoProvider}`,
-                          "nango-connect",
-                          "width=600,height=700"
-                        );
-                      }}
-                      className="shrink-0 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors"
+                      disabled={connectingProvider === mapping.nangoProvider}
+                      onClick={() => handleConnect(mapping.nangoProvider!)}
+                      className="shrink-0 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors disabled:opacity-50"
                     >
-                      Connect
+                      {connectingProvider === mapping.nangoProvider ? "Connecting..." : "Connect"}
                     </button>
                   );
                 })()}

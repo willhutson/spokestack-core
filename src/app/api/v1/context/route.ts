@@ -34,17 +34,17 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/v1/context
- * Write a context entry to the shared context graph.
+ * Create or update a context entry for the organization.
  */
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
   const body = await req.json();
-  const { entryType, category, key, value, confidence } = body;
+  const { entryType, category, key, value, confidence, sourceAgentType, expiresAt } = body;
 
-  if (!entryType || !category || !key || value === undefined) {
-    return error("entryType, category, key, and value are required");
+  if (!entryType || !category || !key) {
+    return error("entryType, category, and key are required");
   }
 
   const entry = await prisma.contextEntry.upsert({
@@ -56,19 +56,23 @@ export async function POST(req: NextRequest) {
       },
     },
     update: {
-      value,
+      entryType: entryType,
+      value: typeof value === "string" ? value : JSON.stringify(value),
       confidence: confidence ?? 0.5,
-      entryType,
+      sourceAgentType: sourceAgentType ?? null,
+      expiresAt: expiresAt ? new Date(expiresAt) : null,
     },
     create: {
       organizationId: auth.organizationId,
       entryType,
       category,
       key,
-      value,
+      value: typeof value === "string" ? value : JSON.stringify(value),
       confidence: confidence ?? 0.5,
+      sourceAgentType: sourceAgentType ?? null,
+      expiresAt: expiresAt ? new Date(expiresAt) : null,
     },
   });
 
-  return json({ entry }, 201);
+  return json({ entry });
 }
