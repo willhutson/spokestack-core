@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface Message {
   id: string;
@@ -58,9 +59,18 @@ export default function ChatPanel({ onClose }: { onClose: () => void }) {
 
     // Stream response from agent via SSE
     try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error("Not authenticated");
+      }
+
       const res = await fetch("/api/v1/agents/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`,
+        },
         body: JSON.stringify({ message: text }),
       });
 
