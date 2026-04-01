@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 import { prisma } from "@/lib/prisma";
 import { getProvider } from "@/lib/integrations/nango/providers";
 import { disconnectProvider } from "@/lib/integrations/nango/connection";
@@ -75,6 +76,9 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
 
   try {
     await disconnectProvider(auth.organizationId, providerId);
+
+    emitEvent(auth.organizationId, "Integration", integration.id, "disconnected", { provider: providerId }, auth.user.id).catch(() => {});
+
     return json({ success: true, provider: providerId, status: "DISABLED" });
   } catch (err) {
     const message =

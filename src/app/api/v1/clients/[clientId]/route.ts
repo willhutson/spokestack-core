@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 interface Params {
   params: Promise<{ clientId: string }>;
@@ -68,6 +69,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     },
   });
 
+  emitEvent(auth.organizationId, "Client", clientId, "updated", { changedFields: Object.keys(body) }, auth.user.id).catch(() => {});
+
   return json({ client });
 }
 
@@ -86,5 +89,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   if (!existing) return error("Client not found", 404);
 
   await prisma.client.delete({ where: { id: clientId } });
+
+  emitEvent(auth.organizationId, "Client", clientId, "deleted", {}, auth.user.id).catch(() => {});
+
   return json({ deleted: true });
 }

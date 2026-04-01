@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 /**
  * GET /api/v1/briefs
@@ -52,6 +53,8 @@ export async function POST(req: NextRequest) {
       createdById: auth.user.id,
     },
   });
+
+  emitEvent(auth.organizationId, "Brief", brief.id, "created", {}, auth.user.id).catch(() => {});
 
   return json({ brief }, 201);
 }

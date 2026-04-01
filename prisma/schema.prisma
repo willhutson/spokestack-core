@@ -266,6 +266,11 @@ model Organization {
   integrations  Integration[]
   notifications Notification[]
   fileAssets    FileAsset[]
+
+  // Events + DAM
+  events          EntityEvent[]
+  assetLibraries  AssetLibrary[]
+  assets          Asset[]
 }
 
 model User {
@@ -639,7 +644,8 @@ model Client {
   orders       Order[]
   invoices     Invoice[]
   briefs       Brief[]
-  projects     Project[]
+  projects       Project[]
+  assetLibraries AssetLibrary[]
 
   @@index([organizationId])
   @@index([organizationId, isActive])
@@ -793,10 +799,14 @@ model Integration {
   config            Json?
   lastSyncAt        DateTime?
   syncError         String?
+  syncInterval      Int?              @default(120)
+  syncEnabled       Boolean           @default(true)
+  lastSyncResult    Json?
   installedAt       DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id])
+  syncJobs     SyncJob[]
 
   @@unique([organizationId, provider])
   @@index([organizationId])
@@ -851,4 +861,246 @@ model FileVersion {
   createdAt   DateTime @default(now())
 
   fileAsset FileAsset @relation(fields: [fileAssetId], references: [id])
+}
+
+// ============================================================================
+// EVENT SYSTEM
+// ============================================================================
+
+model EntityEvent {
+  id             String    @id @default(cuid())
+  organizationId String
+  entityType     String
+  entityId       String
+  action         String
+  userId         String?
+  metadata       Json?
+  processedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  handlerLogs    EventHandlerLog[]
+
+  @@index([organizationId, entityType, action])
+  @@index([organizationId, createdAt])
+  @@index([entityType, entityId])
+}
+
+model EventSubscription {
+  id             String      @id @default(cuid())
+  organizationId String?
+  entityType     String
+  action         String
+  handler        String
+  moduleType     ModuleType?
+  config         Json?
+  priority       Int         @default(100)
+  enabled        Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  handlerLogs    EventHandlerLog[]
+
+  @@index([entityType, action, enabled])
+  @@index([organizationId])
+}
+
+model EventHandlerLog {
+  id              String             @id @default(cuid())
+  organizationId  String
+  eventId         String
+  subscriptionId  String
+  status          EventHandlerStatus @default(PENDING)
+  result          Json?
+  error           String?
+  durationMs      Int?
+  createdAt       DateTime           @default(now())
+
+  event           EntityEvent        @relation(fields: [eventId], references: [id])
+  subscription    EventSubscription  @relation(fields: [subscriptionId], references: [id])
+
+  @@index([eventId])
+  @@index([subscriptionId, status])
+}
+
+enum EventHandlerStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  SKIPPED
+}
+
+// ============================================================================
+// SYNC JOBS
+// ============================================================================
+
+model SyncJob {
+  id              String        @id @default(cuid())
+  organizationId  String
+  integrationId   String
+  provider        String
+  status          SyncJobStatus @default(PENDING)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  recordsCreated  Int           @default(0)
+  recordsUpdated  Int           @default(0)
+  recordsSkipped  Int           @default(0)
+  errors          Json?
+  createdAt       DateTime      @default(now())
+
+  integration     Integration   @relation(fields: [integrationId], references: [id])
+
+  @@index([organizationId, provider])
+  @@index([status])
+}
+
+enum SyncJobStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+// ============================================================================
+// DIGITAL ASSET MANAGEMENT (DAM)
+// ============================================================================
+
+model AssetLibrary {
+  id             String            @id @default(cuid())
+  organizationId String
+  name           String
+  slug           String
+  libraryType    LibraryType       @default(GENERAL)
+  visibility     LibraryVisibility @default(TEAM)
+  clientId       String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  client         Client?      @relation(fields: [clientId], references: [id])
+  folders        AssetFolder[]
+  assets         Asset[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+}
+
+model AssetFolder {
+  id         String   @id @default(cuid())
+  libraryId  String
+  name       String
+  slug       String
+  parentId   String?
+  path       String
+  depth      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  library    AssetLibrary  @relation(fields: [libraryId], references: [id])
+  parent     AssetFolder?  @relation("FolderTree", fields: [parentId], references: [id])
+  children   AssetFolder[] @relation("FolderTree")
+  assets     Asset[]
+
+  @@unique([libraryId, parentId, slug])
+  @@index([libraryId])
+  @@index([parentId])
+}
+
+model Asset {
+  id             String      @id @default(cuid())
+  organizationId String
+  libraryId      String
+  folderId       String?
+  name           String
+  assetType      AssetType
+  fileUrl        String
+  thumbnailUrl   String?
+  mimeType       String?
+  fileSize       Int?
+  tags           String[]
+  status         AssetStatus @default(ACTIVE)
+  license        String?
+  sourceType     String?
+  sourceId       String?
+  createdById    String?
+  metadata       Json?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  library        AssetLibrary @relation(fields: [libraryId], references: [id])
+  folder         AssetFolder? @relation(fields: [folderId], references: [id])
+  versions       AssetVersion[]
+  comments       AssetComment[]
+
+  @@index([organizationId, libraryId])
+  @@index([organizationId, assetType])
+  @@index([sourceType, sourceId])
+}
+
+model AssetVersion {
+  id          String   @id @default(cuid())
+  assetId     String
+  version     Int
+  fileUrl     String
+  fileSize    Int?
+  changeNote  String?
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  asset       Asset    @relation(fields: [assetId], references: [id])
+
+  @@unique([assetId, version])
+  @@index([assetId])
+}
+
+model AssetComment {
+  id             String   @id @default(cuid())
+  assetId        String
+  authorId       String
+  content        String
+  parentId       String?
+  annotationType String?
+  annotationData Json?
+  isResolved     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  asset   Asset         @relation(fields: [assetId], references: [id])
+  parent  AssetComment? @relation("CommentThread", fields: [parentId], references: [id])
+  replies AssetComment[] @relation("CommentThread")
+
+  @@index([assetId])
+  @@index([parentId])
+}
+
+enum LibraryType {
+  GENERAL
+  BRAND
+  CLIENT
+  PROJECT
+  TEMPLATE
+}
+
+enum LibraryVisibility {
+  TEAM
+  CLIENT
+  PUBLIC
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  FONT
+  TEMPLATE
+  THREE_D
+  OTHER
+}
+
+enum AssetStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
 }
