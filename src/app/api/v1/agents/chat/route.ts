@@ -25,43 +25,64 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch org details for agent-builder
-  const org = await prisma.organization.findUnique({
-    where: { id: auth.organizationId },
-    include: { billingAccount: true },
-  });
-
-  const orgTier = org?.billingAccount?.tier ?? "FREE";
-  const orgName = org?.name ?? "";
+  let orgTier = "FREE";
+  let orgName = "";
+  try {
+    const org = await prisma.organization.findUnique({
+      where: { id: auth.organizationId },
+      include: { billingAccount: true },
+    });
+    orgTier = org?.billingAccount?.tier ?? "FREE";
+    orgName = org?.name ?? "";
+  } catch (e) {
+    console.error("Failed to fetch org:", e);
+  }
 
   // Determine agent type from context hint
   let agentType: string | undefined;
   if (context === "onboarding") agentType = "ONBOARDING";
 
+  const requestBody = {
+    task: message,
+    agent_type: agentType,
+    org_id: auth.organizationId,
+    org_name: orgName,
+    org_tier: orgTier,
+    user_id: auth.user.id,
+    stream: false,
+  };
+
+  console.log("Agent request:", JSON.stringify(requestBody));
+
   // Proxy to ongoing-agent-builder /api/v1/core/execute
-  const runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Agent-Secret": runtimeSecret,
-    },
-    body: JSON.stringify({
-      task: message,
-      agent_type: agentType,
-      org_id: auth.organizationId,
-      org_name: orgName,
-      org_tier: orgTier,
-      user_id: auth.user.id,
-      stream: false,
-    }),
-  });
+  let runtimeResponse: Response;
+  try {
+    runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Agent-Secret": runtimeSecret,
+      },
+      body: JSON.stringify(requestBody),
+    });
+  } catch (fetchErr) {
+    console.error("Failed to reach agent runtime:", fetchErr);
+    return error("Cannot reach agent runtime", 503);
+  }
 
   if (!runtimeResponse.ok) {
     const errText = await runtimeResponse.text().catch(() => "Unknown error");
     console.error(`Agent runtime error ${runtimeResponse.status}: ${errText}`);
-    return error("Agent runtime error", runtimeResponse.status);
+    return error(`Agent runtime error: ${errText}`, runtimeResponse.status);
   }
 
-  const result = await runtimeResponse.json();
+  let result: any;
+  try {
+    result = await runtimeResponse.json();
+  } catch (parseErr) {
+    console.error("Failed to parse agent response:", parseErr);
+    return error("Invalid agent response", 502);
+  }
 
   // If the agent is gated, return the upgrade message
   if (result.status === "gated") {
