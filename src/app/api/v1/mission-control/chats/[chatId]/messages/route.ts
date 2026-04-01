@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
-import { getAgentSystemPrompt } from "@/lib/mission-control/onboarding-agent-prompt";
 
 interface RouteContext {
   params: Promise<{ chatId: string }>;
@@ -76,16 +75,6 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
   });
 
   const agentType = session.agentType;
-  const systemPrompt = getAgentSystemPrompt(agentType);
-
-  // Build conversation history for the LLM
-  const history = [
-    ...session.messages.map((m) => ({
-      role: m.role === "USER" ? ("user" as const) : ("assistant" as const),
-      content: m.content,
-    })),
-    { role: "user" as const, content },
-  ];
 
   const encoder = new TextEncoder();
 
@@ -102,28 +91,23 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
       let fullResponse = "";
 
       try {
-        if (process.env.AGENT_RUNTIME_URL) {
-          // Proxy to agent runtime
-          fullResponse = await streamFromAgentRuntime(
+        const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
+
+        if (agentBuilderUrl) {
+          fullResponse = await streamFromAgentBuilder(
             controller,
             sseEvent,
-            systemPrompt,
-            history,
+            agentBuilderUrl,
+            content,
+            chatId,
             agentType,
-            auth.organizationId
-          );
-        } else if (process.env.OPENAI_API_KEY) {
-          // Direct OpenAI call
-          fullResponse = await streamFromOpenAI(
-            controller,
-            sseEvent,
-            systemPrompt,
-            history
+            auth.organizationId,
+            auth.user.id
           );
         } else {
-          // Fallback
+          // No agent builder configured
           fullResponse =
-            "I'm not connected to an AI backend yet. Please configure AGENT_RUNTIME_URL or OPENAI_API_KEY.";
+            "The agent runtime is not connected yet. Set AGENT_BUILDER_URL in your environment to enable AI chat.";
           controller.enqueue(sseEvent("chunk", { text: fullResponse }));
         }
 
@@ -162,70 +146,58 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
 }
 
 // ---------------------------------------------------------------------------
-// Streaming helpers
+// Agent builder streaming helper
 // ---------------------------------------------------------------------------
 
-async function streamFromAgentRuntime(
+async function streamFromAgentBuilder(
   controller: ReadableStreamDefaultController,
   sseEvent: (event: string, data: unknown) => Uint8Array,
-  systemPrompt: string,
-  history: { role: string; content: string }[],
+  agentBuilderUrl: string,
+  message: string,
+  chatId: string,
   agentType: string,
-  organizationId: string
+  organizationId: string,
+  userId: string
 ): Promise<string> {
-  const res = await fetch(`${process.env.AGENT_RUNTIME_URL}/agent/chat`, {
+  const agentBuilderApiKey = process.env.AGENT_BUILDER_API_KEY;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "X-Organization-Id": organizationId,
+    "X-User-Id": userId,
+  };
+  if (agentBuilderApiKey) {
+    headers["X-API-Key"] = agentBuilderApiKey;
+  }
+
+  const res = await fetch(`${agentBuilderUrl}/api/v1/agent/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
-      systemPrompt,
-      messages: history,
       agentType,
-      organizationId,
-    }),
-  });
-
-  if (!res.ok || !res.body) {
-    throw new Error(`Agent runtime error: ${res.status}`);
-  }
-
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let full = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
-    full += chunk;
-    controller.enqueue(sseEvent("chunk", { text: chunk }));
-  }
-
-  return full;
-}
-
-async function streamFromOpenAI(
-  controller: ReadableStreamDefaultController,
-  sseEvent: (event: string, data: unknown) => Uint8Array,
-  systemPrompt: string,
-  history: { role: string; content: string }[]
-): Promise<string> {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o",
+      message,
+      chatId,
       stream: true,
-      messages: [{ role: "system", content: systemPrompt }, ...history],
+      context: {
+        organizationId,
+        userId,
+      },
     }),
   });
 
-  if (!res.ok || !res.body) {
-    throw new Error(`OpenAI error: ${res.status}`);
+  if (!res.ok) {
+    throw new Error(`Agent builder error: ${res.status}`);
   }
 
+  if (!res.body) {
+    // Non-streaming JSON response
+    const data = await res.json();
+    const text = data.content || data.text || data.message || "";
+    controller.enqueue(sseEvent("chunk", { text }));
+    return text;
+  }
+
+  // Parse SSE stream from agent builder
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let full = "";
@@ -241,19 +213,31 @@ async function streamFromOpenAI(
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed.startsWith("data: ")) continue;
-      const payload = trimmed.slice(6);
-      if (payload === "[DONE]") break;
 
-      try {
-        const parsed = JSON.parse(payload);
-        const delta = parsed.choices?.[0]?.delta?.content;
-        if (delta) {
-          full += delta;
-          controller.enqueue(sseEvent("chunk", { text: delta }));
+      if (!trimmed || trimmed.startsWith(":")) continue;
+
+      if (trimmed.startsWith("data: ")) {
+        const payload = trimmed.slice(6);
+        if (payload === "[DONE]") continue;
+
+        try {
+          const parsed = JSON.parse(payload);
+
+          // Forward work events (work_start, entity_created, work_complete)
+          if (parsed.type === "work_start" || parsed.type === "entity_created" || parsed.type === "work_complete") {
+            controller.enqueue(sseEvent(parsed.type, parsed));
+            continue;
+          }
+
+          // Extract text from flexible format
+          const text = parsed.delta || parsed.text || parsed.content || parsed.data?.content;
+          if (text) {
+            full += text;
+            controller.enqueue(sseEvent("chunk", { text }));
+          }
+        } catch {
+          // skip malformed lines
         }
-      } catch {
-        // skip malformed lines
       }
     }
   }

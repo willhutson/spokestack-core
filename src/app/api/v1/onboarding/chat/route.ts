@@ -33,24 +33,29 @@ export async function POST(req: NextRequest) {
 
   const { messages } = await req.json();
 
-  // Use the agent runtime if configured, otherwise use a simple echo
-  const runtimeUrl = process.env.AGENT_RUNTIME_URL;
-  const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
+  const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
+  const agentBuilderApiKey = process.env.AGENT_BUILDER_API_KEY;
 
-  if (runtimeUrl && runtimeSecret) {
-    // Proxy to agent runtime with the onboarding system prompt
-    const runtimeResponse = await fetch(`${runtimeUrl}/agent/chat`, {
+  if (agentBuilderUrl) {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "X-Organization-Id": auth.organizationId,
+      "X-User-Id": auth.user.id,
+    };
+    if (agentBuilderApiKey) {
+      headers["X-API-Key"] = agentBuilderApiKey;
+    }
+
+    const runtimeResponse = await fetch(`${agentBuilderUrl}/api/v1/agent/chat`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Agent-Secret": runtimeSecret,
-      },
+      headers,
       body: JSON.stringify({
+        agentType: "onboarding",
         message: messages[messages.length - 1]?.content ?? "",
-        orgId: auth.organizationId,
-        userId: auth.user.id,
-        surface: "WEB",
-        metadata: {
+        stream: true,
+        context: {
+          organizationId: auth.organizationId,
+          userId: auth.user.id,
           systemPrompt: ONBOARDING_SYSTEM_PROMPT,
           conversationHistory: messages,
         },
