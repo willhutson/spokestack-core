@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
-import { json, unauthorized } from "@/lib/api";
+import { json, error, unauthorized } from "@/lib/api";
 
 /**
  * GET /api/v1/context
@@ -30,4 +30,45 @@ export async function GET(req: NextRequest) {
   });
 
   return json({ entries });
+}
+
+/**
+ * POST /api/v1/context
+ * Write a context entry to the shared context graph.
+ */
+export async function POST(req: NextRequest) {
+  const auth = await authenticate(req);
+  if (!auth) return unauthorized();
+
+  const body = await req.json();
+  const { entryType, category, key, value, confidence } = body;
+
+  if (!entryType || !category || !key || value === undefined) {
+    return error("entryType, category, key, and value are required");
+  }
+
+  const entry = await prisma.contextEntry.upsert({
+    where: {
+      organizationId_category_key: {
+        organizationId: auth.organizationId,
+        category,
+        key,
+      },
+    },
+    update: {
+      value,
+      confidence: confidence ?? 0.5,
+      entryType,
+    },
+    create: {
+      organizationId: auth.organizationId,
+      entryType,
+      category,
+      key,
+      value,
+      confidence: confidence ?? 0.5,
+    },
+  });
+
+  return json({ entry }, 201);
 }

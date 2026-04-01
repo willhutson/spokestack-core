@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ToolAudit, { type ToolAuditEntry } from "@/components/onboarding/ToolAudit";
+import MigrationPlan from "@/components/onboarding/MigrationPlan";
+import { TOOL_MODULE_MAP } from "@/lib/onboarding/tool-module-map";
 
 interface Message {
   id: string;
@@ -36,6 +39,12 @@ export default function OnboardingConversationPage() {
     leads: [],
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Audit + migration step state
+  const [step, setStep] = useState<"conversation" | "audit" | "migration" | "done">("conversation");
+  const [auditEntries, setAuditEntries] = useState<ToolAuditEntry[]>([]);
+  const [isSubmittingAudit, setIsSubmittingAudit] = useState(false);
+  const [isInstallingModules, setIsInstallingModules] = useState(false);
 
   // Check for Supabase session on mount — redirect to signup if none
   useEffect(() => {
@@ -114,9 +123,9 @@ export default function OnboardingConversationPage() {
                     }));
                   }
 
-                  // Handle transition to reveal
+                  // Handle transition to audit (was: reveal)
                   if (parsed.action === "reveal") {
-                    setTimeout(() => router.push("/reveal"), 1500);
+                    setTimeout(() => setStep("audit"), 1500);
                   }
 
                   const token = parsed.token || parsed.content || "";
@@ -154,6 +163,100 @@ export default function OnboardingConversationPage() {
   }
 
   const totalEntities = workspace.teams.length + workspace.workflows.length + workspace.integrations.length + workspace.leads.length;
+
+  // ── Audit submission handler ─────────────────────────────────────
+  const handleAuditSubmit = async (entries: ToolAuditEntry[]) => {
+    setIsSubmittingAudit(true);
+    try {
+      // Save each entry to context graph
+      if (accessToken) {
+        await Promise.all(
+          entries.map((entry) => {
+            const moduleId =
+              TOOL_MODULE_MAP[entry.currentTool.trim().toLowerCase()] ?? null;
+            return fetch("/api/v1/context", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+              body: JSON.stringify({
+                entryType: "ENTITY",
+                category: "onboarding.tool_audit",
+                key: entry.categoryId,
+                value: {
+                  currentTool: entry.currentTool,
+                  dataVolume: entry.dataVolume || null,
+                  painPoints: entry.painPoints || null,
+                  replacementModule: moduleId,
+                },
+                confidence: 1.0,
+              }),
+            });
+          })
+        );
+      }
+      setAuditEntries(entries);
+      setStep("migration");
+    } catch (err) {
+      console.error("Failed to save audit:", err);
+      setAuditEntries(entries);
+      setStep("migration");
+    } finally {
+      setIsSubmittingAudit(false);
+    }
+  };
+
+  // ── Module install handler ───────────────────────────────────────
+  const handleInstallModules = async (moduleTypes: string[]) => {
+    setIsInstallingModules(true);
+    try {
+      if (moduleTypes.length > 0 && accessToken) {
+        await fetch("/api/v1/modules/install-batch", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ moduleTypes }),
+        });
+      }
+    } catch (err) {
+      console.error("Module install failed:", err);
+    } finally {
+      setIsInstallingModules(false);
+      setStep("done");
+      router.push("/reveal");
+    }
+  };
+
+  // ── Audit / Migration step renders ───────────────────────────────
+  if (step === "audit") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-2xl">
+          <ToolAudit
+            onSubmit={handleAuditSubmit}
+            isSubmitting={isSubmittingAudit}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "migration") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-2xl">
+          <MigrationPlan
+            entries={auditEntries}
+            onInstallModules={handleInstallModules}
+            isInstalling={isInstallingModules}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
