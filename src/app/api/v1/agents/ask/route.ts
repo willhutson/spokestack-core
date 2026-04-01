@@ -1,3 +1,4 @@
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, unauthorized, error } from "@/lib/api";
@@ -88,6 +89,9 @@ export async function POST(req: NextRequest) {
       message: result.upgrade_message,
     }, 403);
   }
+
+  // Fire-and-forget: update Mission Control canvas
+  updateCanvasFromAgentAction(auth.organizationId, result as Record<string, unknown>).catch(() => {});
 
   const responseText = result.output ?? "I'm not sure how to help with that.";
 

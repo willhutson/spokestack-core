@@ -1,3 +1,4 @@
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
@@ -149,6 +150,9 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
     });
   }
+
+  // Fire-and-forget: update Mission Control canvas
+  updateCanvasFromAgentAction(auth.organizationId, result as Record<string, unknown>).catch(() => {});
 
   // Return agent response as SSE format
   const responseText = (result.output as string) ?? "I'm not sure how to help with that.";
