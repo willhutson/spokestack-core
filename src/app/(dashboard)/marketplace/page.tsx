@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { getAuthHeaders } from "@/lib/client-auth";
 import ModuleCard from "@/components/marketplace/ModuleCard";
 import { MODULE_DEMOS } from "@/lib/marketplace/demo-data";
 
@@ -43,36 +43,28 @@ export default function MarketplacePage() {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [installing, setInstalling] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [uninstalling, setUninstalling] = useState<string | null>(null);
   const [registryError, setRegistryError] = useState<string | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setToken(session.access_token);
-        loadModules(session.access_token);
-      }
-    });
+    loadModules();
   }, []);
 
-  async function loadModules(accessToken: string) {
-    const headers = { Authorization: `Bearer ${accessToken}` };
+  async function loadModules() {
+    const headers = await getAuthHeaders();
 
-    // Fetch registry and installed independently
-    let registryLoaded = false;
-
+    // Fetch registry independently
     try {
       const res = await fetch("/api/v1/modules");
       if (!res.ok) throw new Error(`Registry fetch failed: ${res.status}`);
       const allRes = await res.json();
       setModules(allRes.modules ?? []);
-      registryLoaded = true;
     } catch (err) {
       console.error("Failed to fetch module registry:", err);
       setRegistryError("Failed to load modules. Please try again later.");
     }
 
+    // Fetch installed independently
     try {
       const res = await fetch("/api/v1/modules/installed", { headers });
       if (!res.ok) throw new Error(`Installed fetch failed: ${res.status}`);
@@ -88,23 +80,16 @@ export default function MarketplacePage() {
     } catch (err) {
       console.error("Failed to fetch installed modules:", err);
       setInstalledStatus("failed");
-      // If registry loaded but installed failed, modules still show with unknown status
     }
-
-    void registryLoaded;
   }
 
   async function handleInstall(moduleType: string) {
-    if (!token) return;
     setInstalling(moduleType);
-
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch("/api/v1/modules/install", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { ...headers, "Content-Type": "application/json" },
         body: JSON.stringify({ moduleType }),
       });
 
@@ -115,9 +100,36 @@ export default function MarketplacePage() {
         alert(data.error || "Install failed");
       }
     } catch {
-      alert("Install failed — please try again.");
+      alert("Install failed -- please try again.");
     } finally {
       setInstalling(null);
+    }
+  }
+
+  async function handleUninstall(moduleType: string) {
+    setUninstalling(moduleType);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/modules/uninstall", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ moduleType }),
+      });
+
+      if (res.ok) {
+        setInstalled((prev) => {
+          const next = new Set(prev);
+          next.delete(moduleType);
+          return next;
+        });
+      } else {
+        const data = await res.json();
+        alert(data.error || "Uninstall failed");
+      }
+    } catch {
+      alert("Uninstall failed -- please try again.");
+    } finally {
+      setUninstalling(null);
     }
   }
 
@@ -180,31 +192,56 @@ export default function MarketplacePage() {
 
       {/* Module grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((m) => (
-          <div
-            key={m.moduleType}
-            className="relative cursor-pointer"
-            onClick={() => router.push(`/marketplace/${m.moduleType}`)}
-          >
-            {hasDemo(m.moduleType) && (
-              <span className="absolute top-3 right-3 z-10 text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
-                Preview
-              </span>
-            )}
-            <ModuleCard
-              moduleType={m.moduleType}
-              name={m.name}
-              description={m.description}
-              category={m.category}
-              minTier={m.minTier}
-              price={m.price}
-              agentName={m.agentName}
-              installed={installedStatus === "failed" ? false : installed.has(m.moduleType)}
-              installing={installing === m.moduleType}
-              onInstall={() => { handleInstall(m.moduleType); }}
-            />
-          </div>
-        ))}
+        {filtered.map((m) => {
+          const isInstalled = installedStatus === "failed" ? false : installed.has(m.moduleType);
+          return (
+            <div
+              key={m.moduleType}
+              className="relative cursor-pointer"
+              onClick={() => router.push(`/marketplace/${m.moduleType}`)}
+            >
+              {hasDemo(m.moduleType) && (
+                <span className="absolute top-3 right-3 z-10 text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
+                  Preview
+                </span>
+              )}
+              <ModuleCard
+                moduleType={m.moduleType}
+                name={m.name}
+                description={m.description}
+                category={m.category}
+                minTier={m.minTier}
+                price={m.price}
+                agentName={m.agentName}
+                installed={isInstalled}
+                installing={installing === m.moduleType}
+                onInstall={() => {
+                  if (isInstalled) {
+                    handleUninstall(m.moduleType);
+                  } else {
+                    handleInstall(m.moduleType);
+                  }
+                }}
+              />
+              {isInstalled && uninstalling !== m.moduleType && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUninstall(m.moduleType);
+                  }}
+                  className="absolute bottom-5 right-5 text-[10px] font-medium text-red-600 bg-red-50 px-2 py-1 rounded-md hover:bg-red-100 transition-colors z-10"
+                >
+                  Uninstall
+                </button>
+              )}
+              {uninstalling === m.moduleType && (
+                <div className="absolute bottom-5 right-5 text-[10px] font-medium text-gray-400 px-2 py-1 z-10">
+                  Removing...
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {!registryError && filtered.length === 0 && (

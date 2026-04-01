@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getAuthHeaders } from "@/lib/client-auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface OrgSettings {
   name: string;
@@ -12,6 +14,14 @@ interface OrgSettings {
 interface BillingInfo {
   tier: string;
   status: string;
+  allTiers?: TierPlan[];
+}
+
+interface TierPlan {
+  name: string;
+  key: string;
+  price: string;
+  features: string;
 }
 
 interface TeamMember {
@@ -44,27 +54,13 @@ const LANGUAGES = [
   { code: "zh", label: "Chinese" },
 ];
 
-const PLANS = [
-  { name: "Free", price: "$0/mo", features: "3 members, Tasks module only" },
-  { name: "Starter", price: "$29/mo", features: "10 members, + Projects Agent" },
-  { name: "Pro", price: "$59/mo", features: "25 members, + Briefs Agent, 3 marketplace modules" },
-  { name: "Business", price: "$149/mo", features: "50 members, + Orders Agent, unlimited modules" },
-  { name: "Enterprise", price: "Custom", features: "Unlimited members, all modules, dedicated support" },
+const FALLBACK_PLANS: TierPlan[] = [
+  { name: "Free", key: "FREE", price: "$0/mo", features: "3 members, Tasks module only" },
+  { name: "Starter", key: "STARTER", price: "$29/mo", features: "10 members, + Projects Agent" },
+  { name: "Pro", key: "PRO", price: "$59/mo", features: "25 members, + Briefs Agent, 3 marketplace modules" },
+  { name: "Business", key: "BUSINESS", price: "$149/mo", features: "50 members, + Orders Agent, unlimited modules" },
+  { name: "Enterprise", key: "ENTERPRISE", price: "Custom", features: "Unlimited members, all modules, dedicated support" },
 ];
-
-async function getToken(): Promise<string | null> {
-  const supabase = createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token ?? null;
-}
-
-function authHeaders(token: string) {
-  return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
-}
-
-function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse bg-gray-200 rounded ${className}`} />;
-}
 
 function ErrorMsg({ message }: { message: string }) {
   return (
@@ -76,7 +72,7 @@ function ErrorMsg({ message }: { message: string }) {
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"general" | "billing" | "team" | "integrations">("general");
-  const [token, setToken] = useState<string | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>("");
 
   // General state
   const [org, setOrg] = useState<OrgSettings | null>(null);
@@ -99,17 +95,17 @@ export default function SettingsPage() {
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [integrationsLoading, setIntegrationsLoading] = useState(true);
   const [integrationsError, setIntegrationsError] = useState<string | null>(null);
+  const [connectingId, setConnectingId] = useState<string | null>(null);
 
-  const fetchSettings = useCallback(async (accessToken: string) => {
+  const fetchSettings = useCallback(async () => {
     setOrgLoading(true);
     setOrgError(null);
     try {
-      const res = await fetch("/api/v1/settings", {
-        headers: authHeaders(accessToken),
-      });
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/settings", { headers });
       if (!res.ok) throw new Error("Failed to load settings");
       const data = await res.json();
-      setOrg({ name: data.name, timezone: data.timezone, language: data.language });
+      setOrg({ name: data.name ?? "", timezone: data.timezone ?? "UTC", language: data.language ?? "en" });
     } catch (err) {
       console.error("Settings fetch error:", err);
       setOrgError("Failed to load organization settings.");
@@ -118,16 +114,19 @@ export default function SettingsPage() {
     }
   }, []);
 
-  const fetchBilling = useCallback(async (accessToken: string) => {
+  const fetchBilling = useCallback(async () => {
     setBillingLoading(true);
     setBillingError(null);
     try {
-      const res = await fetch("/api/v1/billing", {
-        headers: authHeaders(accessToken),
-      });
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/billing", { headers });
       if (!res.ok) throw new Error("Failed to load billing");
       const data = await res.json();
-      setBilling({ tier: data.tier, status: data.status });
+      setBilling({
+        tier: data.tier ?? "FREE",
+        status: data.status ?? "active",
+        allTiers: data.allTiers ?? undefined,
+      });
     } catch (err) {
       console.error("Billing fetch error:", err);
       setBillingError("Failed to load billing information.");
@@ -136,13 +135,12 @@ export default function SettingsPage() {
     }
   }, []);
 
-  const fetchTeam = useCallback(async (accessToken: string) => {
+  const fetchTeam = useCallback(async () => {
     setTeamLoading(true);
     setTeamError(null);
     try {
-      const res = await fetch("/api/v1/members", {
-        headers: authHeaders(accessToken),
-      });
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/members", { headers });
       if (!res.ok) throw new Error("Failed to load team members");
       const data = await res.json();
       setTeamMembers(data.members ?? []);
@@ -154,13 +152,12 @@ export default function SettingsPage() {
     }
   }, []);
 
-  const fetchIntegrations = useCallback(async (accessToken: string) => {
+  const fetchIntegrations = useCallback(async () => {
     setIntegrationsLoading(true);
     setIntegrationsError(null);
     try {
-      const res = await fetch("/api/v1/integrations", {
-        headers: authHeaders(accessToken),
-      });
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/integrations", { headers });
       if (!res.ok) throw new Error("Failed to load integrations");
       const data = await res.json();
       setIntegrations(data.integrations ?? []);
@@ -173,27 +170,45 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
-    getToken().then((t) => {
-      if (!t) return;
-      setToken(t);
-      fetchSettings(t);
-      fetchBilling(t);
-      fetchTeam(t);
-      fetchIntegrations(t);
+    // Get current user email
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.email) {
+        setCurrentUserEmail(session.user.email);
+      }
     });
+
+    fetchSettings();
+    fetchBilling();
+    fetchTeam();
+    fetchIntegrations();
   }, [fetchSettings, fetchBilling, fetchTeam, fetchIntegrations]);
 
   async function handleSaveOrg() {
-    if (!token || !org) return;
+    if (!org) return;
     setSaving(true);
     setSaveSuccess(false);
+    setOrgError(null);
     try {
-      const res = await fetch("/api/v1/settings", {
+      const headers = await getAuthHeaders();
+      const jsonHeaders = { ...headers, "Content-Type": "application/json" };
+
+      // Save settings (timezone, language)
+      const settingsRes = await fetch("/api/v1/settings", {
         method: "PATCH",
-        headers: authHeaders(token),
-        body: JSON.stringify(org),
+        headers: jsonHeaders,
+        body: JSON.stringify({ timezone: org.timezone, language: org.language }),
       });
-      if (!res.ok) throw new Error("Save failed");
+      if (!settingsRes.ok) throw new Error("Failed to save settings");
+
+      // Save org name separately
+      const orgRes = await fetch("/api/v1/org", {
+        method: "PATCH",
+        headers: jsonHeaders,
+        body: JSON.stringify({ name: org.name }),
+      });
+      if (!orgRes.ok) throw new Error("Failed to save org name");
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch {
@@ -203,9 +218,38 @@ export default function SettingsPage() {
     }
   }
 
-  function handleConnect(integrationId: string) {
+  async function handleConnect(integrationId: string) {
+    setConnectingId(integrationId);
     window.open(`/api/v1/integrations/connect?provider=${integrationId}`, "_blank", "width=600,height=700");
+    // Re-fetch after a delay to pick up connection changes
+    setTimeout(() => {
+      fetchIntegrations();
+      setConnectingId(null);
+    }, 2000);
   }
+
+  async function handleDisconnect(integrationId: string) {
+    setConnectingId(integrationId);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`/api/v1/integrations/disconnect`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ provider: integrationId }),
+      });
+      if (res.ok) {
+        setIntegrations((prev) =>
+          prev.map((i) => (i.id === integrationId ? { ...i, connected: false } : i))
+        );
+      }
+    } catch {
+      // Silently fail, user can retry
+    } finally {
+      setConnectingId(null);
+    }
+  }
+
+  const planCards = billing?.allTiers ?? FALLBACK_PLANS;
 
   const TABS = [
     { key: "general" as const, label: "General" },
@@ -332,7 +376,9 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">Current Plan</h3>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{billing.tier}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                    {billing.tier.charAt(0).toUpperCase() + billing.tier.slice(1).toLowerCase()}
+                  </p>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Status: <span className="capitalize">{billing.status}</span>
                   </p>
@@ -344,8 +390,9 @@ export default function SettingsPage() {
 
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Available Plans</h4>
-                {PLANS.map((plan) => {
-                  const isCurrent = billing.tier.toLowerCase() === plan.name.toLowerCase();
+                {planCards.map((plan) => {
+                  const planKey = plan.key ?? plan.name.toUpperCase();
+                  const isCurrent = billing.tier.toUpperCase() === planKey.toUpperCase();
                   return (
                     <div
                       key={plan.name}
@@ -404,22 +451,30 @@ export default function SettingsPage() {
 
               <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div className="divide-y divide-gray-100">
-                  {teamMembers.map((member) => (
-                    <div key={member.id} className="px-5 py-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-medium text-indigo-600">
-                          {member.name.charAt(0)}
+                  {teamMembers.map((member) => {
+                    const isYou = member.email === currentUserEmail;
+                    return (
+                      <div key={member.id} className="px-5 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-medium text-indigo-600">
+                            {member.name ? member.name.charAt(0).toUpperCase() : member.email.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {member.name || member.email}
+                              {isYou && (
+                                <span className="ml-1.5 text-xs font-normal text-gray-400">(you)</span>
+                              )}
+                            </p>
+                            <p className="text-xs text-gray-500">{member.email}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{member.name}</p>
-                          <p className="text-xs text-gray-500">{member.email}</p>
-                        </div>
+                        <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full capitalize">
+                          {member.role}
+                        </span>
                       </div>
-                      <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full capitalize">
-                        {member.role}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {teamMembers.length === 0 && (
                     <div className="px-5 py-8 text-center text-sm text-gray-400">
                       No team members found.
@@ -467,16 +522,23 @@ export default function SettingsPage() {
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleConnect(int.id)}
-                    className={`text-xs font-medium px-3 py-1.5 rounded-md transition-colors ${
-                      int.connected
-                        ? "text-red-600 bg-red-50 hover:bg-red-100"
-                        : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
-                    }`}
-                  >
-                    {int.connected ? "Disconnect" : "Connect"}
-                  </button>
+                  {int.connected ? (
+                    <button
+                      onClick={() => handleDisconnect(int.id)}
+                      disabled={connectingId === int.id}
+                      className="text-xs font-medium px-3 py-1.5 rounded-md transition-colors text-red-600 bg-red-50 hover:bg-red-100 disabled:opacity-50"
+                    >
+                      {connectingId === int.id ? "..." : "Disconnect"}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleConnect(int.id)}
+                      disabled={connectingId === int.id}
+                      className="text-xs font-medium px-3 py-1.5 rounded-md transition-colors text-indigo-600 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50"
+                    >
+                      {connectingId === int.id ? "..." : "Connect"}
+                    </button>
+                  )}
                 </div>
               ))}
               {integrations.length === 0 && (
