@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createServiceClient } from "@/lib/supabase/server";
 import { json, error } from "@/lib/api";
+import { seedCoreModules } from "@/lib/modules/seedCoreModules";
 
 /**
  * POST /api/v1/auth
@@ -130,6 +131,9 @@ export async function PUT(req: NextRequest) {
 
     return organization;
   });
+
+  // Seed core modules (TASKS, PROJECTS, etc.) based on billing tier
+  await seedCoreModules(prisma, org.id, "FREE");
 
   return json({ organization: org }, 201);
 }

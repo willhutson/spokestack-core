@@ -14,6 +14,9 @@ import { registerStatusCommand } from "./commands/status.js";
 import { registerUpgradeCommand } from "./commands/upgrade.js";
 import { registerConnectCommand } from "./commands/connect.js";
 import { registerExportCommand } from "./commands/export.js";
+import { registerTenantCommand } from "./commands/tenant.js";
+import { registerInstanceCommand } from "./commands/instance.js";
+import { registerModulesCommand } from "./commands/modules.js";
 
 const program = new Command();
 
@@ -45,6 +48,9 @@ registerStatusCommand(program);
 registerUpgradeCommand(program);
 registerConnectCommand(program);
 registerExportCommand(program);
+registerTenantCommand(program);
+registerInstanceCommand(program);
+registerModulesCommand(program);
 
 // Global error handling
 program.exitOverride();

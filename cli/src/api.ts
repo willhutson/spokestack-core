@@ -178,6 +178,13 @@ export function patch<T = unknown>(
   return apiRequest<T>("PATCH", path, body);
 }
 
+export function put<T = unknown>(
+  path: string,
+  body?: Record<string, unknown>
+): Promise<APIResponse<T>> {
+  return apiRequest<T>("PUT", path, body);
+}
+
 export function del<T = unknown>(path: string): Promise<APIResponse<T>> {
   return apiRequest<T>("DELETE", path);
 }
