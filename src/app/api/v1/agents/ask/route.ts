@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, unauthorized, error } from "@/lib/api";
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 
 /**
  * POST /api/v1/agents/ask
@@ -41,5 +42,9 @@ export async function POST(req: NextRequest) {
   }
 
   const data = await runtimeResponse.json();
+
+  // Fire-and-forget: update Mission Control canvas
+  updateCanvasFromAgentAction(auth.organizationId, data).catch(() => {});
+
   return json(data);
 }

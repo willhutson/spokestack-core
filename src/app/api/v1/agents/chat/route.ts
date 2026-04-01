@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { unauthorized, error } from "@/lib/api";
 import { detectCorrection } from "@/lib/context/correction-detector";
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 
 /**
  * POST /api/v1/agents/chat
@@ -91,6 +92,9 @@ export async function POST(req: NextRequest) {
   if (!runtimeResponse.ok) {
     return error("Agent runtime error", runtimeResponse.status);
   }
+
+  // Fire-and-forget: update Mission Control canvas after agent interaction
+  updateCanvasFromAgentAction(auth.organizationId, {}).catch(() => {});
 
   // Forward the SSE stream verbatim — this passes through all event types
   // including text, tool_progress, handoff, and done events

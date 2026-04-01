@@ -297,15 +297,16 @@ model TeamMember {
 }
 
 model OrgSettings {
-  id                 String  @id @default(cuid())
-  organizationId     String  @unique
-  timezone           String  @default("UTC")
-  language           String  @default("en")
-  weekStartDay       Int     @default(1)
-  onboardingComplete Boolean @default(false)
-  customDomain       String?
-  channels           Json?
-  branding           Json?
+  id                     String  @id @default(cuid())
+  organizationId         String  @unique
+  timezone               String  @default("UTC")
+  language               String  @default("en")
+  weekStartDay           Int     @default(1)
+  onboardingComplete     Boolean @default(false)
+  missionControlEnabled  Boolean @default(true)
+  customDomain           String?
+  channels               Json?
+  branding               Json?
 
   organization Organization @relation(fields: [organizationId], references: [id])
 }
