@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 interface Params {
   params: Promise<{ projectId: string }>;
@@ -72,6 +73,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     },
   });
 
+  emitEvent(auth.organizationId, "Project", projectId, "updated", { changedFields: Object.keys(body) }, auth.user.id).catch(() => {});
+  if (existing.status !== project.status) {
+    emitEvent(auth.organizationId, "Project", projectId, "status_changed", { from: existing.status, to: project.status }, auth.user.id).catch(() => {});
+  }
+
   return json({ project });
 }
 
@@ -90,5 +96,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   if (!existing) return error("Project not found", 404);
 
   await prisma.project.delete({ where: { id: projectId } });
+
+  emitEvent(auth.organizationId, "Project", projectId, "deleted", {}, auth.user.id).catch(() => {});
+
   return json({ deleted: true });
 }

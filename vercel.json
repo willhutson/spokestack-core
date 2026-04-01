@@ -6,6 +6,14 @@
     {
       "path": "/api/cron/weekly-synthesis",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/sync",
+      "schedule": "0 */2 * * *"
+    },
+    {
+      "path": "/api/cron/events/cleanup",
+      "schedule": "0 3 * * 0"
     }
   ],
   "headers": [

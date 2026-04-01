@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 /**
  * GET /api/v1/clients
@@ -65,6 +66,8 @@ export async function POST(req: NextRequest) {
       metadata,
     },
   });
+
+  emitEvent(auth.organizationId, "Client", client.id, "created", {}, auth.user.id).catch(() => {});
 
   return json({ client }, 201);
 }

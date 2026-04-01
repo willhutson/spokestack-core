@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 interface Params {
   params: Promise<{ orderId: string }>;
@@ -62,6 +63,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     },
     include: { client: true, items: true, invoice: true },
   });
+
+  emitEvent(auth.organizationId, "Order", orderId, "updated", { changedFields: Object.keys(body) }, auth.user.id).catch(() => {});
 
   return json({ order });
 }

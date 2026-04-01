@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 interface Params {
   params: Promise<{ taskId: string }>;
@@ -64,6 +65,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     include: { taskList: true },
   });
 
+  emitEvent(auth.organizationId, "Task", taskId, "updated", { changedFields: Object.keys(body) }, auth.user.id).catch(() => {});
+  if (existing.status !== task.status) {
+    emitEvent(auth.organizationId, "Task", taskId, "status_changed", { from: existing.status, to: task.status }, auth.user.id).catch(() => {});
+  }
+
   return json({ task });
 }
 
@@ -82,6 +88,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   if (!existing) return error("Task not found", 404);
 
   await prisma.task.delete({ where: { id: taskId } });
+
+  emitEvent(auth.organizationId, "Task", taskId, "deleted", {}, auth.user.id).catch(() => {});
 
   return json({ deleted: true });
 }

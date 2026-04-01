@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 import { getProvider } from "@/lib/integrations/nango/providers";
 import { initiateConnection } from "@/lib/integrations/nango/connection";
 
@@ -32,6 +33,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await initiateConnection(auth.organizationId, providerId);
+
+    emitEvent(auth.organizationId, "Integration", result.integration.id, "connected", { provider: providerId }, auth.user.id).catch(() => {});
+
     return json({
       authUrl: result.authUrl,
       integrationId: result.integration.id,

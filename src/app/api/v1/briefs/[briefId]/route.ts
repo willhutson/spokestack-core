@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
+import { emitEvent } from "@/lib/events/emitter";
 
 interface Params {
   params: Promise<{ briefId: string }>;
@@ -66,6 +67,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       artifacts: true,
     },
   });
+
+  emitEvent(auth.organizationId, "Brief", briefId, "updated", { changedFields: Object.keys(body) }, auth.user.id).catch(() => {});
+  if (existing.status !== brief.status) {
+    emitEvent(auth.organizationId, "Brief", briefId, "status_changed", { from: existing.status, to: brief.status }, auth.user.id).catch(() => {});
+  }
 
   return json({ brief });
 }
