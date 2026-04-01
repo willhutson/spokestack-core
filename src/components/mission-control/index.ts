@@ -1,0 +1,12 @@
+// Mission Control — barrel exports
+export { MissionControlLayout } from "./layout/MissionControlLayout";
+export { StatusBar } from "./layout/StatusBar";
+export { ChatPane } from "./chat/ChatPane";
+export { ChatInput } from "./chat/ChatInput";
+export { MessageList } from "./chat/MessageList";
+export { ChatSidebar } from "./sidebar/ChatSidebar";
+export { AgentSwitcher } from "./sidebar/AgentSwitcher";
+export { ChatCard } from "./sidebar/ChatCard";
+export { CommandPalette } from "./command-palette/CommandPalette";
+export { MCHomeView } from "./home/MCHomeView";
+export { NotificationBell } from "./notifications/NotificationBell";
