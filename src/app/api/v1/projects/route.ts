@@ -31,15 +31,27 @@ export async function GET(req: NextRequest) {
       ...(status ? { status } : {}),
     },
     include: {
-      phases: { orderBy: { position: "asc" } },
-      milestones: { orderBy: { dueDate: "asc" } },
-      canvas: true,
+      _count: { select: { phases: true, milestones: true } },
     },
     orderBy: { createdAt: "desc" },
     take: 50,
+    distinct: ["id"],
   });
 
-  return json({ projects });
+  // Map to include phaseCount/milestoneCount for the frontend
+  const mapped = projects.map((p) => ({
+    id: p.id,
+    name: p.name,
+    status: p.status,
+    description: p.description,
+    startDate: p.startDate?.toISOString() ?? null,
+    endDate: p.endDate?.toISOString() ?? null,
+    progress: 0,
+    phaseCount: p._count.phases,
+    milestoneCount: p._count.milestones,
+  }));
+
+  return json({ projects: mapped });
 }
 
 /**
