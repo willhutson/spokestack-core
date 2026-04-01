@@ -236,7 +236,7 @@ function getToolsForAgent(agentType: AgentType): LLMTool[] {
           parameters: {
             type: "object",
             properties: {
-              customerId: { type: "string" },
+              clientId: { type: "string" },
               items: { type: "array" },
               notes: { type: "string" },
             },

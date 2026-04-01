@@ -486,13 +486,13 @@ export class CoreToolkit {
 
   // ── Orders Agent Tools ────────────────────────────────────────────────
 
-  async createCustomer(params: {
+  async createClient(params: {
     name: string;
     email?: string;
     phone?: string;
     company?: string;
   }) {
-    const customer = await this.prisma.customer.create({
+    const client = await this.prisma.client.create({
       data: {
         organizationId: this.orgId,
         ...params,
@@ -503,11 +503,11 @@ export class CoreToolkit {
       `${params.name} ${params.company || ""}`
     );
 
-    return { success: true, customer };
+    return { success: true, client };
   }
 
   async createOrder(params: {
-    customerId?: string;
+    clientId?: string;
     items: { description: string; quantity: number; unitPriceCents: number }[];
     notes?: string;
   }) {
@@ -521,7 +521,7 @@ export class CoreToolkit {
       const order = await tx.order.create({
         data: {
           organizationId: this.orgId,
-          customerId: params.customerId,
+          clientId: params.clientId,
           totalCents,
           notes: params.notes,
         },
@@ -554,7 +554,7 @@ export class CoreToolkit {
     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: updates as any,
-      include: { items: true, customer: true },
+      include: { items: true, client: true },
     });
     return { success: true, order };
   }
@@ -563,7 +563,7 @@ export class CoreToolkit {
     return this.prisma.$transaction(async (tx) => {
       const order = await tx.order.findUnique({
         where: { id: params.orderId },
-        include: { items: true, customer: true, invoice: true },
+        include: { items: true, client: true, invoice: true },
       });
 
       if (!order) throw new Error(`Order ${params.orderId} not found`);
@@ -578,7 +578,7 @@ export class CoreToolkit {
       const invoice = await tx.invoice.create({
         data: {
           organizationId: this.orgId,
-          customerId: order.customerId,
+          clientId: order.clientId,
           orderId: order.id,
           number: invoiceNumber,
           status: "DRAFT",
@@ -610,23 +610,23 @@ export class CoreToolkit {
 
   async listOrders(filters?: {
     status?: string;
-    customerId?: string;
+    clientId?: string;
     limit?: number;
   }) {
     return this.prisma.order.findMany({
       where: {
         organizationId: this.orgId,
         ...(filters?.status ? { status: filters.status as any } : {}),
-        ...(filters?.customerId ? { customerId: filters.customerId } : {}),
+        ...(filters?.clientId ? { clientId: filters.clientId } : {}),
       },
-      include: { items: true, customer: true, invoice: true },
+      include: { items: true, client: true, invoice: true },
       orderBy: { createdAt: "desc" },
       take: filters?.limit ?? 50,
     });
   }
 
-  async listCustomers(filters?: { search?: string; limit?: number }) {
-    return this.prisma.customer.findMany({
+  async listClients(filters?: { search?: string; limit?: number }) {
+    return this.prisma.client.findMany({
       where: {
         organizationId: this.orgId,
         ...(filters?.search
@@ -657,7 +657,7 @@ export class CoreToolkit {
         createdAt: { gte: since },
         status: { not: "CANCELED" },
       },
-      include: { customer: true },
+      include: { client: true },
       orderBy: { createdAt: "desc" },
     });
 
@@ -665,28 +665,28 @@ export class CoreToolkit {
     const averageOrderValue =
       orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0;
 
-    // Top customers by revenue
-    const customerRevenue = new Map<
+    // Top clients by revenue
+    const clientRevenue = new Map<
       string,
       { name: string; totalCents: number; orderCount: number }
     >();
     for (const order of orders) {
-      const custId = order.customerId ?? "unknown";
-      const custName = order.customer?.name ?? "Unknown";
-      const existing = customerRevenue.get(custId) ?? {
-        name: custName,
+      const cId = order.clientId ?? "unknown";
+      const cName = order.client?.name ?? "Unknown";
+      const existing = clientRevenue.get(cId) ?? {
+        name: cName,
         totalCents: 0,
         orderCount: 0,
       };
       existing.totalCents += order.totalCents;
       existing.orderCount += 1;
-      customerRevenue.set(custId, existing);
+      clientRevenue.set(cId, existing);
     }
 
-    const topCustomers = [...customerRevenue.entries()]
+    const topClients = [...clientRevenue.entries()]
       .sort((a, b) => b[1].totalCents - a[1].totalCents)
       .slice(0, 5)
-      .map(([id, data]) => ({ customerId: id, ...data }));
+      .map(([id, data]) => ({ clientId: id, ...data }));
 
     // Status breakdown
     const statusBreakdown: Record<string, number> = {};
@@ -708,7 +708,7 @@ export class CoreToolkit {
       totalOrders: orders.length,
       totalRevenueCents: totalRevenue,
       averageOrderValueCents: averageOrderValue,
-      topCustomers,
+      topClients,
       statusBreakdown,
       overdueInvoices,
     };

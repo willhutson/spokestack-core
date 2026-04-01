@@ -149,8 +149,8 @@ async function generateLayout(orgId: string): Promise<LayoutResult> {
         id: true,
         status: true,
         totalCents: true,
-        customerId: true,
-        customer: { select: { name: true } },
+        clientId: true,
+        client: { select: { name: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 20,
@@ -181,8 +181,8 @@ async function generateLayout(orgId: string): Promise<LayoutResult> {
       id: o.id,
       status: o.status,
       totalCents: o.totalCents,
-      customerId: o.customerId,
-      customerName: o.customer?.name ?? null,
+      clientId: o.clientId,
+      clientName: o.client?.name ?? null,
     })),
   });
 }

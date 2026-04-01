@@ -5,8 +5,8 @@ import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
 
 /**
- * GET /api/v1/customers
- * List customers for the organization.
+ * GET /api/v1/clients
+ * List clients for the organization.
  */
 export async function GET(req: NextRequest) {
   const auth = await authenticate(req);
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search");
 
-  const customers = await prisma.client.findMany({
+  const clients = await prisma.client.findMany({
     where: {
       organizationId: auth.organizationId,
       ...(search
@@ -36,12 +36,12 @@ export async function GET(req: NextRequest) {
     take: 50,
   });
 
-  return json({ customers });
+  return json({ clients });
 }
 
 /**
- * POST /api/v1/customers
- * Create a new customer.
+ * POST /api/v1/clients
+ * Create a new client.
  */
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
@@ -51,11 +51,11 @@ export async function POST(req: NextRequest) {
   if (!guard.allowed) return forbidden(guard.message);
 
   const body = await req.json();
-  const { name, email, phone, company, metadata } = body;
+  const { name, email, phone, company, metadata, industry, logoUrl, website, isActive, accountManagerId } = body;
 
   if (!name) return error("name is required");
 
-  const customer = await prisma.client.create({
+  const client = await prisma.client.create({
     data: {
       organizationId: auth.organizationId,
       name,
@@ -63,8 +63,13 @@ export async function POST(req: NextRequest) {
       phone,
       company,
       metadata,
+      industry,
+      logoUrl,
+      website,
+      isActive,
+      accountManagerId,
     },
   });
 
-  return json({ customer }, 201);
+  return json({ client }, 201);
 }

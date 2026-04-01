@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     data: {
       organizationId: auth.organizationId,
       orderId: order.id,
-      customerId: order.customerId,
+      clientId: order.clientId,
       number: invoiceNumber,
       totalCents: order.totalCents,
       currency: order.currency,
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         })),
       },
     },
-    include: { items: true, customer: true },
+    include: { items: true, client: true },
   });
 
   return json({ invoice }, 201);

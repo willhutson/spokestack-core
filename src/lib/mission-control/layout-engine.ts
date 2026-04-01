@@ -66,8 +66,8 @@ export function computeLayout(
       id: string;
       status: string;
       totalCents: number;
-      customerId?: string | null;
-      customerName?: string | null;
+      clientId?: string | null;
+      clientName?: string | null;
     }>;
   }
 ): LayoutResult {
@@ -184,8 +184,9 @@ export function computeLayout(
       positionY: PADDING + i * 80,
       metadata: {
         totalCents: o.totalCents,
-        customerId: o.customerId,
-        customerName: o.customerName,
+        clientId: o.clientId,
+        clientName: o.clientName,
+        customerName: o.clientName,
       },
     };
     nodes.push(node);

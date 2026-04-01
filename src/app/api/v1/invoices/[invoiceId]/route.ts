@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   const invoice = await prisma.invoice.findFirst({
     where: { id: invoiceId, organizationId: auth.organizationId },
-    include: { customer: true, items: true, order: { include: { items: true } } },
+    include: { client: true, items: true, order: { include: { items: true } } },
   });
 
   if (!invoice) return error("Invoice not found", 404);
@@ -58,7 +58,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       ...(status === "PAID" ? { paidAt: new Date() } : {}),
       ...(status === "SENT" && !existing.issuedAt ? { issuedAt: new Date() } : {}),
     },
-    include: { customer: true, items: true },
+    include: { client: true, items: true },
   });
 
   return json({ invoice });

@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       organizationId: auth.organizationId,
       ...(status ? { status } : {}),
     },
-    include: { customer: true, items: true, order: true },
+    include: { client: true, items: true, order: true },
     orderBy: { createdAt: "desc" },
     take: 50,
   });

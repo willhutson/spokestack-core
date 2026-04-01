@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { resolveToolMapping } from "@/lib/onboarding/tool-module-map";
 
 export interface ToolAuditEntry {
   categoryId: string;
@@ -12,6 +13,7 @@ export interface ToolAuditEntry {
 interface ToolAuditProps {
   onSubmit: (entries: ToolAuditEntry[]) => void;
   isSubmitting?: boolean;
+  orgId?: string;
 }
 
 const TOOL_CATEGORIES = [
@@ -74,7 +76,27 @@ const DATA_VOLUME_OPTIONS = [
 export default function ToolAudit({
   onSubmit,
   isSubmitting = false,
+  orgId,
 }: ToolAuditProps) {
+  const [connectingProvider, setConnectingProvider] = useState<string | null>(null);
+
+  const handleConnect = async (provider: string) => {
+    setConnectingProvider(provider);
+    try {
+      const res = await fetch('/api/v1/integrations/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider, organizationId: orgId }),
+      });
+      const data = await res.json();
+      if (data.authUrl) {
+        window.open(data.authUrl, '_blank', 'width=600,height=700');
+      }
+    } finally {
+      setConnectingProvider(null);
+    }
+  };
+
   const [entries, setEntries] = useState<Record<string, ToolAuditEntry>>(
     Object.fromEntries(
       TOOL_CATEGORIES.map((c) => [
@@ -145,15 +167,33 @@ export default function ToolAudit({
                 </span>
               </div>
 
-              <input
-                type="text"
-                placeholder={cat.examples}
-                value={entry.currentTool}
-                onChange={(e) =>
-                  update(cat.id, "currentTool", e.target.value)
-                }
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={cat.examples}
+                  value={entry.currentTool}
+                  onChange={(e) =>
+                    update(cat.id, "currentTool", e.target.value)
+                  }
+                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+                {(() => {
+                  const mapping = entry.currentTool.trim()
+                    ? resolveToolMapping(entry.currentTool)
+                    : null;
+                  if (!mapping?.nangoProvider) return null;
+                  return (
+                    <button
+                      type="button"
+                      disabled={connectingProvider === mapping.nangoProvider}
+                      onClick={() => handleConnect(mapping.nangoProvider!)}
+                      className="shrink-0 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                    >
+                      {connectingProvider === mapping.nangoProvider ? "Connecting..." : "Connect"}
+                    </button>
+                  );
+                })()}
+              </div>
 
               {entry.currentTool.trim() !== "" && (
                 <>

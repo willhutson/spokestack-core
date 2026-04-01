@@ -50,7 +50,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   });
   if (!existing) return error("Brief not found", 404);
 
-  const { title, description, status, clientName } = body;
+  const { title, description, status, clientName, clientId } = body;
 
   const brief = await prisma.brief.update({
     where: { id: briefId },
@@ -59,6 +59,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       ...(description !== undefined ? { description } : {}),
       ...(status !== undefined ? { status } : {}),
       ...(clientName !== undefined ? { clientName } : {}),
+      ...(clientId !== undefined ? { clientId } : {}),
     },
     include: {
       phases: { orderBy: { position: "asc" } },

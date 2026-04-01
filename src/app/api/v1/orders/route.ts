@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const orders = await prisma.order.findMany({
     where: { organizationId: auth.organizationId },
     include: {
-      customer: true,
+      client: true,
       items: true,
       invoice: true,
     },
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   if (!guard.allowed) return forbidden(guard.message);
 
   const body = await req.json();
-  const { customerId, items, notes, currency } = body;
+  const { clientId, items, notes, currency } = body;
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     return error("items array is required");
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   const order = await prisma.order.create({
     data: {
       organizationId: auth.organizationId,
-      customerId,
+      clientId,
       notes,
       currency: currency ?? "USD",
       totalCents,
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         ),
       },
     },
-    include: { items: true, customer: true },
+    include: { items: true, client: true },
   });
 
   return json({ order }, 201);
