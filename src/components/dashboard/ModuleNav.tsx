@@ -25,6 +25,8 @@ interface ModuleNavProps {
   tier: string;
 }
 
+const CORE_MODULE_TYPES = new Set(["TASKS", "PROJECTS", "BRIEFS", "ORDERS"]);
+
 const MODULE_ICONS: Record<string, string> = {
   TASKS: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
   PROJECTS:
@@ -70,10 +72,11 @@ export default function ModuleNav({
 }: ModuleNavProps) {
   const installedSet = new Set(installed.map((m) => m.moduleType));
 
-  // A module is locked only if the user's tier cannot install it AND it's not already installed
+  // Core modules are NEVER locked regardless of tier or install state
+  // Non-core modules are locked only if tier cannot install AND not already installed
   function isLocked(moduleType: string): boolean {
+    if (CORE_MODULE_TYPES.has(moduleType)) return false;
     if (installedSet.has(moduleType)) return false;
-    // tierCanInstall expects BillingTierType, cast the strings
     return !tierCanInstall(tier as never, moduleType as never);
   }
 
@@ -87,14 +90,6 @@ export default function ModuleNav({
     (m) =>
       m.category !== "core" &&
       m.active &&
-      m.surfaces.includes("dashboard")
-  );
-
-  // Available but not installed (show as locked)
-  const available = allModules.filter(
-    (m) =>
-      m.category !== "core" &&
-      !installedSet.has(m.moduleType) &&
       m.surfaces.includes("dashboard")
   );
 

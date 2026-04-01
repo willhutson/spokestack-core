@@ -21,13 +21,34 @@ export async function GET(req: NextRequest) {
     where: { type: billing.tier },
   });
 
+  // Fetch all tier definitions for plan comparison UI
+  const allTiers = await prisma.billingTier.findMany({
+    orderBy: { priceMonthly: "asc" },
+  });
+
   return json({
     billing: {
-      ...billing,
-      tierDetails: tier, // full tier object for consumers that need it
+      id: billing.id,
+      organizationId: billing.organizationId,
+      tier: billing.tier,
+      status: billing.status,
     },
-    tier: billing.tier,    // string: "FREE", "ENTERPRISE", etc.
-    status: billing.status, // string: "ACTIVE", etc.
+    tier: billing.tier,
+    status: billing.status,
+    tierDetails: tier
+      ? {
+          type: tier.type,
+          name: tier.name,
+          priceMonthly: tier.priceMonthly,
+          maxMembers: tier.maxMembers,
+        }
+      : null,
+    allTiers: allTiers.map((t) => ({
+      type: t.type,
+      name: t.name,
+      priceMonthly: t.priceMonthly,
+      maxMembers: t.maxMembers,
+    })),
   });
 }
 

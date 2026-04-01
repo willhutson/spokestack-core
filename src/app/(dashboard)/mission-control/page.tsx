@@ -1,305 +1,244 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
-import CanvasRenderer, {
-  type CanvasEdgeData,
-} from "@/components/mission-control/CanvasRenderer";
-import { type CanvasNodeData } from "@/components/mission-control/CanvasNode";
-import ActivityFeed from "@/components/mission-control/ActivityFeed";
-import MissionControlHeader from "@/components/mission-control/MissionControlHeader";
-
-interface CanvasData {
-  nodes: CanvasNodeData[];
-  edges: CanvasEdgeData[];
-  width: number;
-  height: number;
-}
+import { useState, useEffect, useCallback, useRef } from "react";
+import { getAuthHeaders } from "@/lib/client-auth";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ActivityItem {
   id: string;
-  agentType: string;
-  action: string;
-  content: string;
-  toolCalls: string[];
+  type: string;
+  title: string;
+  status?: string;
   timestamp: string;
+  href?: string;
+  description?: string;
+}
+
+function timeAgo(timestamp: string): string {
+  const now = Date.now();
+  const then = new Date(timestamp).getTime();
+  const diffMs = now - then;
+  const diffSec = Math.floor(diffMs / 1000);
+
+  if (diffSec < 60) return "just now";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 30) return `${diffDay}d ago`;
+  return new Date(timestamp).toLocaleDateString();
+}
+
+const TYPE_COLORS: Record<string, string> = {
+  TASK: "bg-blue-500/20 text-blue-300",
+  PROJECT: "bg-purple-500/20 text-purple-300",
+  BRIEF: "bg-amber-500/20 text-amber-300",
+  ORDER: "bg-green-500/20 text-green-300",
+  AGENT: "bg-indigo-500/20 text-indigo-300",
+  SYSTEM: "bg-gray-500/20 text-gray-400",
+};
+
+function TypeBadge({ type }: { type: string }) {
+  const style = TYPE_COLORS[type] ?? "bg-gray-500/20 text-gray-400";
+  const label = type.charAt(0) + type.slice(1).toLowerCase();
+  return (
+    <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium ${style}`}>
+      {label}
+    </span>
+  );
 }
 
 export default function MissionControlPage() {
-  const [canvas, setCanvas] = useState<CanvasData | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [regenerating, setRegenerating] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterType, setFilterType] = useState("all");
-  const [selectedNode, setSelectedNode] = useState<CanvasNodeData | null>(null);
-  const [activityOpen, setActivityOpen] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setToken(session.access_token);
-        loadData(session.access_token);
-      }
-    });
-  }, []);
-
-  async function loadData(accessToken: string) {
-    const headers = { Authorization: `Bearer ${accessToken}` };
+  const fetchActivity = useCallback(async () => {
     try {
-      const [canvasRes, activityRes] = await Promise.all([
-        fetch("/api/v1/mission-control", { headers }).then((r) => r.json()),
-        fetch("/api/v1/mission-control/activity", { headers }).then((r) =>
-          r.json()
-        ),
-      ]);
-      setCanvas(canvasRes.canvas ?? null);
-      setActivity(activityRes.activity ?? []);
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/activity?limit=30", { headers });
+      if (!res.ok) throw new Error("Failed to fetch activity");
+      const data = await res.json();
+      setActivity(data.activity ?? data.items ?? []);
+      setError(null);
+    } catch (err) {
+      console.error("Activity fetch error:", err);
+      setError("Failed to load activity feed.");
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  async function handleRegenerate() {
-    if (!token) return;
-    setRegenerating(true);
-    try {
-      await fetch("/api/v1/mission-control", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      await loadData(token);
-    } finally {
-      setRegenerating(false);
-    }
-  }
+  // Initial fetch + polling every 30s
+  useEffect(() => {
+    fetchActivity();
+    intervalRef.current = setInterval(fetchActivity, 30000);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [fetchActivity]);
 
-  // Apply filters
-  const filteredNodes = canvas
-    ? canvas.nodes.filter((n) => {
-        if (filterStatus !== "all" && n.status !== filterStatus) return false;
-        if (filterType !== "all" && n.entityType !== filterType) return false;
-        return true;
-      })
-    : [];
-
-  const filteredNodeIds = new Set(filteredNodes.map((n) => n.id));
-  const filteredEdges = canvas
-    ? canvas.edges.filter(
-        (e) =>
-          filteredNodeIds.has(e.sourceId) && filteredNodeIds.has(e.targetId)
-      )
-    : [];
-
-  if (loading) {
-    return (
-      <div className="flex h-full items-center justify-center bg-gray-950">
-        <div className="flex items-center gap-3">
-          <div className="w-3 h-3 rounded-full bg-indigo-500 animate-ping" />
-          <span className="text-sm text-gray-400">
-            Loading Mission Control...
-          </span>
-        </div>
-      </div>
-    );
+  // Status summary counts
+  const typeCounts: Record<string, number> = {};
+  for (const item of activity) {
+    const t = item.type || "OTHER";
+    typeCounts[t] = (typeCounts[t] || 0) + 1;
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-950">
       {/* Header */}
-      <MissionControlHeader
-        nodeCount={filteredNodes.length}
-        edgeCount={filteredEdges.length}
-        filterStatus={filterStatus}
-        filterType={filterType}
-        onFilterStatusChange={setFilterStatus}
-        onFilterTypeChange={setFilterType}
-        onRegenerate={handleRegenerate}
-        regenerating={regenerating}
-      />
+      <div className="h-14 px-6 flex items-center justify-between border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <h1 className="text-sm font-semibold text-white">Mission Control</h1>
+          <div className="flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+            </span>
+            <span className="text-[10px] font-medium text-green-400 uppercase tracking-wider">Live</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500">
+            {activity.length} event{activity.length !== 1 ? "s" : ""}
+          </span>
+          <button
+            onClick={fetchActivity}
+            className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-white/5 rounded-md hover:bg-white/10 transition-colors"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
 
       <div className="flex-1 flex min-h-0">
-        {/* Canvas area */}
-        <div className="flex-1 relative">
-          {canvas && filteredNodes.length > 0 ? (
-            <CanvasRenderer
-              nodes={filteredNodes}
-              edges={filteredEdges}
-              width={canvas.width}
-              height={canvas.height}
-              onNodeClick={(node) => setSelectedNode(node)}
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center bg-gray-950">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-900 flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-8 h-8 text-gray-700"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"
-                    />
-                  </svg>
+        {/* Activity feed — main area */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white/5 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-5 w-14" />
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-4 w-16 ml-auto" />
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 mb-3">
-                  No canvas data yet. Create some tasks or projects first.
-                </p>
-                <button
-                  onClick={handleRegenerate}
-                  disabled={regenerating}
-                  className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-                >
-                  {regenerating ? "Generating..." : "Generate Canvas"}
-                </button>
-              </div>
+              ))}
             </div>
-          )}
-
-          {/* Node detail panel */}
-          {selectedNode && (
-            <div className="absolute top-4 right-4 w-72 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-20">
-              <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                  {selectedNode.entityType}
-                </span>
-                <button
-                  onClick={() => setSelectedNode(null)}
-                  className="text-gray-400 hover:text-gray-600"
+          ) : error ? (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-sm text-red-400">
+              {error}
+            </div>
+          ) : activity.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-gray-400 mb-1">No activity yet</p>
+              <p className="text-xs text-gray-600 max-w-xs">
+                Activity will appear here as you create tasks, projects, briefs, and orders. Your agents will keep this feed updated in real time.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {activity.map((item) => (
+                <div
+                  key={item.id}
+                  className={`bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 rounded-lg p-4 transition-colors ${
+                    item.href ? "cursor-pointer" : ""
+                  }`}
+                  onClick={() => {
+                    if (item.href) window.location.href = item.href;
+                  }}
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="p-4 space-y-3">
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {selectedNode.label}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                    {selectedNode.status.replace(/_/g, " ")}
-                  </span>
-                  {selectedNode.priority && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                      {selectedNode.priority}
-                    </span>
-                  )}
-                </div>
-                {selectedNode.metadata?.dueDate ? (
-                  <p className="text-xs text-gray-500">
-                    Due:{" "}
-                    {new Date(
-                      selectedNode.metadata.dueDate as string
-                    ).toLocaleDateString()}
-                  </p>
-                ) : null}
-                {selectedNode.metadata?.customerName ? (
-                  <p className="text-xs text-gray-500">
-                    Customer: {String(selectedNode.metadata.customerName)}
-                  </p>
-                ) : null}
-                {selectedNode.metadata?.clientName ? (
-                  <p className="text-xs text-gray-500">
-                    Client: {String(selectedNode.metadata.clientName)}
-                  </p>
-                ) : null}
-                {selectedNode.entityType === "PROJECT" &&
-                  selectedNode.metadata?.phaseCount ? (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">
-                        Progress:{" "}
-                        {selectedNode.metadata.completedPhases as number}/
-                        {selectedNode.metadata.phaseCount as number} phases
+                  <div className="flex items-start gap-3">
+                    <TypeBadge type={item.type} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-200 truncate">
+                        {item.title}
                       </p>
-                      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-indigo-500 rounded-full"
-                          style={{
-                            width: `${((selectedNode.metadata.completedPhases as number) / (selectedNode.metadata.phaseCount as number)) * 100}%`,
-                          }}
-                        />
-                      </div>
+                      {item.description && (
+                        <p className="text-xs text-gray-500 mt-0.5 truncate">{item.description}</p>
+                      )}
                     </div>
-                  ) : null}
-              </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {item.status && <StatusBadge status={item.status} size="sm" />}
+                      <span className="text-[10px] text-gray-600 whitespace-nowrap">
+                        {timeAgo(item.timestamp)}
+                      </span>
+                      {item.href && (
+                        <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Activity feed sidebar */}
-        {activityOpen && (
-          <div className="w-72 bg-white border-l border-gray-200 flex flex-col">
-            <div className="h-10 px-4 flex items-center justify-between border-b border-gray-100">
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Activity
-              </span>
-              <button
-                onClick={() => setActivityOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </button>
+        {/* Status summary sidebar */}
+        <div className="w-64 border-l border-white/5 p-4 overflow-y-auto">
+          <h2 className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+            Summary
+          </h2>
+
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
             </div>
-            <div className="flex-1 overflow-y-auto">
-              <ActivityFeed activity={activity} />
+          ) : Object.keys(typeCounts).length === 0 ? (
+            <p className="text-xs text-gray-600">No data</p>
+          ) : (
+            <div className="space-y-2">
+              {Object.entries(typeCounts)
+                .sort(([, a], [, b]) => b - a)
+                .map(([type, count]) => (
+                  <div
+                    key={type}
+                    className="bg-white/[0.03] border border-white/5 rounded-lg p-3 flex items-center justify-between"
+                  >
+                    <TypeBadge type={type} />
+                    <span className="text-lg font-bold text-gray-200">{count}</span>
+                  </div>
+                ))}
+              <div className="border-t border-white/5 pt-2 mt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Total</span>
+                  <span className="text-sm font-semibold text-gray-300">{activity.length}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quick stats */}
+          <div className="mt-6">
+            <h2 className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+              Feed Info
+            </h2>
+            <div className="space-y-2 text-xs text-gray-500">
+              <div className="flex justify-between">
+                <span>Polling interval</span>
+                <span className="text-gray-400">30s</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Max items</span>
+                <span className="text-gray-400">30</span>
+              </div>
             </div>
           </div>
-        )}
-
-        {/* Activity toggle when closed */}
-        {!activityOpen && (
-          <button
-            onClick={() => setActivityOpen(true)}
-            className="absolute right-4 top-20 bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:bg-gray-50 z-10"
-          >
-            <svg
-              className="w-4 h-4 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-              />
-            </svg>
-          </button>
-        )}
+        </div>
       </div>
     </div>
   );
