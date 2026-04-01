@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import TaskCard, { type Task } from "./components/task-card";
 import TaskForm from "./components/task-form";
 import TaskActions from "./components/task-actions";
+import SetupChecklist from "@/components/setup/SetupChecklist";
 import { openChatWithContext } from "@/lib/chat-event";
 import { createClient } from "@/lib/supabase/client";
 
@@ -43,6 +44,12 @@ export default function TasksPage() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [inlineColumn, setInlineColumn] = useState<Task["status"] | null>(null);
   const [inlineValue, setInlineValue] = useState("");
+  const [showSetup, setShowSetup] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem("spokestack_setup_dismissed");
+    if (dismissed !== "true") setShowSetup(true);
+  }, []);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
 
   useEffect(() => {
@@ -187,6 +194,16 @@ export default function TasksPage() {
 
   return (
     <div className="p-6 h-full flex flex-col">
+      {/* Setup completeness checker */}
+      {showSetup && (
+        <SetupChecklist
+          onDismiss={() => {
+            setShowSetup(false);
+            localStorage.setItem("spokestack_setup_dismissed", "true");
+          }}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
