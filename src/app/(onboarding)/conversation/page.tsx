@@ -173,7 +173,7 @@ export default function OnboardingConversationPage() {
         await Promise.all(
           entries.map((entry) => {
             const moduleId =
-              TOOL_MODULE_MAP[entry.currentTool.trim().toLowerCase()] ?? null;
+              TOOL_MODULE_MAP[entry.currentTool.trim().toLowerCase()]?.moduleId ?? null;
             return fetch("/api/v1/context", {
               method: "POST",
               headers: {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { resolveToolMapping } from "@/lib/onboarding/tool-module-map";
 
 export interface ToolAuditEntry {
   categoryId: string;
@@ -145,15 +146,38 @@ export default function ToolAudit({
                 </span>
               </div>
 
-              <input
-                type="text"
-                placeholder={cat.examples}
-                value={entry.currentTool}
-                onChange={(e) =>
-                  update(cat.id, "currentTool", e.target.value)
-                }
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={cat.examples}
+                  value={entry.currentTool}
+                  onChange={(e) =>
+                    update(cat.id, "currentTool", e.target.value)
+                  }
+                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+                {(() => {
+                  const mapping = entry.currentTool.trim()
+                    ? resolveToolMapping(entry.currentTool)
+                    : null;
+                  if (!mapping?.nangoProvider) return null;
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.open(
+                          `/api/v1/integrations/connect?provider=${mapping.nangoProvider}`,
+                          "nango-connect",
+                          "width=600,height=700"
+                        );
+                      }}
+                      className="shrink-0 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors"
+                    >
+                      Connect
+                    </button>
+                  );
+                })()}
+              </div>
 
               {entry.currentTool.trim() !== "" && (
                 <>

@@ -5,7 +5,7 @@ export interface RegistryModule {
   moduleType: ModuleType;
   name: string;
   description: string;
-  category: "core" | "marketing" | "ops" | "analytics";
+  category: "core" | "marketing" | "ops" | "analytics" | "enterprise";
   minTier: BillingTierType;
   price: number | null; // cents per month, null = included in tier
   agentName: string;
@@ -44,7 +44,13 @@ export function getCoreModules(): RegistryModule[] {
 }
 
 export function getMarketplaceModules(): RegistryModule[] {
-  return registry.filter((m) => m.category !== "core");
+  return registry.filter(
+    (m) => m.category !== "core" && m.category !== "enterprise"
+  );
+}
+
+export function getEnterpriseModules(): RegistryModule[] {
+  return registry.filter((m) => m.category === "enterprise");
 }
 
 export function tierCanInstall(

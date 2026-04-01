@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   const order = await prisma.order.findFirst({
     where: { id: orderId, organizationId: auth.organizationId },
     include: {
-      customer: true,
+      client: true,
       items: true,
       invoice: { include: { items: true } },
     },
@@ -51,16 +51,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   });
   if (!existing) return error("Order not found", 404);
 
-  const { status, notes, customerId } = body;
+  const { status, notes, clientId } = body;
 
   const order = await prisma.order.update({
     where: { id: orderId },
     data: {
       ...(status !== undefined ? { status } : {}),
       ...(notes !== undefined ? { notes } : {}),
-      ...(customerId !== undefined ? { customerId } : {}),
+      ...(clientId !== undefined ? { clientId } : {}),
     },
-    include: { customer: true, items: true, invoice: true },
+    include: { client: true, items: true, invoice: true },
   });
 
   return json({ order });

@@ -200,10 +200,13 @@ enum NotificationChannel {
 }
 
 enum ModuleType {
+  // Core (tier-gated)
   TASKS
   PROJECTS
   BRIEFS
   ORDERS
+
+  // Marketplace
   CRM
   SOCIAL_PUBLISHING
   CONTENT_STUDIO
@@ -217,7 +220,14 @@ enum ModuleType {
   BOARDS
   FINANCE
   WORKFLOWS
-  ADMIN
+  CLIENT_PORTAL
+
+  // Enterprise-gated
+  SPOKECHAT
+  DELEGATION
+  ACCESS_CONTROL
+  API_MANAGEMENT
+  BUILDER
 }
 
 // ============================================================================
@@ -245,7 +255,7 @@ model Organization {
   projects    Project[]
   briefs      Brief[]
   orders      Order[]
-  customers   Customer[]
+  customers   Client[]     // renamed from Customer
   invoices    Invoice[]
 
   // Agent
@@ -466,8 +476,10 @@ model Project {
   metadata       Json?
   importSource   String?
   importSourceId String?
+  clientId       String?
 
   organization Organization       @relation(fields: [organizationId], references: [id])
+  client       Client?            @relation(fields: [clientId], references: [id])
   phases       ProjectPhase[]
   milestones   ProjectMilestone[]
   canvas       WfCanvas?
@@ -546,7 +558,8 @@ model Brief {
   title          String
   description    String?
   status         BriefStatus @default(DRAFT)
-  clientName     String?
+  clientId       String?
+  clientName     String?     // @deprecated — use clientId FK instead
   createdById    String?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
@@ -555,6 +568,7 @@ model Brief {
   importSourceId String?
 
   organization Organization @relation(fields: [organizationId], references: [id])
+  client       Client?      @relation(fields: [clientId], references: [id])
   phases       BriefPhase[]
   artifacts    Artifact[]
 }
@@ -604,25 +618,38 @@ model ArtifactReview {
 // ORDERS MODELS (5)
 // ============================================================================
 
-model Customer {
-  id             String   @id @default(cuid())
-  organizationId String
-  name           String
-  email          String?
-  phone          String?
-  company        String?
-  metadata       Json?
-  createdAt      DateTime @default(now())
+/// Client — unified client entity (replaces Customer).
+/// CRM module extends with persona-specific fields.
+model Client {
+  id               String   @id @default(cuid())
+  organizationId   String
+  name             String
+  email            String?
+  phone            String?
+  company          String?
+  industry         String?
+  logoUrl          String?
+  website          String?
+  isActive         Boolean  @default(true)
+  accountManagerId String?
+  metadata         Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id])
   orders       Order[]
   invoices     Invoice[]
+  briefs       Brief[]
+  projects     Project[]
+
+  @@index([organizationId])
+  @@index([organizationId, isActive])
 }
 
 model Order {
   id             String      @id @default(cuid())
   organizationId String
-  customerId     String?
+  clientId       String?
   status         OrderStatus @default(PENDING)
   totalCents     Int         @default(0)
   currency       String      @default("USD")
@@ -633,7 +660,7 @@ model Order {
   importSourceId String?
 
   organization Organization @relation(fields: [organizationId], references: [id])
-  customer     Customer?    @relation(fields: [customerId], references: [id])
+  client       Client?      @relation(fields: [clientId], references: [id])
   items        OrderItem[]
   invoice      Invoice?
 }
@@ -652,7 +679,7 @@ model OrderItem {
 model Invoice {
   id             String        @id @default(cuid())
   organizationId String
-  customerId     String?
+  clientId       String?
   orderId        String?       @unique
   number         String
   status         InvoiceStatus @default(DRAFT)
@@ -664,7 +691,7 @@ model Invoice {
   createdAt      DateTime      @default(now())
 
   organization Organization  @relation(fields: [organizationId], references: [id])
-  customer     Customer?     @relation(fields: [customerId], references: [id])
+  client       Client?       @relation(fields: [clientId], references: [id])
   order        Order?        @relation(fields: [orderId], references: [id])
   items        InvoiceItem[]
 }
@@ -757,14 +784,23 @@ model ContextMilestone {
 // ============================================================================
 
 model Integration {
-  id             String            @id @default(cuid())
-  organizationId String
-  type           IntegrationType
-  status         IntegrationStatus @default(PENDING)
-  config         Json?
-  installedAt    DateTime          @default(now())
+  id                String            @id @default(cuid())
+  organizationId    String
+  provider          String            // Nango provider ID (e.g., 'asana', 'hubspot')
+  nangoConnectionId String?
+  type              IntegrationType?  // @deprecated — use provider field
+  status            IntegrationStatus @default(PENDING)
+  moduleType        ModuleType?
+  config            Json?
+  lastSyncAt        DateTime?
+  syncError         String?
+  installedAt       DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, provider])
+  @@index([organizationId])
 }
 
 model Notification {

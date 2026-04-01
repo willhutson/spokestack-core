@@ -170,13 +170,63 @@
     "surfaces": ["dashboard"]
   },
   {
-    "moduleType": "ADMIN",
-    "name": "Admin (Advanced)",
-    "description": "Advanced administration — audit logs, compliance, custom roles, and SSO configuration.",
+    "moduleType": "CLIENT_PORTAL",
+    "name": "Client Portal",
+    "description": "Branded portal for clients — approvals, feedback, onboarding, and file sharing.",
     "category": "ops",
+    "minTier": "BUSINESS",
+    "price": 1500,
+    "agentName": "Portal Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "SPOKECHAT",
+    "name": "SpokeChat",
+    "description": "Internal team chat — channels, threads, reactions, presence, and file sharing.",
+    "category": "enterprise",
     "minTier": "ENTERPRISE",
     "price": null,
-    "agentName": "Admin Agent",
+    "agentName": "Chat Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "DELEGATION",
+    "name": "Delegation",
+    "description": "Delegation of authority — manage who can act on behalf of whom and for how long.",
+    "category": "enterprise",
+    "minTier": "ENTERPRISE",
+    "price": null,
+    "agentName": "Delegation Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "ACCESS_CONTROL",
+    "name": "Access Control",
+    "description": "RBAC policies — fine-grained access rules, policy versions, and access auditing.",
+    "category": "enterprise",
+    "minTier": "ENTERPRISE",
+    "price": null,
+    "agentName": "Access Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "API_MANAGEMENT",
+    "name": "API Management",
+    "description": "API keys, webhook subscriptions, delivery logs, and request monitoring.",
+    "category": "enterprise",
+    "minTier": "ENTERPRISE",
+    "price": null,
+    "agentName": "API Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "BUILDER",
+    "name": "Builder",
+    "description": "Builder infrastructure — templates, permissions, and audit logs for custom builds.",
+    "category": "enterprise",
+    "minTier": "ENTERPRISE",
+    "price": null,
+    "agentName": "Builder Agent",
     "surfaces": ["dashboard"]
   }
 ]

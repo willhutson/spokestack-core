@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   if (!guard.allowed) return forbidden(guard.message);
 
   const body = await req.json();
-  const { title, description, clientName } = body;
+  const { title, description, clientName, clientId } = body;
 
   if (!title) return error("title is required");
 
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       title,
       description,
       clientName,
+      clientId,
       createdById: auth.user.id,
     },
   });

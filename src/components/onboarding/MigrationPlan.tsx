@@ -3,6 +3,7 @@
 import type { ToolAuditEntry } from "./ToolAudit";
 import {
   resolveModule,
+  resolveToolMapping,
   type ModuleInfo,
 } from "@/lib/onboarding/tool-module-map";
 
@@ -10,6 +11,7 @@ interface MigrationItem {
   fromTool: string;
   module: ModuleInfo;
   status: "ready" | "install" | "coming_soon" | "unknown";
+  nangoProvider?: string;
 }
 
 interface MigrationPlanProps {
@@ -36,7 +38,13 @@ function buildPlan(entries: ToolAuditEntry[]): MigrationItem[] {
           ? "install"
           : "coming_soon";
 
-    items.push({ fromTool: entry.currentTool, module, status });
+    const mapping = resolveToolMapping(entry.currentTool);
+    items.push({
+      fromTool: entry.currentTool,
+      module,
+      status,
+      nangoProvider: mapping?.nangoProvider,
+    });
   }
 
   return items;

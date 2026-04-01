@@ -56,75 +56,85 @@ export const MODULE_REGISTRY: Record<string, ModuleInfo> = {
   },
 };
 
-// Normalize tool name → module ID. Keys are all lowercase.
-export const TOOL_MODULE_MAP: Record<string, string> = {
+export interface ToolMapping {
+  moduleId: string;
+  nangoProvider?: string; // Nango provider ID for OAuth connect
+}
+
+// Normalize tool name → module ID + optional Nango provider.
+export const TOOL_MODULE_MAP: Record<string, ToolMapping> = {
   // Tasks
-  asana: "TASKS",
-  monday: "TASKS",
-  "monday.com": "TASKS",
-  trello: "TASKS",
-  notion: "TASKS",
-  jira: "TASKS",
-  todoist: "TASKS",
-  clickup: "TASKS",
-  spreadsheets: "TASKS",
-  "google sheets": "TASKS",
-  excel: "TASKS",
+  asana: { moduleId: "TASKS", nangoProvider: "asana" },
+  monday: { moduleId: "TASKS", nangoProvider: "monday" },
+  "monday.com": { moduleId: "TASKS", nangoProvider: "monday" },
+  trello: { moduleId: "TASKS" },
+  notion: { moduleId: "TASKS" },
+  jira: { moduleId: "TASKS" },
+  todoist: { moduleId: "TASKS" },
+  clickup: { moduleId: "TASKS" },
+  spreadsheets: { moduleId: "TASKS" },
+  "google sheets": { moduleId: "TASKS" },
+  excel: { moduleId: "TASKS" },
   // Projects
-  basecamp: "PROJECTS",
-  smartsheet: "PROJECTS",
-  "ms project": "PROJECTS",
-  "microsoft project": "PROJECTS",
-  wrike: "PROJECTS",
-  teamwork: "PROJECTS",
+  basecamp: { moduleId: "PROJECTS" },
+  smartsheet: { moduleId: "PROJECTS" },
+  "ms project": { moduleId: "PROJECTS" },
+  "microsoft project": { moduleId: "PROJECTS" },
+  wrike: { moduleId: "PROJECTS" },
+  teamwork: { moduleId: "PROJECTS" },
   // CRM
-  hubspot: "CRM",
-  salesforce: "CRM",
-  pipedrive: "CRM",
-  zoho: "CRM",
-  "zoho crm": "CRM",
-  close: "CRM",
+  hubspot: { moduleId: "CRM", nangoProvider: "hubspot" },
+  salesforce: { moduleId: "CRM" },
+  pipedrive: { moduleId: "CRM" },
+  zoho: { moduleId: "CRM" },
+  "zoho crm": { moduleId: "CRM" },
+  close: { moduleId: "CRM" },
   // Content / Creative
-  canva: "CONTENT_STUDIO",
-  figma: "CONTENT_STUDIO",
-  "google drive": "CONTENT_STUDIO",
-  dropbox: "CONTENT_STUDIO",
-  adobe: "CONTENT_STUDIO",
+  canva: { moduleId: "CONTENT_STUDIO" },
+  figma: { moduleId: "CONTENT_STUDIO", nangoProvider: "figma" },
+  "google drive": { moduleId: "CONTENT_STUDIO", nangoProvider: "google-drive" },
+  dropbox: { moduleId: "CONTENT_STUDIO" },
+  adobe: { moduleId: "CONTENT_STUDIO" },
   // Communication
-  slack: "COMMUNICATION",
-  whatsapp: "COMMUNICATION",
-  teams: "COMMUNICATION",
-  "microsoft teams": "COMMUNICATION",
-  discord: "COMMUNICATION",
-  telegram: "COMMUNICATION",
-  email: "COMMUNICATION",
+  slack: { moduleId: "COMMUNICATION", nangoProvider: "slack" },
+  whatsapp: { moduleId: "COMMUNICATION", nangoProvider: "whatsapp-business" },
+  teams: { moduleId: "COMMUNICATION" },
+  "microsoft teams": { moduleId: "COMMUNICATION" },
+  discord: { moduleId: "COMMUNICATION" },
+  telegram: { moduleId: "COMMUNICATION" },
+  email: { moduleId: "COMMUNICATION" },
   // Finance
-  xero: "FINANCE",
-  quickbooks: "FINANCE",
-  freshbooks: "FINANCE",
-  wave: "FINANCE",
-  sage: "FINANCE",
+  xero: { moduleId: "FINANCE", nangoProvider: "xero" },
+  quickbooks: { moduleId: "FINANCE", nangoProvider: "quickbooks" },
+  freshbooks: { moduleId: "FINANCE" },
+  wave: { moduleId: "FINANCE" },
+  sage: { moduleId: "FINANCE" },
   // Time tracking
-  toggl: "TIME_LEAVE",
-  harvest: "TIME_LEAVE",
-  clockify: "TIME_LEAVE",
-  timely: "TIME_LEAVE",
+  toggl: { moduleId: "TIME_LEAVE", nangoProvider: "toggl" },
+  harvest: { moduleId: "TIME_LEAVE" },
+  clockify: { moduleId: "TIME_LEAVE" },
+  timely: { moduleId: "TIME_LEAVE" },
   // Social
-  hootsuite: "SOCIAL_PUBLISHING",
-  buffer: "SOCIAL_PUBLISHING",
-  later: "SOCIAL_PUBLISHING",
-  "sprout social": "SOCIAL_PUBLISHING",
-  sproutsocial: "SOCIAL_PUBLISHING",
+  hootsuite: { moduleId: "SOCIAL_PUBLISHING" },
+  buffer: { moduleId: "SOCIAL_PUBLISHING" },
+  later: { moduleId: "SOCIAL_PUBLISHING" },
+  "sprout social": { moduleId: "SOCIAL_PUBLISHING" },
+  sproutsocial: { moduleId: "SOCIAL_PUBLISHING" },
   // Analytics
-  "google analytics": "ANALYTICS",
-  mixpanel: "ANALYTICS",
-  amplitude: "ANALYTICS",
-  tableau: "ANALYTICS",
+  "google analytics": { moduleId: "ANALYTICS" },
+  mixpanel: { moduleId: "ANALYTICS" },
+  amplitude: { moduleId: "ANALYTICS" },
+  tableau: { moduleId: "ANALYTICS" },
 };
 
 export function resolveModule(toolName: string): ModuleInfo | null {
   const normalized = toolName.trim().toLowerCase();
-  const moduleId = TOOL_MODULE_MAP[normalized];
-  if (!moduleId) return null;
-  return MODULE_REGISTRY[moduleId] ?? null;
+  const mapping = TOOL_MODULE_MAP[normalized];
+  if (!mapping) return null;
+  return MODULE_REGISTRY[mapping.moduleId] ?? null;
+}
+
+export function resolveToolMapping(toolName: string): ToolMapping | null {
+  const normalized = toolName.trim().toLowerCase();
+  return TOOL_MODULE_MAP[normalized] ?? null;
 }

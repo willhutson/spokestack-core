@@ -5,11 +5,11 @@ import { moduleGuard } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
 
 interface Params {
-  params: Promise<{ customerId: string }>;
+  params: Promise<{ clientId: string }>;
 }
 
 /**
- * GET /api/v1/customers/:customerId
+ * GET /api/v1/clients/:clientId
  */
 export async function GET(req: NextRequest, { params }: Params) {
   const auth = await authenticate(req);
@@ -18,22 +18,22 @@ export async function GET(req: NextRequest, { params }: Params) {
   const guard = await moduleGuard(auth.organizationId, "ORDERS");
   if (!guard.allowed) return forbidden(guard.message);
 
-  const { customerId } = await params;
+  const { clientId } = await params;
 
-  const customer = await prisma.client.findFirst({
-    where: { id: customerId, organizationId: auth.organizationId },
+  const client = await prisma.client.findFirst({
+    where: { id: clientId, organizationId: auth.organizationId },
     include: {
       orders: { include: { items: true }, orderBy: { createdAt: "desc" } },
       invoices: { orderBy: { createdAt: "desc" } },
     },
   });
 
-  if (!customer) return error("Customer not found", 404);
-  return json({ customer });
+  if (!client) return error("Client not found", 404);
+  return json({ client });
 }
 
 /**
- * PATCH /api/v1/customers/:customerId
+ * PATCH /api/v1/clients/:clientId
  */
 export async function PATCH(req: NextRequest, { params }: Params) {
   const auth = await authenticate(req);
@@ -42,18 +42,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const guard = await moduleGuard(auth.organizationId, "ORDERS");
   if (!guard.allowed) return forbidden(guard.message);
 
-  const { customerId } = await params;
+  const { clientId } = await params;
   const body = await req.json();
 
   const existing = await prisma.client.findFirst({
-    where: { id: customerId, organizationId: auth.organizationId },
+    where: { id: clientId, organizationId: auth.organizationId },
   });
-  if (!existing) return error("Customer not found", 404);
+  if (!existing) return error("Client not found", 404);
 
   const { name, email, phone, company, metadata } = body;
 
-  const customer = await prisma.client.update({
-    where: { id: customerId },
+  const client = await prisma.client.update({
+    where: { id: clientId },
     data: {
       ...(name !== undefined ? { name } : {}),
       ...(email !== undefined ? { email } : {}),
@@ -63,23 +63,23 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     },
   });
 
-  return json({ customer });
+  return json({ client });
 }
 
 /**
- * DELETE /api/v1/customers/:customerId
+ * DELETE /api/v1/clients/:clientId
  */
 export async function DELETE(req: NextRequest, { params }: Params) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
-  const { customerId } = await params;
+  const { clientId } = await params;
 
   const existing = await prisma.client.findFirst({
-    where: { id: customerId, organizationId: auth.organizationId },
+    where: { id: clientId, organizationId: auth.organizationId },
   });
-  if (!existing) return error("Customer not found", 404);
+  if (!existing) return error("Client not found", 404);
 
-  await prisma.client.delete({ where: { id: customerId } });
+  await prisma.client.delete({ where: { id: clientId } });
   return json({ deleted: true });
 }

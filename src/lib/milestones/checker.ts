@@ -46,7 +46,7 @@ export async function computeMilestoneValue(
         prisma.brief.count({
           where: { organizationId: orgId, clientName: { not: null } },
         }),
-        prisma.customer.count({
+        prisma.client.count({
           where: { organizationId: orgId },
         }),
       ]);
