@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import InvoiceView from "./components/invoice-view";
+import { openChatWithContext } from "@/lib/chat-event";
 
 interface Order {
   id: string;
@@ -52,7 +53,7 @@ export default function OrdersPage() {
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
           <p className="text-sm text-gray-500 mt-0.5">Track customer orders, invoices, and fulfillment</p>
         </div>
-        <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+        <button onClick={() => openChatWithContext("Create a new order")} className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -71,7 +72,7 @@ export default function OrdersPage() {
           </div>
           <h3 className="text-sm font-medium text-gray-900 mb-1">No orders yet</h3>
           <p className="text-xs text-gray-500 mb-4">Create your first order to start tracking customer transactions.</p>
-          <button className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+          <button onClick={() => openChatWithContext("Create a new order")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
             Create Order
           </button>
         </div>
