@@ -40,7 +40,7 @@ export default function TaskCard({
   return (
     <div
       onClick={() => onClick?.(task)}
-      className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer group relative"
+      className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative"
     >
       {/* Delete button on hover */}
       {onDelete && (
