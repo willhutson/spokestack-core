@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { tierCanInstall } from "@/lib/modules/registry";
 
 interface InstalledModule {
   moduleType: string;
@@ -21,6 +22,7 @@ interface ModuleNavProps {
   installed: InstalledModule[];
   allModules: RegistryModule[];
   currentPath: string;
+  tier: string;
 }
 
 const MODULE_ICONS: Record<string, string> = {
@@ -64,8 +66,16 @@ export default function ModuleNav({
   installed,
   allModules,
   currentPath,
+  tier,
 }: ModuleNavProps) {
   const installedSet = new Set(installed.map((m) => m.moduleType));
+
+  // A module is locked only if the user's tier cannot install it AND it's not already installed
+  function isLocked(moduleType: string): boolean {
+    if (installedSet.has(moduleType)) return false;
+    // tierCanInstall expects BillingTierType, cast the strings
+    return !tierCanInstall(tier as never, moduleType as never);
+  }
 
   // Core modules that have dashboard surfaces
   const coreModules = allModules.filter(
@@ -92,11 +102,11 @@ export default function ModuleNav({
     <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
       {/* Core modules */}
       {coreModules.map((mod) => {
-        const isInstalled = installedSet.has(mod.moduleType);
+        const locked = isLocked(mod.moduleType);
         const href = getHref(mod.moduleType);
         const active = currentPath.startsWith(href);
 
-        if (!isInstalled) {
+        if (locked) {
           return (
             <div
               key={mod.moduleType}

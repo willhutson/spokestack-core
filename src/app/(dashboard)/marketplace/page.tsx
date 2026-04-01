@@ -28,6 +28,7 @@ const CATEGORIES = [
   { key: "marketing", label: "Marketing" },
   { key: "ops", label: "Operations" },
   { key: "analytics", label: "Analytics" },
+  { key: "enterprise", label: "Enterprise" },
 ];
 
 function hasDemo(moduleType: string): boolean {
@@ -38,10 +39,12 @@ export default function MarketplacePage() {
   const router = useRouter();
   const [modules, setModules] = useState<RegistryModule[]>([]);
   const [installed, setInstalled] = useState<Set<string>>(new Set());
+  const [installedStatus, setInstalledStatus] = useState<"loaded" | "failed" | "pending">("pending");
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [installing, setInstalling] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [registryError, setRegistryError] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,19 +59,39 @@ export default function MarketplacePage() {
   async function loadModules(accessToken: string) {
     const headers = { Authorization: `Bearer ${accessToken}` };
 
-    const [allRes, installedRes] = await Promise.all([
-      fetch("/api/v1/modules").then((r) => r.json()),
-      fetch("/api/v1/modules/installed", { headers }).then((r) => r.json()),
-    ]);
+    // Fetch registry and installed independently
+    let registryLoaded = false;
 
-    setModules(allRes.modules ?? []);
-    setInstalled(
-      new Set(
-        (installedRes.installed ?? [])
-          .filter((m: InstalledModule) => m.active)
-          .map((m: InstalledModule) => m.moduleType)
-      )
-    );
+    try {
+      const res = await fetch("/api/v1/modules");
+      if (!res.ok) throw new Error(`Registry fetch failed: ${res.status}`);
+      const allRes = await res.json();
+      setModules(allRes.modules ?? []);
+      registryLoaded = true;
+    } catch (err) {
+      console.error("Failed to fetch module registry:", err);
+      setRegistryError("Failed to load modules. Please try again later.");
+    }
+
+    try {
+      const res = await fetch("/api/v1/modules/installed", { headers });
+      if (!res.ok) throw new Error(`Installed fetch failed: ${res.status}`);
+      const installedRes = await res.json();
+      setInstalled(
+        new Set(
+          (installedRes.installed ?? [])
+            .filter((m: InstalledModule) => m.active)
+            .map((m: InstalledModule) => m.moduleType)
+        )
+      );
+      setInstalledStatus("loaded");
+    } catch (err) {
+      console.error("Failed to fetch installed modules:", err);
+      setInstalledStatus("failed");
+      // If registry loaded but installed failed, modules still show with unknown status
+    }
+
+    void registryLoaded;
   }
 
   async function handleInstall(moduleType: string) {
@@ -141,6 +164,20 @@ export default function MarketplacePage() {
         ))}
       </div>
 
+      {/* Installed status warning */}
+      {installedStatus === "failed" && (
+        <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-sm text-yellow-800">
+          Could not load install status. Module availability may be inaccurate.
+        </div>
+      )}
+
+      {/* Registry error */}
+      {registryError && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
+          {registryError}
+        </div>
+      )}
+
       {/* Module grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((m) => (
@@ -162,7 +199,7 @@ export default function MarketplacePage() {
               minTier={m.minTier}
               price={m.price}
               agentName={m.agentName}
-              installed={installed.has(m.moduleType)}
+              installed={installedStatus === "failed" ? false : installed.has(m.moduleType)}
               installing={installing === m.moduleType}
               onInstall={() => { handleInstall(m.moduleType); }}
             />
@@ -170,7 +207,7 @@ export default function MarketplacePage() {
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {!registryError && filtered.length === 0 && (
         <div className="text-center py-12">
           <p className="text-sm text-gray-400">
             No modules match your search.

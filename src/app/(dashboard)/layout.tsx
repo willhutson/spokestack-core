@@ -101,6 +101,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [chatInitMessage, setChatInitMessage] = useState("");
   const [sessionChecked, setSessionChecked] = useState(false);
   const [installedModules, setInstalledModules] = useState<InstalledModule[]>([]);
+  const [billingTier, setBillingTier] = useState<string>("FREE");
 
   // Listen for "open chat with context" events from module pages
   useEffect(() => {
@@ -146,7 +147,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.replace("/login");
       } else {
         setSessionChecked(true);
-        fetchModules(session.access_token);
+        const authHeaders = { Authorization: `Bearer ${session.access_token}` };
+
+        // Fetch installed modules for the nav
+        fetch("/api/v1/modules/installed", { headers: authHeaders })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.installed) setInstalledModules(data.installed);
+          })
+          .catch(() => {});
+
+        // Fetch billing tier for nav lock/unlock logic
+        fetch("/api/v1/billing", { headers: authHeaders })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.tier) setBillingTier(data.tier);
+          })
+          .catch(() => {
+            // Default to FREE on failure (already set)
+          });
       }
     });
   }, [router]);
@@ -176,6 +195,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           installed={installedModules}
           allModules={ALL_MODULES}
           currentPath={pathname}
+          tier={billingTier}
         />
 
         {/* User section */}
