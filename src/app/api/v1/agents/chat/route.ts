@@ -1,9 +1,9 @@
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { unauthorized, error } from "@/lib/api";
 import { detectCorrection } from "@/lib/context/correction-detector";
-import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 
 /**
  * POST /api/v1/agents/chat
@@ -74,38 +74,105 @@ export async function POST(req: NextRequest) {
     return error("Agent runtime not configured", 503);
   }
 
-  const runtimeResponse = await fetch(`${runtimeUrl}/agent/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Agent-Secret": runtimeSecret,
-    },
-    body: JSON.stringify({
-      message,
-      sessionId,
-      orgId: auth.organizationId,
-      userId: auth.user.id,
-      surface: surface ?? "WEB",
-      metadata: {
-        instructions:
-          "CRITICAL: Only call create_task, create_project, or create_brief ONCE per user request. " +
-          "If the entity was already created in this session and you need to add more details, " +
-          "use update_task, update_project, or update_brief instead. " +
-          "Never create duplicate entities.",
-      },
-    }),
-  });
-
-  if (!runtimeResponse.ok) {
-    return error("Agent runtime error", runtimeResponse.status);
+  // Fetch org details for agent-builder
+  let orgTier = "FREE";
+  let orgName = "";
+  try {
+    const org = await prisma.organization.findUnique({
+      where: { id: auth.organizationId },
+      include: { billingAccount: true },
+    });
+    orgTier = org?.billingAccount?.tier ?? "FREE";
+    orgName = org?.name ?? "";
+  } catch (e) {
+    console.error("Failed to fetch org:", e);
   }
 
-  // Fire-and-forget: update Mission Control canvas after agent interaction
-  updateCanvasFromAgentAction(auth.organizationId, {}).catch(() => {});
+  const requestBody = {
+    task: message,
+    org_id: auth.organizationId,
+    org_name: orgName,
+    org_tier: orgTier,
+    user_id: auth.user.id,
+    session_id: sessionId,
+    surface: surface ?? "WEB",
+    stream: false,
+    metadata: {
+      instructions:
+        "CRITICAL: Only call create_task, create_project, or create_brief ONCE per user request. " +
+        "If the entity was already created in this session and you need to add more details, " +
+        "use update_task, update_project, or update_brief instead. " +
+        "Never create duplicate entities.",
+    },
+  };
 
-  // Forward the SSE stream verbatim — this passes through all event types
-  // including text, tool_progress, handoff, and done events
-  return new Response(runtimeResponse.body, {
+  let runtimeResponse: Response;
+  try {
+    runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Agent-Secret": runtimeSecret,
+      },
+      body: JSON.stringify(requestBody),
+    });
+  } catch (fetchErr) {
+    console.error("Failed to reach agent runtime:", fetchErr);
+    return error("Cannot reach agent runtime", 503);
+  }
+
+  if (!runtimeResponse.ok) {
+    const errText = await runtimeResponse.text().catch(() => "Unknown error");
+    console.error(`Agent runtime error ${runtimeResponse.status}: ${errText}`);
+    return error(`Agent runtime error: ${errText}`, runtimeResponse.status);
+  }
+
+  let result: Record<string, unknown>;
+  try {
+    result = await runtimeResponse.json();
+  } catch (parseErr) {
+    console.error("Failed to parse agent response:", parseErr);
+    return error("Invalid agent response", 502);
+  }
+
+  // Handle gated responses
+  if (result.status === "gated") {
+    return Response.json({
+      type: "upgrade",
+      content: result.upgrade_message,
+    });
+  }
+
+  // Handle handoff responses
+  if (result.status === "handoff") {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "handoff", target_agent: result.target_agent, context_summary: result.context_summary, reason: result.reason })}\n\n`));
+        controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+        controller.close();
+      },
+    });
+    return new Response(stream, {
+      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
+    });
+  }
+
+  // Fire-and-forget: update Mission Control canvas
+  updateCanvasFromAgentAction(auth.organizationId, result as Record<string, unknown>).catch(() => {});
+
+  // Return agent response as SSE format
+  const responseText = (result.output as string) ?? "I'm not sure how to help with that.";
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "text", content: responseText })}\n\n`));
+      controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

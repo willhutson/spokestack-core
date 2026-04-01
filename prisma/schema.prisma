@@ -123,6 +123,7 @@ enum AgentType {
   PROJECTS
   BRIEFS
   ORDERS
+  CLIENT_PORTAL
   MODULE
 }
 
@@ -205,8 +206,6 @@ enum ModuleType {
   PROJECTS
   BRIEFS
   ORDERS
-
-  // Marketplace
   CRM
   SOCIAL_PUBLISHING
   CONTENT_STUDIO
