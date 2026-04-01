@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TaskCard, { type Task } from "./components/task-card";
 import TaskForm from "./components/task-form";
 import TaskActions from "./components/task-actions";
@@ -10,20 +10,59 @@ import { createClient } from "@/lib/supabase/client";
 type Column = { key: Task["status"]; label: string };
 
 const COLUMNS: Column[] = [
-  { key: "todo", label: "To Do" },
-  { key: "in_progress", label: "In Progress" },
-  { key: "done", label: "Done" },
+  { key: "TODO", label: "To Do" },
+  { key: "IN_PROGRESS", label: "In Progress" },
+  { key: "DONE", label: "Done" },
 ];
+
+type FilterKey = "all" | "high" | "mine" | "due_week";
+
+const FILTERS: { key: FilterKey; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "high", label: "High Priority" },
+  { key: "mine", label: "My Tasks" },
+  { key: "due_week", label: "Due This Week" },
+];
+
+async function getAuthHeaders() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (session) {
+    headers["Authorization"] = `Bearer ${session.access_token}`;
+  }
+  return headers;
+}
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
+  const [inlineColumn, setInlineColumn] = useState<Task["status"] | null>(null);
+  const [inlineValue, setInlineValue] = useState("");
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function init() {
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setCurrentUser(session.user.email);
+      }
+    }
+    init();
+  }, []);
 
   useEffect(() => {
     async function loadTasks() {
       try {
-        const res = await fetch("/api/v1/tasks");
+        const headers = await getAuthHeaders();
+        const res = await fetch("/api/v1/tasks", { headers });
         if (res.ok) {
           const data = await res.json();
           setTasks(data.tasks ?? data ?? []);
@@ -46,16 +85,17 @@ export default function TasksPage() {
     listName: string;
   }) {
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch("/api/v1/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           title: formData.title,
           description: formData.description,
           assignee: formData.assignee || undefined,
           dueDate: formData.dueDate || undefined,
           priority: formData.priority,
-          status: "todo",
+          status: "TODO",
           listName: formData.listName || undefined,
         }),
       });
@@ -69,8 +109,80 @@ export default function TasksPage() {
     setShowForm(false);
   }
 
+  async function handleInlineCreate(status: Task["status"]) {
+    const title = inlineValue.trim();
+    if (!title) {
+      setInlineColumn(null);
+      setInlineValue("");
+      return;
+    }
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/tasks", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ title, status, priority: "medium" }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        setTasks((prev) => [...prev, created]);
+      }
+    } catch {
+      // handle error
+    }
+    setInlineColumn(null);
+    setInlineValue("");
+  }
+
+  async function handleDeleteTask(task: Task) {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`/api/v1/tasks/${task.id}`, {
+        method: "DELETE",
+        headers,
+      });
+      if (res.ok) {
+        setTasks((prev) => prev.filter((t) => t.id !== task.id));
+      }
+    } catch {
+      // handle error
+    }
+  }
+
+  const filterTasks = useCallback(
+    (list: Task[]): Task[] => {
+      switch (activeFilter) {
+        case "high":
+          return list.filter(
+            (t) => t.priority === "high" || t.priority === "urgent"
+          );
+        case "mine":
+          return currentUser
+            ? list.filter(
+                (t) =>
+                  t.assignee?.toLowerCase() === currentUser.toLowerCase()
+              )
+            : list;
+        case "due_week": {
+          const now = new Date();
+          const endOfWeek = new Date(now);
+          endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
+          endOfWeek.setHours(23, 59, 59, 999);
+          return list.filter((t) => {
+            if (!t.dueDate) return false;
+            const d = new Date(t.dueDate);
+            return d >= now && d <= endOfWeek;
+          });
+        }
+        default:
+          return list;
+      }
+    },
+    [activeFilter, currentUser]
+  );
+
   function tasksByStatus(status: Task["status"]): Task[] {
-    return tasks.filter((t) => t.status === status);
+    return filterTasks(tasks.filter((t) => t.status === status));
   }
 
   return (
@@ -85,42 +197,65 @@ export default function TasksPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => openChatWithContext("Summarize my current tasks and priorities")}
+            onClick={() =>
+              openChatWithContext(
+                "Summarize my current tasks and priorities"
+              )
+            }
             className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+              />
             </svg>
-            Agent Summary
-          </button>
-          <button
-            onClick={async () => {
-              const supabase = createClient();
-              const { data: { session } } = await supabase.auth.getSession();
-              if (session) {
-                await fetch("/api/v1/mission-control", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-                });
-              }
-            }}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3" />
-            </svg>
-            Send to Canvas
+            Ask Agent
           </button>
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
             </svg>
             Add Task
           </button>
         </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 mb-4">
+        {FILTERS.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setActiveFilter(f.key)}
+            className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+              activeFilter === f.key
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
       {/* Kanban board */}
@@ -133,39 +268,84 @@ export default function TasksPage() {
           {COLUMNS.map((col) => {
             const colTasks = tasksByStatus(col.key);
             return (
-              <div key={col.key} className="flex flex-col bg-gray-100 rounded-xl">
+              <div
+                key={col.key}
+                className="flex flex-col bg-gray-50 rounded-xl border border-gray-200"
+              >
                 {/* Column header */}
                 <div className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-semibold text-gray-700">{col.label}</h3>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      {col.label}
+                    </h3>
                     <span className="text-xs font-medium text-gray-400 bg-gray-200 rounded-full px-2 py-0.5">
                       {colTasks.length}
                     </span>
                   </div>
-                  {col.key === "todo" && (
-                    <button
-                      onClick={() => setShowForm(true)}
-                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                  <button
+                    onClick={() => {
+                      setInlineColumn(col.key);
+                      setInlineValue("");
+                    }}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    title={`Add task to ${col.label}`}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                    </button>
-                  )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </button>
                 </div>
 
                 {/* Cards */}
                 <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-2">
-                  {colTasks.length === 0 ? (
+                  {/* Inline creation input */}
+                  {inlineColumn === col.key && (
+                    <div className="bg-white border border-indigo-300 rounded-lg p-2 shadow-sm">
+                      <input
+                        type="text"
+                        autoFocus
+                        value={inlineValue}
+                        onChange={(e) => setInlineValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleInlineCreate(col.key);
+                          if (e.key === "Escape") {
+                            setInlineColumn(null);
+                            setInlineValue("");
+                          }
+                        }}
+                        onBlur={() => handleInlineCreate(col.key)}
+                        placeholder="Task title... (Enter to save)"
+                        className="w-full text-sm text-gray-900 placeholder-gray-400 outline-none bg-transparent"
+                      />
+                    </div>
+                  )}
+
+                  {colTasks.length === 0 && inlineColumn !== col.key ? (
                     <div className="flex items-center justify-center h-24 border-2 border-dashed border-gray-300 rounded-lg">
                       <p className="text-xs text-gray-400">No tasks</p>
                     </div>
                   ) : (
                     colTasks.map((task) => (
                       <div key={task.id} className="relative group">
-                        <TaskCard task={task} />
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <TaskActions task={task} onAskAgent={openChatWithContext} />
+                        <TaskCard
+                          task={task}
+                          onDelete={handleDeleteTask}
+                        />
+                        <div className="absolute top-2 right-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <TaskActions
+                            task={task}
+                            onAskAgent={openChatWithContext}
+                          />
                         </div>
                       </div>
                     ))
@@ -179,7 +359,10 @@ export default function TasksPage() {
 
       {/* Task form modal */}
       {showForm && (
-        <TaskForm onSubmit={handleCreateTask} onCancel={() => setShowForm(false)} />
+        <TaskForm
+          onSubmit={handleCreateTask}
+          onCancel={() => setShowForm(false)}
+        />
       )}
     </div>
   );

@@ -1,20 +1,25 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
+import StatusBadge from "@/components/shared/StatusBadge";
+import PhasesTimeline from "@/components/shared/PhasesTimeline";
+import { openChatWithContext } from "@/lib/chat-event";
+import { createClient } from "@/lib/supabase/client";
 
 interface Artifact {
   id: string;
   name: string;
   type: string;
   url?: string;
-  status: "pending" | "uploaded" | "approved" | "rejected";
+  status: string;
   createdAt: string;
 }
 
 interface BriefPhase {
   id: string;
   name: string;
-  status: "pending" | "active" | "completed";
+  status: string;
   order: number;
 }
 
@@ -22,38 +27,50 @@ interface BriefDetail {
   id: string;
   title: string;
   description?: string;
-  status: "draft" | "in_review" | "approved" | "active" | "completed";
+  status: string;
   clientName?: string;
   phases: BriefPhase[];
   artifacts: Artifact[];
-  reviewStatus?: "pending" | "changes_requested" | "approved";
+  reviewStatus?: string;
   reviewNotes?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-const ARTIFACT_STATUS_STYLES: Record<Artifact["status"], { bg: string; text: string }> = {
-  pending: { bg: "bg-gray-100", text: "text-gray-600" },
-  uploaded: { bg: "bg-blue-100", text: "text-blue-700" },
-  approved: { bg: "bg-green-100", text: "text-green-700" },
-  rejected: { bg: "bg-red-100", text: "text-red-700" },
+const ARTIFACT_TYPE_STYLES: Record<string, string> = {
+  image: "bg-purple-50 text-purple-600",
+  document: "bg-blue-50 text-blue-600",
+  video: "bg-pink-50 text-pink-600",
+  audio: "bg-amber-50 text-amber-600",
 };
 
-const REVIEW_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  pending: { bg: "bg-yellow-50", text: "text-yellow-700", label: "Pending Review" },
-  changes_requested: { bg: "bg-orange-50", text: "text-orange-700", label: "Changes Requested" },
-  approved: { bg: "bg-green-50", text: "text-green-700", label: "Approved" },
-};
+async function getAuthHeaders() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const headers: Record<string, string> = {};
+  if (session) {
+    headers["Authorization"] = `Bearer ${session.access_token}`;
+  }
+  return headers;
+}
 
-export default function BriefDetailPage({ params }: { params: Promise<{ briefId: string }> }) {
+export default function BriefDetailPage({
+  params,
+}: {
+  params: Promise<{ briefId: string }>;
+}) {
   const { briefId } = use(params);
+  const router = useRouter();
   const [brief, setBrief] = useState<BriefDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/v1/briefs/${briefId}`);
+        const headers = await getAuthHeaders();
+        const res = await fetch(`/api/v1/briefs/${briefId}`, { headers });
         if (res.ok) {
           setBrief(await res.json());
         }
@@ -69,7 +86,9 @@ export default function BriefDetailPage({ params }: { params: Promise<{ briefId:
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-sm text-gray-400">Loading brief...</div>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-sm text-gray-400">Loading brief...</div>
+        </div>
       </div>
     );
   }
@@ -78,165 +97,147 @@ export default function BriefDetailPage({ params }: { params: Promise<{ briefId:
     return (
       <div className="p-6">
         <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">Brief not found</h3>
-          <p className="text-xs text-gray-500">This brief may have been deleted or you don&apos;t have access.</p>
+          <h3 className="text-sm font-medium text-gray-900 mb-1">
+            Brief not found
+          </h3>
+          <p className="text-xs text-gray-500">
+            This brief may have been deleted or you don&apos;t have access.
+          </p>
         </div>
       </div>
     );
   }
 
-  const reviewInfo = brief.reviewStatus ? REVIEW_STYLES[brief.reviewStatus] : null;
+  const sortedPhases = [...brief.phases].sort(
+    (a, b) => a.order - b.order
+  );
 
   return (
     <div className="p-6">
-      {/* Breadcrumb + Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-          <a href="/briefs" className="hover:text-indigo-600 transition-colors">Briefs</a>
-          <span>/</span>
-          <span className="text-gray-900">{brief.title}</span>
-        </div>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{brief.title}</h1>
-            {brief.description && (
-              <p className="text-sm text-gray-500 mt-1">{brief.description}</p>
-            )}
-            {brief.clientName && (
-              <p className="text-xs text-gray-400 mt-1">Client: {brief.clientName}</p>
-            )}
+      {/* Back button */}
+      <button
+        onClick={() => router.push("/briefs")}
+        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-4"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+        Briefs
+      </button>
+
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {brief.title}
+            </h1>
+            <StatusBadge status={brief.status} />
           </div>
-          {reviewInfo && (
-            <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${reviewInfo.bg} ${reviewInfo.text}`}>
-              {reviewInfo.label}
-            </div>
+          {brief.clientName && (
+            <p className="text-sm text-gray-500 mt-1">
+              Client: {brief.clientName}
+            </p>
           )}
+          {brief.description && (
+            <p className="text-sm text-gray-500 mt-1">
+              {brief.description}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={() =>
+            openChatWithContext(
+              `Give me a summary of the brief "${brief.title}" including phase progress and artifact status`
+            )
+          }
+          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+            />
+          </svg>
+          Ask Agent
+        </button>
+      </div>
+
+      {/* Phases Timeline */}
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <PhasesTimeline phases={sortedPhases} />
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        {/* Left: Phases + Artifacts */}
-        <div className="col-span-2 space-y-6">
-          {/* Phases */}
-          <div>
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
-            {brief.phases.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-xs text-gray-500">No phases defined.</p>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                {brief.phases
-                  .sort((a, b) => a.order - b.order)
-                  .map((phase) => (
-                    <div
-                      key={phase.id}
-                      className={`flex-1 rounded-lg border px-4 py-3 text-center ${
-                        phase.status === "completed"
-                          ? "bg-green-50 border-green-200"
-                          : phase.status === "active"
-                          ? "bg-indigo-50 border-indigo-200"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
+      {/* Artifacts */}
+      <div>
+        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+          Artifacts
+          <span className="ml-2 text-xs font-normal text-gray-400">
+            {brief.artifacts.length} file
+            {brief.artifacts.length !== 1 ? "s" : ""}
+          </span>
+        </h2>
+        {brief.artifacts.length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
+            <p className="text-xs text-gray-500">
+              No artifacts uploaded yet.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
+            {brief.artifacts.map((artifact) => {
+              const typeBg =
+                ARTIFACT_TYPE_STYLES[artifact.type?.toLowerCase()] ??
+                "bg-gray-50 text-gray-600";
+              return (
+                <div
+                  key={artifact.id}
+                  className="px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded ${typeBg}`}
                     >
-                      <div
-                        className={`text-xs font-medium mb-0.5 ${
-                          phase.status === "completed"
-                            ? "text-green-700"
-                            : phase.status === "active"
-                            ? "text-indigo-700"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        Phase {phase.order}
-                      </div>
-                      <div className="text-sm font-medium text-gray-900">{phase.name}</div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Artifacts */}
-          <div>
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">
-              Artifacts
-              <span className="ml-2 text-xs font-normal text-gray-400">
-                {brief.artifacts.length} file{brief.artifacts.length !== 1 ? "s" : ""}
-              </span>
-            </h2>
-            {brief.artifacts.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-xs text-gray-500">No artifacts uploaded yet.</p>
-              </div>
-            ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <div className="divide-y divide-gray-100">
-                  {brief.artifacts.map((artifact) => {
-                    const statusStyle = ARTIFACT_STATUS_STYLES[artifact.status];
-                    return (
-                      <div key={artifact.id} className="px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
-                            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{artifact.name}</p>
-                            <p className="text-xs text-gray-500">{artifact.type}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusStyle.bg} ${statusStyle.text}`}>
-                            {artifact.status.replace("_", " ")}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            {new Date(artifact.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      {artifact.type}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {artifact.name}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <StatusBadge status={artifact.status} />
+                    <span className="text-xs text-gray-400">
+                      {new Date(artifact.createdAt).toLocaleDateString(
+                        "en-US",
+                        { month: "short", day: "numeric" }
+                      )}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })}
           </div>
-        </div>
-
-        {/* Right: Review status sidebar */}
-        <div>
-          <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
-            <div>
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Status</label>
-              <p className="text-sm font-medium text-gray-900 mt-0.5 capitalize">{brief.status.replace("_", " ")}</p>
-            </div>
-            {brief.clientName && (
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Client</label>
-                <p className="text-sm text-gray-900 mt-0.5">{brief.clientName}</p>
-              </div>
-            )}
-            <div>
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Created</label>
-              <p className="text-sm text-gray-900 mt-0.5">
-                {new Date(brief.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-              </p>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</label>
-              <p className="text-sm text-gray-900 mt-0.5">
-                {new Date(brief.updatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-              </p>
-            </div>
-            {brief.reviewNotes && (
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Review Notes</label>
-                <p className="text-sm text-gray-600 mt-1 bg-gray-50 rounded-lg p-3">{brief.reviewNotes}</p>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
