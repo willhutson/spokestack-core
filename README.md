@@ -78,6 +78,40 @@ These decisions recur across documents. They're stated here once as axioms.
 
 ---
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Product Architecture](./docs/product-architecture.md) | Canonical architectural spec — tiers, agents, marketplace, context graph |
+| [API Reference](./docs/API.md) | Full endpoint reference for all 90+ API routes |
+| [Phase 9C Hotfix](./docs/Phase-9C-Database-Hotfix.md) | Database hotfix diagnosis and resolution (April 2026) |
+
+---
+
+## Current Status (Phase 9C — April 2026)
+
+**Deployment:** [spokestack-core.vercel.app](https://spokestack-core.vercel.app)
+**Database:** Supabase (Mumbai `ap-south-1`), Prisma 7 with `@prisma/adapter-pg`
+**Schema:** 39 models, 27 enums — fully synced with production
+
+**What's working:**
+- Dashboard with full sidebar navigation (core + 19 marketplace/enterprise modules)
+- Tasks kanban with drag-and-drop, detail drawer, comments
+- Projects with phases, milestones, canvas
+- Briefs lifecycle with artifacts
+- Orders with invoicing
+- Mission Control with 13 agents, chat, command palette (Cmd+K), notifications
+- Marketplace with install/uninstall, tier gating, demo sandbox
+- Settings (org, billing, members, integrations)
+- Context graph with weekly synthesis
+- Asset management (libraries, folders, versioning, comments)
+- Event system with subscriptions and handler logs
+- Integration framework (Nango-based OAuth)
+
+**Build history:** Phase 2 → 6 → 7 → 8A → 8B → 8C → 9A → 9B → 9C (current)
+
+---
+
 ## Quick Reference — Tier Summary
 
 | | Free | Starter ($29) | Pro ($59) | Business ($149) | Enterprise |
