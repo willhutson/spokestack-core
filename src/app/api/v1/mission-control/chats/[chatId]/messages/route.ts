@@ -79,7 +79,13 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
   });
 
   // ── Determine agent type ────────────────────────────────────────
-  let agentType = session.agentType;
+  // The Prisma enum agentType is "MODULE", "TASKS", etc.
+  // The actual MC agent type ("assistant", "brief_writer") is in metadata
+  const meta = session.metadata as Record<string, unknown> | null;
+  const mcAgentType = (meta?.mcAgentType as string) ?? session.agentType;
+
+  // Use the MC agent type for the system prompt and runtime call
+  let agentType = mcAgentType;
 
   // Try mc-router classification if available
   try {
@@ -87,8 +93,8 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
       "@/lib/mission-control/mc-router"
     );
     const decision = classifyGeneralMC(content);
-    if (decision && decision.confidence > 0.5) {
-      agentType = decision.selectedAgent as typeof agentType;
+    if (decision && decision.confidence > 0.7) {
+      agentType = decision.selectedAgent;
     }
   } catch {
     // mc-router not available — use session agentType as-is

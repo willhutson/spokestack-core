@@ -33,7 +33,16 @@ export async function GET(req: NextRequest) {
     orderBy: { startedAt: "desc" },
   });
 
-  return json({ chats });
+  // Enrich with MC agent type from metadata
+  const enriched = chats.map((c) => ({
+    ...c,
+    agentType: (c.metadata as Record<string, unknown>)?.mcAgentType ?? c.agentType,
+    title: (c.metadata as Record<string, unknown>)?.title ?? `${c.agentType} Chat`,
+    status: c.endedAt ? "archived" : "active",
+    agentStatus: "idle",
+  }));
+
+  return json({ chats: enriched });
 }
 
 /**
@@ -51,16 +60,30 @@ export async function POST(req: NextRequest) {
     return error("agentType is required");
   }
 
-  const metadata: Record<string, unknown> = {};
+  // MC sends agent types like "assistant", "brief_writer", "analyst" etc.
+  // But Prisma AgentType enum only has: ONBOARDING, TASKS, PROJECTS, BRIEFS, ORDERS, MODULE
+  // Map MC types to the closest Prisma enum value, store the full type in metadata
+  const PRISMA_AGENT_MAP: Record<string, string> = {
+    onboarding: "ONBOARDING",
+    "core_onboarding": "ONBOARDING",
+    tasks: "TASKS",
+    projects: "PROJECTS",
+    briefs: "BRIEFS",
+    brief_writer: "BRIEFS",
+    orders: "ORDERS",
+  };
+  const prismaAgentType = PRISMA_AGENT_MAP[agentType] ?? "MODULE";
+
+  const metadata: Record<string, unknown> = { mcAgentType: agentType };
   if (title) metadata.title = title;
 
   const chat = await prisma.agentSession.create({
     data: {
       organizationId: auth.organizationId,
       userId: auth.user.id,
-      agentType,
+      agentType: prismaAgentType as any,
       surface: "WEB",
-      metadata: (Object.keys(metadata).length > 0 ? metadata : undefined) as any,
+      metadata: metadata as any,
     },
     include: {
       _count: { select: { messages: true } },

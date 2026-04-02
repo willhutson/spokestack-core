@@ -29,7 +29,16 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
 
   if (!chat) return error("Chat not found", 404);
 
-  return json({ chat });
+  const meta = chat.metadata as Record<string, unknown> | null;
+  const enriched = {
+    ...chat,
+    agentType: meta?.mcAgentType ?? chat.agentType,
+    title: meta?.title ?? `${chat.agentType} Chat`,
+    status: chat.endedAt ? "archived" : "active",
+    agentStatus: "idle",
+  };
+
+  return json(enriched);
 }
 
 /**
