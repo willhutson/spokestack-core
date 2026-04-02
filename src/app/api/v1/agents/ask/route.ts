@@ -1,22 +1,60 @@
-import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, unauthorized, error } from "@/lib/api";
-import { prisma } from "@/lib/prisma";
+import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
 
 /**
  * POST /api/v1/agents/ask
  * One-shot agent query (no streaming). Returns full response.
- * Proxies to ongoing-agent-builder's /api/v1/core/execute endpoint.
+ *
+ * Tries `agent-builder-client` first, falls back to direct fetch.
  */
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
   const body = await req.json();
-  const { message, surface, agentType: requestedAgent } = body;
+  const { message, surface, agentType } = body;
 
   if (!message) return error("message is required");
+
+  const payload = {
+    message,
+    orgId: auth.organizationId,
+    userId: auth.user.id,
+    surface: surface ?? "CLI",
+    metadata: {
+      agentType: agentType ?? "general",
+      instructions:
+        "CRITICAL: Only call create_task, create_project, or create_brief ONCE per user request. " +
+        "If the entity was already created in this session and you need to add more details, " +
+        "use update_task, update_project, or update_brief instead. " +
+        "Never create duplicate entities.",
+    },
+  };
+
+  // ── Try agent-builder-client, fall back to direct fetch ─────────
+  try {
+    const { executeAgent } = await import(
+      "@/lib/mission-control/agent-builder-client"
+    );
+
+    const result = await executeAgent({
+      agentType: (payload.metadata.agentType ?? "general") as import("@/lib/agents/types").AgentType,
+      prompt: payload.message,
+      organizationId: payload.orgId,
+      userId: payload.userId,
+      context: payload.metadata as Record<string, unknown>,
+      stream: false,
+    });
+
+    // Fire-and-forget: update Mission Control canvas
+    updateCanvasFromAgentAction(auth.organizationId, result as unknown as Record<string, unknown>).catch(() => {});
+
+    return json(result);
+  } catch {
+    // agent-builder-client not available — fall back to direct fetch
+  }
 
   const runtimeUrl = process.env.AGENT_RUNTIME_URL;
   const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
@@ -25,90 +63,23 @@ export async function POST(req: NextRequest) {
     return error("Agent runtime not configured", 503);
   }
 
-  // Fetch org details for agent-builder
-  let orgTier = "FREE";
-  let orgName = "";
-  try {
-    const org = await prisma.organization.findUnique({
-      where: { id: auth.organizationId },
-      include: { billingAccount: true },
-    });
-    orgTier = org?.billingAccount?.tier ?? "FREE";
-    orgName = org?.name ?? "";
-  } catch (e) {
-    console.error("Failed to fetch org:", e);
-  }
-
-  let runtimeResponse: Response;
-  try {
-    runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Agent-Secret": runtimeSecret,
-      },
-      body: JSON.stringify({
-        task: message,
-        agent_type: requestedAgent?.toUpperCase(),
-        org_id: auth.organizationId,
-        org_name: orgName,
-        org_tier: orgTier,
-        user_id: auth.user.id,
-        surface: surface || "WEB",
-        stream: false,
-        metadata: {
-          instructions:
-            "CRITICAL: Only call create_task, create_project, or create_brief ONCE per user request. " +
-            "If the entity was already created in this session and you need to add more details, " +
-            "use update_task, update_project, or update_brief instead. " +
-            "Never create duplicate entities.",
-        },
-      }),
-    });
-  } catch (fetchErr) {
-    console.error("Failed to reach agent runtime:", fetchErr);
-    return error("Cannot reach agent runtime", 503);
-  }
+  const runtimeResponse = await fetch(`${runtimeUrl}/agent/ask`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Agent-Secret": runtimeSecret,
+    },
+    body: JSON.stringify(payload),
+  });
 
   if (!runtimeResponse.ok) {
-    const errText = await runtimeResponse.text().catch(() => "Unknown error");
-    console.error(`Agent runtime error ${runtimeResponse.status}: ${errText}`);
-    return error(`Agent runtime error: ${errText}`, runtimeResponse.status);
+    return error("Agent runtime error", runtimeResponse.status);
   }
 
-  let result: Record<string, unknown>;
-  try {
-    result = await runtimeResponse.json();
-  } catch (parseErr) {
-    console.error("Failed to parse agent response:", parseErr);
-    return error("Invalid agent response", 502);
-  }
-
-  if (result.status === "gated") {
-    return json({
-      type: "upgrade",
-      content: result.upgrade_message,
-      // CLI-compatible fields
-      response: result.upgrade_message,
-      agentType: requestedAgent || "tasks",
-      upgradeRequired: true,
-      requiredTier: result.required_tier,
-      message: result.upgrade_message,
-    }, 403);
-  }
+  const data = await runtimeResponse.json();
 
   // Fire-and-forget: update Mission Control canvas
-  updateCanvasFromAgentAction(auth.organizationId, result as Record<string, unknown>).catch(() => {});
+  updateCanvasFromAgentAction(auth.organizationId, data).catch(() => {});
 
-  const responseText = result.output ?? "I'm not sure how to help with that.";
-
-  return json({
-    // Web-compatible fields
-    type: "text",
-    content: responseText,
-    // CLI-compatible fields
-    response: responseText,
-    agentType: requestedAgent || "tasks",
-    actions: result.actions || [],
-  });
+  return json(data);
 }

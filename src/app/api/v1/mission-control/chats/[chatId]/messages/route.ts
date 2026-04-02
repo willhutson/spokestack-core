@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
+import { getAgentSystemPrompt } from "@/lib/mission-control/onboarding-agent-prompt";
 
 interface RouteContext {
   params: Promise<{ chatId: string }>;
@@ -44,6 +45,9 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
 /**
  * POST /api/v1/mission-control/chats/[chatId]/messages
  * Send a message and stream the agent response via SSE.
+ *
+ * Uses agent-builder-client when available, otherwise falls back to
+ * direct agent runtime fetch or OpenAI.
  */
 export async function POST(req: NextRequest, ctx: RouteContext) {
   const auth = await authenticate(req);
@@ -74,7 +78,32 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
     },
   });
 
-  const agentType = session.agentType;
+  // ── Determine agent type ────────────────────────────────────────
+  let agentType = session.agentType;
+
+  // Try mc-router classification if available
+  try {
+    const { classifyGeneralMC } = await import(
+      "@/lib/mission-control/mc-router"
+    );
+    const decision = classifyGeneralMC(content);
+    if (decision && decision.confidence > 0.5) {
+      agentType = decision.selectedAgent as typeof agentType;
+    }
+  } catch {
+    // mc-router not available — use session agentType as-is
+  }
+
+  const systemPrompt = getAgentSystemPrompt(agentType);
+
+  // Build conversation history for the LLM
+  const history = [
+    ...session.messages.map((m) => ({
+      role: m.role === "USER" ? ("user" as const) : ("assistant" as const),
+      content: m.content,
+    })),
+    { role: "user" as const, content },
+  ];
 
   const encoder = new TextEncoder();
 
@@ -91,24 +120,50 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
       let fullResponse = "";
 
       try {
-        const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
-
-        if (agentBuilderUrl) {
-          fullResponse = await streamFromAgentBuilder(
+        // Priority 1: agent-builder-client
+        let usedClient = false;
+        try {
+          const { executeAgentStream } = await import(
+            "@/lib/mission-control/agent-builder-client"
+          );
+          fullResponse = await streamFromBuilderClient(
             controller,
             sseEvent,
-            agentBuilderUrl,
-            content,
-            chatId,
-            agentType,
-            auth.organizationId,
-            auth.user.id
+            executeAgentStream,
+            systemPrompt,
+            history,
+            agentType as import("@/lib/agents/types").AgentType,
+            auth.organizationId
           );
-        } else {
-          // No agent builder configured
-          fullResponse =
-            "The agent runtime is not connected yet. Set AGENT_BUILDER_URL in your environment to enable AI chat.";
-          controller.enqueue(sseEvent("chunk", { text: fullResponse }));
+          usedClient = true;
+        } catch {
+          // agent-builder-client not available — continue to fallbacks
+        }
+
+        if (!usedClient) {
+          if (process.env.AGENT_RUNTIME_URL) {
+            // Priority 2: direct agent runtime
+            fullResponse = await streamFromAgentRuntime(
+              controller,
+              sseEvent,
+              systemPrompt,
+              history,
+              agentType,
+              auth.organizationId
+            );
+          } else if (process.env.OPENAI_API_KEY) {
+            // Priority 3: direct OpenAI call
+            fullResponse = await streamFromOpenAI(
+              controller,
+              sseEvent,
+              systemPrompt,
+              history
+            );
+          } else {
+            fullResponse =
+              "I'm not connected to an AI backend yet. Please configure AGENT_RUNTIME_URL or OPENAI_API_KEY.";
+            controller.enqueue(sseEvent("chunk", { text: fullResponse }));
+          }
         }
 
         // Save agent message
@@ -146,58 +201,105 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
 }
 
 // ---------------------------------------------------------------------------
-// Agent builder streaming helper
+// Streaming helpers
 // ---------------------------------------------------------------------------
 
-async function streamFromAgentBuilder(
+async function streamFromBuilderClient(
   controller: ReadableStreamDefaultController,
   sseEvent: (event: string, data: unknown) => Uint8Array,
-  agentBuilderUrl: string,
-  message: string,
-  chatId: string,
-  agentType: string,
-  organizationId: string,
-  userId: string
+  executeAgentStream: typeof import("@/lib/mission-control/agent-builder-client").executeAgentStream,
+  systemPrompt: string,
+  history: { role: string; content: string }[],
+  agentType: import("@/lib/agents/types").AgentType,
+  organizationId: string
 ): Promise<string> {
-  const agentBuilderApiKey = process.env.AGENT_BUILDER_API_KEY;
+  const lastUserMessage = history
+    .slice()
+    .reverse()
+    .find((m) => m.role === "user")?.content ?? "";
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "X-Organization-Id": organizationId,
-    "X-User-Id": userId,
-  };
-  if (agentBuilderApiKey) {
-    headers["X-API-Key"] = agentBuilderApiKey;
-  }
-
-  const res = await fetch(`${agentBuilderUrl}/api/v1/agent/chat`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
+  const result = await executeAgentStream(
+    {
       agentType,
-      message,
-      chatId,
+      prompt: lastUserMessage,
+      systemPrompt,
+      organizationId,
+      context: { messages: history, agentType },
       stream: true,
-      context: {
-        organizationId,
-        userId,
-      },
+    },
+    (chunk, event) => {
+      controller.enqueue(sseEvent("chunk", { text: chunk, event }));
+    },
+    (artifact) => {
+      controller.enqueue(sseEvent("artifact", artifact));
+    }
+  );
+
+  return result.content;
+}
+
+async function streamFromAgentRuntime(
+  controller: ReadableStreamDefaultController,
+  sseEvent: (event: string, data: unknown) => Uint8Array,
+  systemPrompt: string,
+  history: { role: string; content: string }[],
+  agentType: string,
+  organizationId: string
+): Promise<string> {
+  const res = await fetch(`${process.env.AGENT_RUNTIME_URL}/agent/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemPrompt,
+      messages: history,
+      agentType,
+      organizationId,
+      metadata: { agentType },
     }),
   });
 
-  if (!res.ok) {
-    throw new Error(`Agent builder error: ${res.status}`);
+  if (!res.ok || !res.body) {
+    throw new Error(`Agent runtime error: ${res.status}`);
   }
 
-  if (!res.body) {
-    // Non-streaming JSON response
-    const data = await res.json();
-    const text = data.content || data.text || data.message || "";
-    controller.enqueue(sseEvent("chunk", { text }));
-    return text;
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let full = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    full += chunk;
+    controller.enqueue(sseEvent("chunk", { text: chunk }));
   }
 
-  // Parse SSE stream from agent builder
+  return full;
+}
+
+async function streamFromOpenAI(
+  controller: ReadableStreamDefaultController,
+  sseEvent: (event: string, data: unknown) => Uint8Array,
+  systemPrompt: string,
+  history: { role: string; content: string }[]
+): Promise<string> {
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      stream: true,
+      messages: [{ role: "system", content: systemPrompt }, ...history],
+    }),
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(`OpenAI error: ${res.status}`);
+  }
+
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let full = "";
@@ -213,31 +315,19 @@ async function streamFromAgentBuilder(
 
     for (const line of lines) {
       const trimmed = line.trim();
+      if (!trimmed.startsWith("data: ")) continue;
+      const payload = trimmed.slice(6);
+      if (payload === "[DONE]") break;
 
-      if (!trimmed || trimmed.startsWith(":")) continue;
-
-      if (trimmed.startsWith("data: ")) {
-        const payload = trimmed.slice(6);
-        if (payload === "[DONE]") continue;
-
-        try {
-          const parsed = JSON.parse(payload);
-
-          // Forward work events (work_start, entity_created, work_complete)
-          if (parsed.type === "work_start" || parsed.type === "entity_created" || parsed.type === "work_complete") {
-            controller.enqueue(sseEvent(parsed.type, parsed));
-            continue;
-          }
-
-          // Extract text from flexible format
-          const text = parsed.delta || parsed.text || parsed.content || parsed.data?.content;
-          if (text) {
-            full += text;
-            controller.enqueue(sseEvent("chunk", { text }));
-          }
-        } catch {
-          // skip malformed lines
+      try {
+        const parsed = JSON.parse(payload);
+        const delta = parsed.choices?.[0]?.delta?.content;
+        if (delta) {
+          full += delta;
+          controller.enqueue(sseEvent("chunk", { text: delta }));
         }
+      } catch {
+        // skip malformed lines
       }
     }
   }
