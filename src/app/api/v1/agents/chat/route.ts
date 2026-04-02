@@ -158,13 +158,20 @@ export async function POST(req: NextRequest) {
       return error("Agent runtime not configured", 503);
     }
 
-    const runtimeResponse = await fetch(`${runtimeUrl}/agent/chat`, {
+    const runtimeResponse = await fetch(`${runtimeUrl}/api/v1/core/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Agent-Secret": runtimeSecret,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        agent_type: payload.metadata?.agentType ?? "assistant",
+        task: payload.message,
+        tenant_id: payload.orgId,
+        user_id: payload.userId,
+        stream: true,
+        conversation_history: chatHistory ?? [],
+      }),
     });
 
     if (!runtimeResponse.ok) {

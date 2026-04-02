@@ -124,7 +124,7 @@ export async function executeAgentStream(
   onChunk: OnChunkCallback,
   onArtifact?: OnArtifactCallback
 ): Promise<AgentExecutionResponse> {
-  const url = `${AGENT_RUNTIME_URL}/v1/agents/execute`;
+  const url = `${AGENT_RUNTIME_URL}/api/v1/core/execute`;
   const res = await fetch(url, {
     method: "POST",
     headers: runtimeHeaders(),
@@ -203,7 +203,7 @@ export async function executeAgentStream(
 export async function executeAgent(
   req: AgentExecutionRequest
 ): Promise<AgentExecutionResponse> {
-  return runtimeFetch<AgentExecutionResponse>("/v1/agents/execute", {
+  return runtimeFetch<AgentExecutionResponse>("/api/v1/core/execute", {
     method: "POST",
     body: JSON.stringify({ ...req, stream: false }),
   });
@@ -219,7 +219,7 @@ export async function chatWithAgent(
   agentType: AgentType,
   orgId: string
 ): Promise<AgentExecutionResponse> {
-  return runtimeFetch<AgentExecutionResponse>("/v1/agents/chat", {
+  return runtimeFetch<AgentExecutionResponse>("/api/v1/core/execute", {
     method: "POST",
     body: JSON.stringify({
       chatId,
@@ -235,25 +235,25 @@ export async function chatWithAgent(
 // ---------------------------------------------------------------------------
 
 export async function getModules(orgId: string): Promise<AgentModule[]> {
-  return runtimeFetch<AgentModule[]>(`/v1/organizations/${orgId}/modules`);
+  return runtimeFetch<AgentModule[]>(`/api/v1/modules`);
 }
 
 export async function getModuleAgents(
   moduleType: string,
   orgId: string
 ): Promise<{ primaryAgent: string; secondaryAgents: string[] }> {
-  return runtimeFetch(`/v1/organizations/${orgId}/modules/${moduleType}/agents`);
+  return runtimeFetch(`/api/v1/modules/${moduleType}/agents`);
 }
 
 export async function getSkills(orgId: string): Promise<AgentSkill[]> {
-  return runtimeFetch<AgentSkill[]>(`/v1/organizations/${orgId}/skills`);
+  return runtimeFetch<AgentSkill[]>(`/api/v1/skills`);
 }
 
 export async function getKnowledgeDocuments(
   orgId: string
 ): Promise<KnowledgeDocument[]> {
   return runtimeFetch<KnowledgeDocument[]>(
-    `/v1/organizations/${orgId}/knowledge`
+    `/api/v1/orgs/${orgId}/knowledge`
   );
 }
 
@@ -268,7 +268,7 @@ export async function executeAgentAsk(payload: {
   surface: string;
   metadata?: Record<string, unknown>;
 }): Promise<Response> {
-  const url = `${AGENT_RUNTIME_URL}/agent/ask`;
+  const url = `${AGENT_RUNTIME_URL}/api/v1/core/execute`;
   return fetch(url, {
     method: "POST",
     headers: {
@@ -287,7 +287,7 @@ export async function executeAgentAsk(payload: {
 
 export async function isAgentRuntimeAvailable(): Promise<boolean> {
   try {
-    const url = `${AGENT_RUNTIME_URL}/health`;
+    const url = `${AGENT_RUNTIME_URL}/api/v1/health`;
     const res = await fetch(url, {
       method: "GET",
       headers: runtimeHeaders(),
