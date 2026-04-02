@@ -1,119 +1,88 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
-
-const ONBOARDING_SYSTEM_PROMPT = `You are SpokeStack's onboarding agent. You help new users discover which SpokeStack workflows fit their business.
-
-SpokeStack has four core workflows:
-1. **Briefs** — For agencies and creative teams. Manage creative briefs, campaign briefs, content plans.
-2. **Projects** — For digital product and service delivery. Manage project phases, milestones, deadlines.
-3. **Orders** — Custom order management. Create orders with line items, track fulfillment, manage clients.
-4. **Tasks** — Standalone task and todo management. Can be attached to projects, briefs, or orders.
-
-Your job:
-1. Ask warm, open-ended questions to understand the user's business.
-2. Based on their answers, recommend the right workflow(s).
-3. Offer to connect their tools: "Want me to pull in your Google Drive? Connect your Slack?"
-4. Once you know what they need, offer to create their first entity FROM the conversation.
-5. When you want to CREATE an entity, include a JSON block in your response:
-<action>{"type":"CREATE_BRIEF","data":{"title":"...","description":"..."}}</action>
-<action>{"type":"CREATE_PROJECT","data":{"name":"...","description":"..."}}</action>
-<action>{"type":"CREATE_TASK","data":{"title":"..."}}</action>
-<action>{"type":"CREATE_ORDER","data":{"notes":"...","items":[{"description":"...","quantity":1,"unitPriceCents":5000}]}}</action>
-6. When onboarding is COMPLETE: <action>{"type":"COMPLETE_ONBOARDING"}</action>
-7. For integration connections: <action>{"type":"CONNECT_INTEGRATION","provider":"google_drive"}</action>
-
-Keep responses under 200 words. Be warm, not salesy. Discover needs first.`;
+import { ONBOARDING_SYSTEM_PROMPT } from "@/lib/mission-control/onboarding-agent-prompt";
 
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req as any);
   if (!auth) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
   }
 
   const { messages } = await req.json();
+  const runtimeUrl = process.env.AGENT_RUNTIME_URL;
+  const runtimeSecret = process.env.AGENT_RUNTIME_SECRET;
 
-  const agentBuilderUrl = process.env.AGENT_BUILDER_URL;
-  const agentBuilderApiKey = process.env.AGENT_BUILDER_API_KEY;
-
-  if (agentBuilderUrl) {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      "X-Organization-Id": auth.organizationId,
-      "X-User-Id": auth.user.id,
-    };
-    if (agentBuilderApiKey) {
-      headers["X-API-Key"] = agentBuilderApiKey;
-    }
-
-    const runtimeResponse = await fetch(`${agentBuilderUrl}/api/v1/agent/chat`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        agentType: "onboarding",
-        message: messages[messages.length - 1]?.content ?? "",
-        stream: true,
-        context: {
-          organizationId: auth.organizationId,
-          userId: auth.user.id,
-          systemPrompt: ONBOARDING_SYSTEM_PROMPT,
-          conversationHistory: messages,
-        },
+  if (!runtimeUrl) {
+    return new Response(
+      JSON.stringify({
+        error:
+          "Agent runtime not configured. Set AGENT_RUNTIME_URL to connect to ongoing_agent_builder.",
       }),
-    });
-
-    if (runtimeResponse.ok && runtimeResponse.body) {
-      return new Response(runtimeResponse.body, {
-        headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          Connection: "keep-alive",
-        },
-      });
-    }
+      { status: 503 }
+    );
   }
 
-  // Fallback: echo-style response for dev/testing
-  const userMessage = messages[messages.length - 1]?.content ?? "";
-  const fallbackResponse = generateFallbackResponse(userMessage, messages.length);
-  const encoder = new TextEncoder();
+  // Route through ongoing_agent_builder's execute endpoint
+  // The runtime uses OpenRouter internally — no OpenAI key needed
+  const runtimeResponse = await fetch(
+    `${runtimeUrl}/api/v1/core/execute`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(runtimeSecret
+          ? { "X-Agent-Secret": runtimeSecret }
+          : {}),
+      },
+      body: JSON.stringify({
+        agent_type: "core_onboarding",
+        task: messages[messages.length - 1]?.content ?? "",
+        conversation_history: messages.map(
+          (m: { role: string; content: string }) => ({
+            role: m.role,
+            content: m.content,
+          })
+        ),
+        tenant_id: auth.organizationId,
+        user_id: auth.user.id,
+        stream: true,
+        metadata: {
+          systemPrompt: ONBOARDING_SYSTEM_PROMPT,
+          surface: "WEB",
+        },
+      }),
+    }
+  );
 
-  const stream = new ReadableStream({
-    start(controller) {
-      const words = fallbackResponse.split(" ");
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < words.length) {
-          const text = (i === 0 ? "" : " ") + words[i];
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
-          i++;
-        } else {
-          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-          controller.close();
-          clearInterval(interval);
-        }
-      }, 50);
-    },
-  });
+  if (!runtimeResponse.ok) {
+    const errBody = await runtimeResponse.text().catch(() => "");
+    console.error(
+      `[onboarding/chat] Agent runtime error: ${runtimeResponse.status} — ${errBody}`
+    );
+    return new Response(
+      JSON.stringify({
+        error: `Agent runtime returned ${runtimeResponse.status}`,
+        detail: errBody,
+      }),
+      { status: 502 }
+    );
+  }
 
-  return new Response(stream, {
+  if (!runtimeResponse.body) {
+    return new Response(
+      JSON.stringify({ error: "No response body from agent runtime" }),
+      { status: 502 }
+    );
+  }
+
+  // Forward the SSE stream directly
+  return new Response(runtimeResponse.body, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
     },
   });
-}
-
-function generateFallbackResponse(userMessage: string, messageCount: number): string {
-  if (messageCount <= 2) {
-    return "That's great to hear! Tell me more about what kind of work your team does day-to-day. Are you managing client projects, running campaigns, processing orders, or something else?";
-  }
-  if (messageCount <= 4) {
-    return "Sounds like **Projects** and **Tasks** would be a great fit for your workflow. Would you like me to create your first project? Just give me a name and a quick description.";
-  }
-  if (messageCount <= 6) {
-    return "I've noted that down. Would you also like to connect any tools you're already using — like Google Drive, Slack, or Asana? I can set that up in a couple of clicks.";
-  }
-  return `Great — you're all set up! Your workspace is ready to go. <action>{"type":"COMPLETE_ONBOARDING"}</action>`;
 }
