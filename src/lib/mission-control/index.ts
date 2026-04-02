@@ -1,3 +1,10 @@
 export * from "./types";
 export * from "./constants";
 export { getAgentSystemPrompt, ONBOARDING_SYSTEM_PROMPT } from "./onboarding-agent-prompt";
+export * from "./agent-builder-client";
+export * from "./mc-router";
+export * from "./agent-prompts";
+export * from "./handoff-executors";
+export * from "./artifact-extraction";
+export * from "./knowledge-context";
+export * from "./quick-replies";

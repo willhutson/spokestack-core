@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import StatusBadge from "@/components/shared/StatusBadge";
+import BriefCreateForm from "@/components/modules/briefs/BriefCreateForm";
 import { openChatWithContext } from "@/lib/chat-event";
 import { createClient } from "@/lib/supabase/client";
 
@@ -33,24 +34,32 @@ export default function BriefsPage() {
   const router = useRouter();
   const [briefs, setBriefs] = useState<Brief[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  const loadBriefs = useCallback(async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/briefs", { headers });
+      if (res.ok) {
+        const data = await res.json();
+        setBriefs(data.briefs ?? data ?? []);
+      }
+    } catch {
+      // API not available
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const headers = await getAuthHeaders();
-        const res = await fetch("/api/v1/briefs", { headers });
-        if (res.ok) {
-          const data = await res.json();
-          setBriefs(data.briefs ?? data ?? []);
-        }
-      } catch {
-        // API not available
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+    loadBriefs();
+  }, [loadBriefs]);
+
+  function handleBriefCreated() {
+    setShowCreateForm(false);
+    setLoading(true);
+    loadBriefs();
+  }
 
   return (
     <div className="p-6">
@@ -86,7 +95,10 @@ export default function BriefsPage() {
             </svg>
             Ask Agent
           </button>
-          <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+          >
             <svg
               className="w-4 h-4"
               fill="none"
@@ -104,6 +116,14 @@ export default function BriefsPage() {
           </button>
         </div>
       </div>
+
+      {/* Create Brief Form */}
+      {showCreateForm && (
+        <BriefCreateForm
+          onCreated={handleBriefCreated}
+          onCancel={() => setShowCreateForm(false)}
+        />
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -132,7 +152,10 @@ export default function BriefsPage() {
           <p className="text-xs text-gray-500 mb-4">
             Create your first brief to start managing creative deliverables.
           </p>
-          <button className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+          >
             Create Brief
           </button>
         </div>

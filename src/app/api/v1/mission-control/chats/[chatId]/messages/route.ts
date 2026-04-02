@@ -45,6 +45,9 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
 /**
  * POST /api/v1/mission-control/chats/[chatId]/messages
  * Send a message and stream the agent response via SSE.
+ *
+ * Uses agent-builder-client when available, otherwise falls back to
+ * direct agent runtime fetch or OpenAI.
  */
 export async function POST(req: NextRequest, ctx: RouteContext) {
   const auth = await authenticate(req);
@@ -75,7 +78,22 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
     },
   });
 
-  const agentType = session.agentType;
+  // ── Determine agent type ────────────────────────────────────────
+  let agentType = session.agentType;
+
+  // Try mc-router classification if available
+  try {
+    const { classifyGeneralMC } = await import(
+      "@/lib/mission-control/mc-router"
+    );
+    const decision = classifyGeneralMC(content);
+    if (decision && decision.confidence > 0.5) {
+      agentType = decision.selectedAgent as typeof agentType;
+    }
+  } catch {
+    // mc-router not available — use session agentType as-is
+  }
+
   const systemPrompt = getAgentSystemPrompt(agentType);
 
   // Build conversation history for the LLM
@@ -102,29 +120,50 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
       let fullResponse = "";
 
       try {
-        if (process.env.AGENT_RUNTIME_URL) {
-          // Proxy to agent runtime
-          fullResponse = await streamFromAgentRuntime(
+        // Priority 1: agent-builder-client
+        let usedClient = false;
+        try {
+          const { executeAgentStream } = await import(
+            "@/lib/mission-control/agent-builder-client"
+          );
+          fullResponse = await streamFromBuilderClient(
             controller,
             sseEvent,
+            executeAgentStream,
             systemPrompt,
             history,
-            agentType,
+            agentType as import("@/lib/agents/types").AgentType,
             auth.organizationId
           );
-        } else if (process.env.OPENAI_API_KEY) {
-          // Direct OpenAI call
-          fullResponse = await streamFromOpenAI(
-            controller,
-            sseEvent,
-            systemPrompt,
-            history
-          );
-        } else {
-          // Fallback
-          fullResponse =
-            "I'm not connected to an AI backend yet. Please configure AGENT_RUNTIME_URL or OPENAI_API_KEY.";
-          controller.enqueue(sseEvent("chunk", { text: fullResponse }));
+          usedClient = true;
+        } catch {
+          // agent-builder-client not available — continue to fallbacks
+        }
+
+        if (!usedClient) {
+          if (process.env.AGENT_RUNTIME_URL) {
+            // Priority 2: direct agent runtime
+            fullResponse = await streamFromAgentRuntime(
+              controller,
+              sseEvent,
+              systemPrompt,
+              history,
+              agentType,
+              auth.organizationId
+            );
+          } else if (process.env.OPENAI_API_KEY) {
+            // Priority 3: direct OpenAI call
+            fullResponse = await streamFromOpenAI(
+              controller,
+              sseEvent,
+              systemPrompt,
+              history
+            );
+          } else {
+            fullResponse =
+              "I'm not connected to an AI backend yet. Please configure AGENT_RUNTIME_URL or OPENAI_API_KEY.";
+            controller.enqueue(sseEvent("chunk", { text: fullResponse }));
+          }
         }
 
         // Save agent message
@@ -165,6 +204,40 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
 // Streaming helpers
 // ---------------------------------------------------------------------------
 
+async function streamFromBuilderClient(
+  controller: ReadableStreamDefaultController,
+  sseEvent: (event: string, data: unknown) => Uint8Array,
+  executeAgentStream: typeof import("@/lib/mission-control/agent-builder-client").executeAgentStream,
+  systemPrompt: string,
+  history: { role: string; content: string }[],
+  agentType: import("@/lib/agents/types").AgentType,
+  organizationId: string
+): Promise<string> {
+  const lastUserMessage = history
+    .slice()
+    .reverse()
+    .find((m) => m.role === "user")?.content ?? "";
+
+  const result = await executeAgentStream(
+    {
+      agentType,
+      prompt: lastUserMessage,
+      systemPrompt,
+      organizationId,
+      context: { messages: history, agentType },
+      stream: true,
+    },
+    (chunk, event) => {
+      controller.enqueue(sseEvent("chunk", { text: chunk, event }));
+    },
+    (artifact) => {
+      controller.enqueue(sseEvent("artifact", artifact));
+    }
+  );
+
+  return result.content;
+}
+
 async function streamFromAgentRuntime(
   controller: ReadableStreamDefaultController,
   sseEvent: (event: string, data: unknown) => Uint8Array,
@@ -181,6 +254,7 @@ async function streamFromAgentRuntime(
       messages: history,
       agentType,
       organizationId,
+      metadata: { agentType },
     }),
   });
 
