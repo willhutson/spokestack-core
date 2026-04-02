@@ -160,7 +160,7 @@ export default function SettingsPage() {
       const res = await fetch("/api/v1/integrations", { headers });
       if (!res.ok) throw new Error("Failed to load integrations");
       const data = await res.json();
-      setIntegrations(data.integrations ?? []);
+      setIntegrations(data.integrations ?? data.connections ?? []);
     } catch (err) {
       console.error("Integrations fetch error:", err);
       setIntegrationsError("Failed to load integrations.");
@@ -542,8 +542,23 @@ export default function SettingsPage() {
                 </div>
               ))}
               {integrations.length === 0 && (
-                <div className="col-span-2 text-center py-8 text-sm text-gray-400">
-                  No integrations available.
+                <div className="col-span-2 space-y-4">
+                  <p className="text-center text-sm text-gray-400 py-4">
+                    No integrations connected yet. Connect tools to sync data with SpokeStack.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["Google Drive", "Slack", "Asana", "HubSpot", "Xero", "Figma"].map((name) => (
+                      <button
+                        key={name}
+                        onClick={() => handleConnect(name.toLowerCase().replace(/\s+/g, "-"))}
+                        className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-gray-300" />
+                        <span className="text-gray-700">{name}</span>
+                        <span className="ml-auto text-xs text-indigo-600">Connect</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
