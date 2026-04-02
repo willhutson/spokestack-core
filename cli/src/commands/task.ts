@@ -32,12 +32,18 @@ export function registerTaskCommand(program: Command): void {
     .option("--assign <name>", "Assign to a team member")
     .option("--due <date>", "Due date (e.g. friday, 2026-04-01)")
     .option("--priority <level>", "Priority: LOW, MEDIUM, HIGH, URGENT", "MEDIUM")
+    .option("--status <status>", "Status: TODO, IN_PROGRESS, DONE", "TODO")
     .option("--list <listId>", "Task list ID")
     .option("--description <text>", "Task description")
+    .option("--yes", "Skip interactive prompts")
     .action(async (titleArg: string | undefined, opts) => {
       let title = titleArg;
 
       if (!title) {
+        if (opts.yes) {
+          ui.error("--title (positional argument) is required with --yes");
+          process.exit(1);
+        }
         const answers = await inquirer.prompt([
           {
             type: "input",
@@ -75,6 +81,7 @@ export function registerTaskCommand(program: Command): void {
         title,
         description: opts.description,
         priority: opts.priority?.toUpperCase(),
+        status: opts.status?.toUpperCase(),
         dueDate: opts.due ? parseDateArg(opts.due) : undefined,
         taskListId: opts.list,
         assigneeName: opts.assign,

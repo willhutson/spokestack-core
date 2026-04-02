@@ -31,10 +31,15 @@ export function registerProjectCommand(program: Command): void {
     .option("--description <text>", "Project description")
     .option("--start <date>", "Start date")
     .option("--end <date>", "End date")
+    .option("--yes", "Skip interactive prompts")
     .action(async (nameArg: string | undefined, opts) => {
       let name = nameArg;
 
       if (!name) {
+        if (opts.yes) {
+          ui.error("--name (positional argument) is required with --yes");
+          process.exit(1);
+        }
         const answers = await inquirer.prompt([
           {
             type: "input",

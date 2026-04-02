@@ -1,42 +1,42 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { Command } from "commander";
 import { get } from "../api.js";
-import { loadAuth } from "../auth.js";
+import { loadAuth, getConfig } from "../auth.js";
 import * as ui from "../ui.js";
 
-interface WorkspaceStatus {
-  organization: {
-    name: string;
-    slug: string;
-    memberCount: number;
-  };
-  billing: {
-    tier: string;
-    status: string;
-  };
-  stats: {
-    tasks: { total: number; todo: number; inProgress: number; done: number };
-    projects: { total: number; active: number; completed: number };
-    briefs: { total: number; active: number };
-    orders: { total: number; pending: number };
-    contextEntries: number;
-  };
-  agents: Array<{
-    type: string;
-    name: string;
-    available: boolean;
-    requiredTier?: string;
-  }>;
-  modules: Array<{
-    name: string;
-    slug: string;
-    active: boolean;
-  }>;
+// ── Types ──────────────────────────────────────────────────────────
+
+interface BillingInfo { tier: string; status: string }
+interface ModuleInfo { name: string; slug: string }
+interface MemberInfo { id: string }
+interface OnboardingInfo { onboardingComplete: boolean }
+interface CountResponse<K extends string> { [key: string]: unknown } // generic bucket
+
+// ── Helpers ────────────────────────────────────────────────────────
+
+async function probe(url: string, timeoutMs = 3000): Promise<boolean> {
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const res = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
+    return res.ok || res.status < 500;
+  } catch {
+    return false;
+  }
 }
+
+function settled<T>(result: PromiseSettledResult<T>): T | null {
+  return result.status === "fulfilled" ? result.value : null;
+}
+
+// ── Command ────────────────────────────────────────────────────────
 
 export function registerStatusCommand(program: Command): void {
   program
     .command("status")
-    .description("Show workspace health and agent stats")
+    .description("Show environment and workspace health")
     .option("--format <fmt>", "Output format: table, json", "table")
     .action(async (opts) => {
       const auth = loadAuth();
@@ -45,88 +45,91 @@ export function registerStatusCommand(program: Command): void {
         process.exit(1);
       }
 
-      const s = ui.spinner("Loading workspace status...");
-      const res = await get<WorkspaceStatus>("/api/v1/status");
-      s.stop();
+      const { apiBase } = getConfig();
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+      const agentRuntimeUrl = process.env.AGENT_RUNTIME_URL;
+      const envLocalExists = fs.existsSync(path.resolve(process.cwd(), ".env.local"));
 
-      if (ui.handleError(res.error)) {
-        process.exit(1);
-      }
+      // Fire all checks in parallel
+      const [
+        billingR, modulesR, membersR,
+        tasksR, projectsR, briefsR, ordersR,
+        onboardingR, dbR, agentR, appR,
+      ] = await Promise.allSettled([
+        get<BillingInfo>("/api/v1/billing"),
+        get<{ modules: ModuleInfo[] }>("/api/v1/modules/installed"),
+        get<{ members: MemberInfo[] }>("/api/v1/members"),
+        get<{ tasks: unknown[] }>("/api/v1/tasks"),
+        get<{ projects: unknown[] }>("/api/v1/projects"),
+        get<{ briefs: unknown[] }>("/api/v1/briefs"),
+        get<{ orders: unknown[] }>("/api/v1/orders"),
+        get<OnboardingInfo>("/api/v1/onboarding"),
+        supabaseUrl ? probe(`${supabaseUrl}/rest/v1/`, 3000) : Promise.resolve(false),
+        agentRuntimeUrl ? probe(`${agentRuntimeUrl}/api/v1/health`, 3000) : Promise.resolve(false),
+        probe("http://localhost:3000", 2000),
+      ]);
 
-      const data = res.data;
+      // Extract values
+      const billing  = settled(billingR)?.ok ? (settled(billingR) as { data: BillingInfo }).data : null;
+      const modules  = settled(modulesR)?.ok ? (settled(modulesR) as { data: { modules: ModuleInfo[] } }).data.modules : [];
+      const members  = settled(membersR)?.ok ? (settled(membersR) as { data: { members: MemberInfo[] } }).data.members : [];
+      const tasks    = settled(tasksR)?.ok   ? (settled(tasksR) as { data: { tasks: unknown[] } }).data.tasks : [];
+      const projects = settled(projectsR)?.ok ? (settled(projectsR) as { data: { projects: unknown[] } }).data.projects : [];
+      const briefs   = settled(briefsR)?.ok  ? (settled(briefsR) as { data: { briefs: unknown[] } }).data.briefs : [];
+      const orders   = settled(ordersR)?.ok  ? (settled(ordersR) as { data: { orders: unknown[] } }).data.orders : [];
+      const onboarding = settled(onboardingR)?.ok ? (settled(onboardingR) as { data: OnboardingInfo }).data : null;
+      const dbOk     = settled(dbR) === true;
+      const agentOk  = settled(agentR) === true;
+      const appOk    = settled(appR) === true;
 
+      // JSON mode
       if (opts.format === "json") {
-        ui.jsonOutput(data);
+        ui.jsonOutput({
+          version: "0.1.0",
+          org: auth.orgSlug,
+          environment: { envLocal: envLocalExists, supabase: supabaseUrl || null, database: dbOk, agentRuntime: { url: agentRuntimeUrl || null, connected: agentOk }, app: { url: "http://localhost:3000", running: appOk } },
+          workspace: { plan: billing?.tier || "unknown", planStatus: billing?.status || "unknown", modules: modules.length, moduleList: modules.map(m => m.slug), team: members.length, onboardingComplete: onboarding?.onboardingComplete ?? null },
+          data: { tasks: tasks.length, projects: projects.length, briefs: briefs.length, orders: orders.length },
+        });
         return;
       }
 
-      // Workspace header
-      ui.welcomeBanner(data.organization.name);
-
-      // Billing
-      ui.line(`  ${ui.BOLD("Plan:")}     ${data.billing.tier} ${ui.statusBadge(data.billing.status)}`);
-      ui.line(`  ${ui.BOLD("Members:")}  ${data.organization.memberCount}`);
-      ui.line(`  ${ui.BOLD("Context:")}  ${data.stats.contextEntries} entries ${ui.MUTED("(compounding weekly)")}`);
+      // ── Header
+      ui.blank();
+      ui.line(`${ui.LOGO} ${ui.MUTED("v0.1.0")} — ${ui.BOLD(auth.orgSlug)}`);
       ui.blank();
 
-      // Task stats
-      ui.divider();
-      ui.line(`  ${ui.BOLD("Tasks")}`);
-      ui.line(`    Total: ${data.stats.tasks.total}  |  To-do: ${data.stats.tasks.todo}  |  In progress: ${data.stats.tasks.inProgress}  |  Done: ${data.stats.tasks.done}`);
+      // ── Environment
+      ui.line(`${ui.BOLD("Environment")}`);
+      check(envLocalExists, ".env.local exists");
+      check(!!supabaseUrl, supabaseUrl ? `Supabase: ${supabaseUrl}` : "Supabase: not configured");
+      check(dbOk, `Database: ${dbOk ? "connected" : "not reachable"}`);
+      check(agentOk, `Agent runtime: ${agentRuntimeUrl || "not configured"} (${agentOk ? "connected" : "not reachable"})`);
+      check(appOk, `App: http://localhost:3000 (${appOk ? "running" : "not running"})`);
       ui.blank();
 
-      // Project stats (if available)
-      if (data.stats.projects.total > 0) {
-        ui.line(`  ${ui.BOLD("Projects")}`);
-        ui.line(`    Total: ${data.stats.projects.total}  |  Active: ${data.stats.projects.active}  |  Completed: ${data.stats.projects.completed}`);
-        ui.blank();
-      }
-
-      // Brief stats (if available)
-      if (data.stats.briefs.total > 0) {
-        ui.line(`  ${ui.BOLD("Briefs")}`);
-        ui.line(`    Total: ${data.stats.briefs.total}  |  Active: ${data.stats.briefs.active}`);
-        ui.blank();
-      }
-
-      // Order stats (if available)
-      if (data.stats.orders.total > 0) {
-        ui.line(`  ${ui.BOLD("Orders")}`);
-        ui.line(`    Total: ${data.stats.orders.total}  |  Pending: ${data.stats.orders.pending}`);
-        ui.blank();
-      }
-
-      // Agents
-      ui.divider();
-      ui.line(`  ${ui.BOLD("Agents")}`);
-      ui.blank();
-      for (const agent of data.agents) {
-        if (agent.available) {
-          ui.line(`    ${ui.SUCCESS("\u2714")} ${ui.BOLD(agent.name)} ${ui.MUTED("active")}`);
-        } else {
-          ui.line(`    ${ui.MUTED("\u25CB")} ${agent.name} ${ui.MUTED(`requires ${agent.requiredTier || "upgrade"}`)}`);
-        }
-      }
+      // ── Workspace
+      ui.line(`${ui.BOLD("Workspace:")} ${auth.orgSlug}`);
+      ui.line(`  Plan: ${billing ? `${billing.tier} (${billing.status})` : ui.MUTED("unknown")}`);
+      ui.line(`  Modules: ${modules.length} installed${modules.length ? ` (${modules.map(m => m.slug).join(", ")})` : ""}`);
+      ui.line(`  Team: ${members.length} members`);
+      ui.line(`  Onboarding: ${onboarding ? (onboarding.onboardingComplete ? "complete" : "incomplete") : ui.MUTED("unknown")}`);
       ui.blank();
 
-      // Installed modules
-      if (data.modules.length > 0) {
-        ui.divider();
-        ui.line(`  ${ui.BOLD("Installed Modules")}`);
-        ui.blank();
-        for (const mod of data.modules) {
-          const status = mod.active ? ui.SUCCESS("active") : ui.WARNING("inactive");
-          ui.line(`    ${mod.name} ${ui.MUTED(`(${mod.slug})`)} ${status}`);
-        }
-        ui.blank();
-      }
-
-      // Quick actions
-      ui.divider();
-      ui.line(`  ${ui.BOLD("Quick Actions")}`);
-      ui.line(`    ${ui.BOLD("spokestack task add")}       Create a task`);
-      ui.line(`    ${ui.BOLD("spokestack agent chat")}     Talk to your agent`);
-      ui.line(`    ${ui.BOLD("spokestack upgrade")}        Unlock more agents`);
+      // ── Data
+      ui.line(`${ui.BOLD("Data")}`);
+      ui.line(`  Tasks: ${tasks.length}`);
+      ui.line(`  Projects: ${projects.length}`);
+      ui.line(`  Briefs: ${briefs.length}`);
+      ui.line(`  Orders: ${orders.length}`);
       ui.blank();
     });
+}
+
+function check(ok: boolean, label: string): void {
+  if (ok) {
+    ui.success(label);
+  } else {
+    ui.warn(label);
+  }
 }

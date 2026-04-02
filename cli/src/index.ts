@@ -17,6 +17,10 @@ import { registerExportCommand } from "./commands/export.js";
 import { registerTenantCommand } from "./commands/tenant.js";
 import { registerInstanceCommand } from "./commands/instance.js";
 import { registerModulesCommand } from "./commands/modules.js";
+import { registerSetupCommand } from "./commands/setup.js";
+import { registerSeedCommand } from "./commands/seed.js";
+import { registerDevCommand } from "./commands/dev.js";
+import { registerDeployCommand } from "./commands/deploy.js";
 
 const program = new Command();
 
@@ -51,6 +55,10 @@ registerExportCommand(program);
 registerTenantCommand(program);
 registerInstanceCommand(program);
 registerModulesCommand(program);
+registerSetupCommand(program);
+registerSeedCommand(program);
+registerDevCommand(program);
+registerDeployCommand(program);
 
 // Global error handling
 program.exitOverride();
