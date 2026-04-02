@@ -87,7 +87,7 @@ function runtimeHeaders(): HeadersInit {
     "Content-Type": "application/json",
   };
   if (AGENT_RUNTIME_SECRET) {
-    headers["Authorization"] = `Bearer ${AGENT_RUNTIME_SECRET}`;
+    headers["X-Agent-Secret"] = AGENT_RUNTIME_SECRET;
   }
   return headers;
 }
