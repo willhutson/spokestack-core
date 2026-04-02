@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import inquirer from "inquirer";
 import { get, post, del } from "../api.js";
 import * as ui from "../ui.js";
 
@@ -91,7 +92,15 @@ export function registerModuleCommand(program: Command): void {
   module
     .command("add <slug>")
     .description("Install a marketplace module")
-    .action(async (slug: string) => {
+    .option("--yes", "Skip confirmation prompt")
+    .action(async (slug: string, opts: { yes?: boolean }) => {
+      if (!opts.yes) {
+        const { confirm } = await inquirer.prompt([
+          { type: "confirm", name: "confirm", message: `Install module "${slug}"?`, default: true },
+        ]);
+        if (!confirm) { ui.info("Cancelled."); return; }
+      }
+
       const s = ui.spinner(`Installing ${slug}...`);
       const res = await post<{ module: Module; message: string }>(
         `/api/v1/modules/${slug}/install`,
@@ -117,7 +126,15 @@ export function registerModuleCommand(program: Command): void {
   module
     .command("remove <slug>")
     .description("Uninstall a marketplace module")
-    .action(async (slug: string) => {
+    .option("--yes", "Skip confirmation prompt")
+    .action(async (slug: string, opts: { yes?: boolean }) => {
+      if (!opts.yes) {
+        const { confirm } = await inquirer.prompt([
+          { type: "confirm", name: "confirm", message: `Remove module "${slug}"? Your data will be preserved.`, default: false },
+        ]);
+        if (!confirm) { ui.info("Cancelled."); return; }
+      }
+
       const s = ui.spinner(`Removing ${slug}...`);
       const res = await del<{ message: string }>(`/api/v1/modules/${slug}/install`);
       s.stop();

@@ -43,86 +43,109 @@ export function registerOrderCommand(program: Command): void {
     .command("new")
     .description("Create a new order")
     .option("--customer <id>", "Customer ID")
+    .option("--client <name>", "Customer name (looked up or created)")
     .option("--currency <code>", "Currency (USD, EUR, GBP, AED)", "USD")
     .option("--notes <text>", "Order notes")
+    .option("--items <json>", 'Line items as JSON: \'[{"description":"Design","quantity":1,"unitPriceCents":500000}]\'')
+    .option("--yes", "Skip interactive prompts")
     .action(async (opts) => {
-      const items: Array<{ description: string; quantity: number; unitPriceCents: number }> = [];
+      let items: Array<{ description: string; quantity: number; unitPriceCents: number }> = [];
 
-      ui.heading("New Order");
+      if (opts.items) {
+        // Parse JSON items from flag
+        try {
+          items = JSON.parse(opts.items);
+          if (!Array.isArray(items) || items.length === 0) {
+            ui.error("--items must be a non-empty JSON array");
+            process.exit(1);
+          }
+        } catch {
+          ui.error("--items must be valid JSON");
+          process.exit(1);
+        }
+      } else if (opts.yes) {
+        ui.error("--items is required with --yes");
+        process.exit(1);
+      } else {
+        ui.heading("New Order");
 
-      // Collect line items
-      let addMore = true;
-      while (addMore) {
-        const item = await inquirer.prompt([
-          {
-            type: "input",
-            name: "description",
-            message: "Item description:",
-            validate: (input: string) =>
-              input.trim() ? true : "Description is required.",
-          },
-          {
-            type: "number",
-            name: "quantity",
-            message: "Quantity:",
-            default: 1,
-          },
-          {
-            type: "number",
-            name: "unitPrice",
-            message: "Unit price (e.g. 99.99):",
-            validate: (input: number) =>
-              input > 0 ? true : "Price must be greater than 0.",
-          },
-        ]);
+        // Collect line items interactively
+        let addMore = true;
+        while (addMore) {
+          const item = await inquirer.prompt([
+            {
+              type: "input",
+              name: "description",
+              message: "Item description:",
+              validate: (input: string) =>
+                input.trim() ? true : "Description is required.",
+            },
+            {
+              type: "number",
+              name: "quantity",
+              message: "Quantity:",
+              default: 1,
+            },
+            {
+              type: "number",
+              name: "unitPrice",
+              message: "Unit price (e.g. 99.99):",
+              validate: (input: number) =>
+                input > 0 ? true : "Price must be greater than 0.",
+            },
+          ]);
 
-        items.push({
-          description: item.description,
-          quantity: item.quantity,
-          unitPriceCents: Math.round(item.unitPrice * 100),
-        });
+          items.push({
+            description: item.description,
+            quantity: item.quantity,
+            unitPriceCents: Math.round(item.unitPrice * 100),
+          });
 
-        const { more } = await inquirer.prompt([
+          const { more } = await inquirer.prompt([
+            {
+              type: "confirm",
+              name: "more",
+              message: "Add another item?",
+              default: false,
+            },
+          ]);
+          addMore = more;
+        }
+      }
+
+      if (!opts.yes) {
+        // Show summary
+        ui.blank();
+        ui.line(`  ${ui.BOLD("Order Summary:")}`);
+        let total = 0;
+        for (const item of items) {
+          const lineTotal = item.unitPriceCents * item.quantity;
+          total += lineTotal;
+          ui.line(`    ${item.description} x${item.quantity}  ${ui.formatCurrency(lineTotal, opts.currency)}`);
+        }
+        ui.divider();
+        ui.line(`  ${ui.BOLD("Total:")} ${ui.BOLD(ui.formatCurrency(total, opts.currency))}`);
+        ui.blank();
+
+        const { confirm } = await inquirer.prompt([
           {
             type: "confirm",
-            name: "more",
-            message: "Add another item?",
-            default: false,
+            name: "confirm",
+            message: "Create this order?",
+            default: true,
           },
         ]);
-        addMore = more;
-      }
 
-      // Show summary
-      ui.blank();
-      ui.line(`  ${ui.BOLD("Order Summary:")}`);
-      let total = 0;
-      for (const item of items) {
-        const lineTotal = item.unitPriceCents * item.quantity;
-        total += lineTotal;
-        ui.line(`    ${item.description} x${item.quantity}  ${ui.formatCurrency(lineTotal, opts.currency)}`);
-      }
-      ui.divider();
-      ui.line(`  ${ui.BOLD("Total:")} ${ui.BOLD(ui.formatCurrency(total, opts.currency))}`);
-      ui.blank();
-
-      const { confirm } = await inquirer.prompt([
-        {
-          type: "confirm",
-          name: "confirm",
-          message: "Create this order?",
-          default: true,
-        },
-      ]);
-
-      if (!confirm) {
-        ui.info("Order cancelled.");
-        return;
+        if (!confirm) {
+          ui.info("Order cancelled.");
+          return;
+        }
       }
 
       const s = ui.spinner("Creating order...");
       const res = await post<{ order: Order }>("/api/v1/orders", {
         customerId: opts.customer,
+        customerName: opts.client,
         currency: opts.currency,
         notes: opts.notes,
         items,

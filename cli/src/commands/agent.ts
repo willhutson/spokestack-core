@@ -15,6 +15,9 @@ export function registerAgentCommand(program: Command): void {
     .command("chat")
     .description("Open an interactive agent conversation")
     .option("--agent <type>", "Agent type (tasks, projects, briefs, orders)", "tasks")
+    .option("--message <msg>", "Send a single message (non-interactive)")
+    .option("--no-stream", "Wait for full response instead of streaming")
+    .option("--json", "Output response as JSON")
     .action(async (opts) => {
       const auth = loadAuth();
       if (!auth) {
@@ -32,6 +35,62 @@ export function registerAgentCommand(program: Command): void {
       let currentAgent = opts.agent.toLowerCase();
       let agentName = agentNames[currentAgent] || "Tasks Agent";
       let sessionId: string | undefined;
+
+      // Non-interactive single-message mode
+      if (opts.message) {
+        if (opts.stream === false) {
+          // Use non-streaming ask endpoint
+          const s = ui.spinner("Thinking...");
+          const res = await post<{
+            response: string;
+            agentType: string;
+            actions?: Array<{ type: string; description: string }>;
+          }>("/api/v1/agents/ask", {
+            message: opts.message,
+            surface: "CLI",
+            agentType: currentAgent,
+          });
+          s.stop();
+
+          if (res.error || !res.ok) {
+            if (res.upgradeRequired) ui.upgradePrompt(res.requiredTier || "STARTER");
+            else ui.error(res.error || "Agent unavailable.");
+            process.exit(1);
+          }
+
+          if (opts.json) {
+            ui.jsonOutput(res.data);
+          } else {
+            ui.agentMessage(agentName, res.data.response);
+            if (res.data.actions?.length) {
+              ui.blank();
+              ui.line(`  ${ui.BOLD("Actions taken:")}`);
+              for (const action of res.data.actions) {
+                ui.line(`    ${ui.SUCCESS("\u2714")} ${action.description}`);
+              }
+            }
+            ui.blank();
+          }
+          return;
+        }
+
+        // Streaming single message
+        const res = await streamRequest("/api/v1/agents/chat", {
+          message: opts.message,
+          surface: "CLI",
+          agentType: currentAgent,
+        });
+
+        if (!res.ok) {
+          if (res.upgradeRequired) ui.upgradePrompt(res.requiredTier || "STARTER");
+          else ui.error(res.error || "Agent unavailable.");
+          process.exit(1);
+        }
+
+        const response = res.data as Response;
+        await parseSSEStream(response, agentName, () => {});
+        return;
+      }
 
       ui.blank();
       ui.line(`  Connected to ${ui.BOLD(agentName)} for ${ui.BOLD(auth.orgSlug)}`);
@@ -116,7 +175,8 @@ export function registerAgentCommand(program: Command): void {
   agent
     .command("ask <message>")
     .description("One-shot agent query")
-    .action(async (message: string) => {
+    .option("--json", "Output response as JSON")
+    .action(async (message: string, opts: { json?: boolean }) => {
       const s = ui.spinner("Thinking...");
       const res = await post<{
         response: string;
@@ -133,6 +193,12 @@ export function registerAgentCommand(program: Command): void {
       }
 
       const data = res.data;
+
+      if (opts.json) {
+        ui.jsonOutput(data);
+        return;
+      }
+
       const agentLabel = data.agentType
         ? `${data.agentType.charAt(0).toUpperCase() + data.agentType.slice(1)} Agent`
         : "Agent";

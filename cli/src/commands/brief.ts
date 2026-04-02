@@ -32,10 +32,15 @@ export function registerBriefCommand(program: Command): void {
     .description("Create a new brief")
     .option("--description <text>", "Brief description")
     .option("--client <name>", "Client name")
+    .option("--yes", "Skip interactive prompts")
     .action(async (titleArg: string | undefined, opts) => {
       let title = titleArg;
 
       if (!title) {
+        if (opts.yes) {
+          ui.error("--title (positional argument) is required with --yes");
+          process.exit(1);
+        }
         const answers = await inquirer.prompt([
           {
             type: "input",
