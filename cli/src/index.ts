@@ -21,6 +21,7 @@ import { registerSetupCommand } from "./commands/setup.js";
 import { registerSeedCommand } from "./commands/seed.js";
 import { registerDevCommand } from "./commands/dev.js";
 import { registerDeployCommand } from "./commands/deploy.js";
+import { registerMarketplaceCommand } from "./commands/marketplace.js";
 
 const program = new Command();
 
@@ -59,6 +60,7 @@ registerSetupCommand(program);
 registerSeedCommand(program);
 registerDevCommand(program);
 registerDeployCommand(program);
+registerMarketplaceCommand(program);
 
 // Global error handling
 program.exitOverride();

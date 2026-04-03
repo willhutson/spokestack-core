@@ -123,6 +123,39 @@ export function registerStatusCommand(program: Command): void {
       ui.line(`  Briefs: ${briefs.length}`);
       ui.line(`  Orders: ${orders.length}`);
       ui.blank();
+
+      // ── Marketplace (optional — never fail status)
+      try {
+        const myModulesRes = await get<{
+          modules: Array<{
+            name: string;
+            status: string;
+            installCount: number;
+            avgRating: number;
+          }>;
+        }>("/api/v1/marketplace/my-modules");
+
+        if (myModulesRes.ok && myModulesRes.data.modules.length > 0) {
+          const myModules = myModulesRes.data.modules;
+          const published = myModules.filter((m) => m.status === "PUBLISHED");
+          const totalInstalls = published.reduce((s, m) => s + m.installCount, 0);
+
+          ui.line(`${ui.BOLD("Marketplace")}`);
+          ui.line(`  Published modules: ${published.length}`);
+          ui.line(`  Total installs:    ${totalInstalls}`);
+          for (const m of published) {
+            ui.line(`    ${ui.SUCCESS("✔")} ${m.name} — ${m.installCount} installs, ${m.avgRating.toFixed(1)}★`);
+          }
+
+          const pending = myModules.filter((m) => m.status === "PENDING_REVIEW");
+          if (pending.length > 0) {
+            ui.line(`  Pending review:    ${pending.length}`);
+          }
+          ui.blank();
+        }
+      } catch {
+        // Marketplace section is optional
+      }
     });
 }
 

@@ -2,6 +2,10 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import { get, post, del } from "../api.js";
 import * as ui from "../ui.js";
+import { moduleCreateCommand } from "./module-create.js";
+import { moduleTestCommand } from "./module-test.js";
+import { modulePublishCommand } from "./module-publish.js";
+import { moduleAnalyticsCommand } from "./module-analytics.js";
 
 interface Module {
   id: string;
@@ -19,6 +23,52 @@ export function registerModuleCommand(program: Command): void {
   const module = program
     .command("module")
     .description("Browse and manage marketplace modules");
+
+  // ── module create ────────────────────────────────────────────────
+
+  module
+    .command("create [name]")
+    .description("Scaffold a new module interactively or from flags")
+    .option("--name <name>", "Module name")
+    .option("--slug <slug>", "URL slug in kebab-case")
+    .option("--type <type>", "Module type in UPPER_SNAKE_CASE")
+    .option("--entity <entity>", "Primary entity name, singular")
+    .option("--entities <list>", "Comma-separated entity fields")
+    .option("--category <category>", "Category")
+    .option("--industry <industry>", "Industry vertical")
+    .option("--output <dir>", "Output directory")
+    .option("--yes", "Skip all confirmations")
+    .option("--json", "Output JSON")
+    .action(moduleCreateCommand);
+
+  // ── module test ──────────────────────────────────────────────────
+
+  module
+    .command("test <slug>")
+    .description("Validate and test a module before publishing")
+    .option("--skip-execution", "Skip sandbox tool execution")
+    .option("--verbose", "Show per-tool status codes and timing")
+    .option("--json", "Output test results as JSON")
+    .action(moduleTestCommand);
+
+  // ── module publish ───────────────────────────────────────────────
+
+  module
+    .command("publish <slug>")
+    .description("Publish a module to the SpokeStack Marketplace")
+    .option("--price <cents>", "One-time price in cents (e.g. 4900 = AED 49)")
+    .option("--monthly-price <cents>", "Monthly subscription price in cents")
+    .option("--yes", "Skip confirmation prompt")
+    .option("--json", "Output result as JSON")
+    .action(modulePublishCommand);
+
+  // ── module analytics ─────────────────────────────────────────────
+
+  module
+    .command("analytics <slug>")
+    .description("View install, revenue, and rating analytics for a published module")
+    .option("--json", "Output analytics as JSON")
+    .action(moduleAnalyticsCommand);
 
   // ── module list ───────────────────────────────────────────────────
 

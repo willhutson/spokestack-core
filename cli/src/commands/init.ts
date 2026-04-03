@@ -433,5 +433,10 @@ export function registerInitCommand(program: Command): void {
       }
 
       ui.blank();
+      ui.line("  Build your own modules:");
+      ui.line(`    ${ui.BOLD("spokestack module create")}     ${ui.MUTED("Scaffold a new module")}`);
+      ui.line(`    ${ui.BOLD("spokestack marketplace")}       ${ui.MUTED("Browse the marketplace")}`);
+
+      ui.blank();
     });
 }
