@@ -237,6 +237,24 @@ enum ModuleType {
   EVENTS
 }
 
+// Marketplace enums
+enum PublishedModuleStatus {
+  PENDING_REVIEW
+  APPROVED
+  PUBLISHED
+  REJECTED
+  CHANGES_REQUESTED
+  DEPRECATED
+  REMOVED_BY_ADMIN
+}
+
+enum ModuleBillingEventType {
+  INSTALL
+  RENEWAL
+  CANCEL
+  REFUND
+}
+
 // ============================================================================
 // FOUNDATION MODELS (7)
 // ============================================================================
@@ -279,6 +297,12 @@ model Organization {
   events          EntityEvent[]
   assetLibraries  AssetLibrary[]
   assets          Asset[]
+
+  // Marketplace
+  publishedModules    PublishedModule[]    @relation("PublishedModules")
+  moduleReviews       ModuleReview[]       @relation("ModuleReviews")
+  moduleInstalls      ModuleInstall[]      @relation("ModuleInstalls")
+  moduleBillingEvents ModuleBillingEvent[] @relation("ModuleBillingEvents")
 }
 
 model User {
@@ -357,6 +381,98 @@ model FeatureFlag {
   organization Organization @relation(fields: [organizationId], references: [id])
 
   @@unique([organizationId, flag])
+}
+
+// ============================================================================
+// MARKETPLACE MODELS (4)
+// ============================================================================
+
+model PublishedModule {
+  id               String                @id @default(cuid())
+  publisherOrgId   String
+  name             String
+  slug             String                @unique
+  description      String
+  shortDescription String
+  category         String
+  industry         String?
+  moduleType       String                // Slug-derived, e.g. "REAL_ESTATE"
+  manifest         Json
+  tools            Json
+  systemPrompt     String
+  uiTemplate       String?
+  pricing          Json                  // { type, priceCents?, monthlyPriceCents? }
+  status           PublishedModuleStatus  @default(PENDING_REVIEW)
+  version          String                @default("1.0.0")
+  installCount     Int                   @default(0)
+  avgRating        Float                 @default(0)
+  reviewCount      Int                   @default(0)
+  qualityScore     Float                 @default(0)
+  securityScore    Int                   @default(0)
+  reviewNotes      String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  publisherOrg   Organization       @relation("PublishedModules", fields: [publisherOrgId], references: [id])
+  moduleReviews  ModuleReview[]
+  moduleInstalls ModuleInstall[]
+  billingEvents  ModuleBillingEvent[]
+
+  @@index([publisherOrgId])
+  @@index([status])
+  @@index([category])
+}
+
+model ModuleReview {
+  id                String   @id @default(cuid())
+  publishedModuleId String
+  reviewerOrgId     String
+  reviewerUserId    String
+  rating            Int
+  text              String?
+  isVerifiedInstall Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  publishedModule PublishedModule @relation(fields: [publishedModuleId], references: [id])
+  reviewerOrg     Organization   @relation("ModuleReviews", fields: [reviewerOrgId], references: [id])
+
+  @@unique([publishedModuleId, reviewerOrgId])
+}
+
+model ModuleInstall {
+  id                String    @id @default(cuid())
+  publishedModuleId String
+  orgId             String
+  version           String
+  installedAt       DateTime  @default(now())
+  uninstalledAt     DateTime?
+  isActive          Boolean   @default(true)
+
+  publishedModule PublishedModule @relation(fields: [publishedModuleId], references: [id])
+  org             Organization   @relation("ModuleInstalls", fields: [orgId], references: [id])
+
+  @@unique([publishedModuleId, orgId])
+}
+
+model ModuleBillingEvent {
+  id                  String                 @id @default(cuid())
+  publishedModuleId   String
+  orgId               String
+  type                ModuleBillingEventType
+  amountCents         Int
+  platformFeeCents    Int
+  publisherShareCents Int
+  stripePaymentId     String?
+  paidOut             Boolean                @default(false)
+  paidOutAt           DateTime?
+  createdAt           DateTime               @default(now())
+
+  publishedModule PublishedModule @relation(fields: [publishedModuleId], references: [id])
+  org             Organization   @relation("ModuleBillingEvents", fields: [orgId], references: [id])
+
+  @@index([publishedModuleId])
+  @@index([orgId])
 }
 
 // ============================================================================
