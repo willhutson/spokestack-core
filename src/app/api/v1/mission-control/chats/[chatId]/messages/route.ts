@@ -142,21 +142,28 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
             auth.organizationId
           );
           usedClient = true;
-        } catch {
-          // agent-builder-client not available — continue to fallbacks
+        } catch (builderErr) {
+          console.error("[MC Messages] agent-builder-client failed:", builderErr);
+          // Continue to fallback
         }
 
         if (!usedClient) {
           if (process.env.AGENT_RUNTIME_URL) {
-            // Priority 2: direct agent runtime
-            fullResponse = await streamFromAgentRuntime(
-              controller,
-              sseEvent,
-              systemPrompt,
-              history,
-              agentType,
-              auth.organizationId
-            );
+            try {
+              // Priority 2: direct agent runtime
+              fullResponse = await streamFromAgentRuntime(
+                controller,
+                sseEvent,
+                systemPrompt,
+                history,
+                agentType,
+                auth.organizationId
+              );
+            } catch (runtimeErr) {
+              console.error("[MC Messages] direct runtime failed:", runtimeErr);
+              fullResponse = `I couldn't connect to the agent runtime. Error: ${runtimeErr instanceof Error ? runtimeErr.message : String(runtimeErr)}`;
+              controller.enqueue(sseEvent("chunk", { text: fullResponse }));
+            }
           } else {
             fullResponse =
               "Agent runtime is not configured. Set AGENT_RUNTIME_URL to connect to ongoing_agent_builder.";

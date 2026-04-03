@@ -90,12 +90,14 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
                   }
                   try {
                     const parsed = JSON.parse(payload);
-                    if (parsed.content) {
-                      accumulated += parsed.content;
+                    // Server sends { text: "..." } in chunk events
+                    const text = parsed.text ?? parsed.content ?? parsed.delta ?? "";
+                    if (text) {
+                      accumulated += text;
                       setStreamingContent(accumulated);
                     }
                     if (parsed.message) {
-                      // Full message object returned
+                      // Full message object returned (complete event)
                       setMessages((prev) => [...prev, parsed.message]);
                       accumulated = "";
                     }
