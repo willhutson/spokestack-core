@@ -228,5 +228,65 @@
     "price": null,
     "agentName": "Builder Agent",
     "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "MEDIA_RELATIONS",
+    "name": "Media Relations",
+    "description": "Journalist database, media lists, pitch tracking, and coverage monitoring.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1500,
+    "agentName": "Media Relations Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "PRESS_RELEASES",
+    "name": "Press Releases",
+    "description": "Draft, approve, distribute, and track press release performance.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1000,
+    "agentName": "Press Release Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "CRISIS_COMMS",
+    "name": "Crisis Communications",
+    "description": "Crisis playbooks, stakeholder mapping, holding statements, and rapid response.",
+    "category": "ops",
+    "minTier": "BUSINESS",
+    "price": 2000,
+    "agentName": "Crisis Comms Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "CLIENT_REPORTING",
+    "name": "Client Reporting",
+    "description": "Monthly retainer reports, coverage analysis, SOV calculations, and AVE tracking.",
+    "category": "analytics",
+    "minTier": "PRO",
+    "price": 1000,
+    "agentName": "Reporting Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "INFLUENCER_MGMT",
+    "name": "Influencer Management",
+    "description": "Influencer database, campaign tracking, deliverable management, and ROI analytics.",
+    "category": "marketing",
+    "minTier": "PRO",
+    "price": 1500,
+    "agentName": "Influencer Agent",
+    "surfaces": ["dashboard"]
+  },
+  {
+    "moduleType": "EVENTS",
+    "name": "Events",
+    "description": "Event planning, guest lists, RSVP tracking, run-of-show, and vendor management.",
+    "category": "ops",
+    "minTier": "PRO",
+    "price": 1500,
+    "agentName": "Events Agent",
+    "surfaces": ["dashboard"]
   }
 ]

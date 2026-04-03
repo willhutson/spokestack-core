@@ -227,6 +227,14 @@ enum ModuleType {
   ACCESS_CONTROL
   API_MANAGEMENT
   BUILDER
+
+  // Comms/PR Agency modules
+  MEDIA_RELATIONS
+  PRESS_RELEASES
+  CRISIS_COMMS
+  CLIENT_REPORTING
+  INFLUENCER_MGMT
+  EVENTS
 }
 
 // ============================================================================

@@ -45,6 +45,25 @@ export const INDUSTRY_TEMPLATES: Record<
     label: "Education",
     modules: ["LMS", "NPS", "WORKFLOWS", "ANALYTICS"],
   },
+  comms: {
+    label: "Communications / PR Agency",
+    modules: [
+      "CRM",
+      "BRIEFS",
+      "CONTENT_STUDIO",
+      "SOCIAL_PUBLISHING",
+      "LISTENING",
+      "ANALYTICS",
+      "CLIENT_PORTAL",
+      "TIME_LEAVE",
+      "MEDIA_RELATIONS",
+      "PRESS_RELEASES",
+      "CRISIS_COMMS",
+      "CLIENT_REPORTING",
+      "INFLUENCER_MGMT",
+      "EVENTS",
+    ],
+  },
 };
 
 export function getAvailableTemplates(): string[] {
