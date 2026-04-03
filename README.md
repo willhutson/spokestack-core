@@ -1,129 +1,350 @@
-# SpokeStack Core — Product Architecture Spec
+# SpokeStack Core
 
-**Addendum to the Cornerstone Strategy — March 2026**
+**Agent-native business infrastructure.** Specialized AI agents for Tasks, Projects, Briefs, and Orders — sharing a unified context graph that compounds organizational intelligence weekly.
 
-This is the canonical architectural spec for `spokestack-core`, the universal product extraction from SpokeStack ERP. It answers three questions:
-
-1. How to give a minimal version away free and make the next tier complete but cheap
-2. How to spec the core offering as Tasks / Briefs / Projects / Orders with a magic onboarding moment
-3. How to build the agent ecosystem that makes the marketplace the real business
+Built on a decade of operating a 40+ person creative digital agency across Dubai and Abu Dhabi. 267 ERP models distilled into a modular platform any business can use.
 
 ---
 
-## The One-Paragraph Version
+## Quick Start
 
-SpokeStack is agent-native business infrastructure. Users get a workspace via `npx spokestack init` (developers, global) or a WhatsApp voice note (service businesses, MENA first). A conversational onboarding agent builds their workspace from a 3-minute conversation. They start free with a Tasks Agent. As they grow, they unlock Projects, Briefs, and Orders Agents — each a specialized team member that reads the same shared context graph. That context graph compounds weekly, making the agents measurably smarter and making switching costs grow over time. When context milestones trigger, the agent recommends marketplace modules — each of which comes with its own agent. The platform tiers fund infrastructure. The marketplace is the business.
+```bash
+# Clone and set up
+git clone https://github.com/willhutson/spokestack-core
+cd spokestack-core
+npm install
 
----
+# Configure environment
+spokestack setup --supabase-url <URL> --supabase-key <KEY>
 
-## Document Index
+# Seed database + install modules
+spokestack seed --tier ENTERPRISE --template agency
 
-| # | Document | What It Covers |
-|---|----------|----------------|
-| 01 | [Deployment Architecture](./01-deployment-architecture.md) | Cloud-hosted design, per-tenant isolation, infrastructure costs, future self-hosted path |
-| 02 | [Core Product & Schema](./02-core-product-schema.md) | 267→50 model extraction, unified schema design, application-layer gating, repo structure |
-| 03 | [Agent Architecture](./03-agent-architecture.md) | Mode-specific agents, shared context graph, lock-in per mode, marketplace-as-agent-acquisition |
-| 04 | [Pricing & Tiers](./04-pricing-and-tiers.md) | Freemium model, uncapped credits, soft throttle, unit economics, business model layers |
-| 05 | [Onboarding](./05-onboarding.md) | Dual-track launch (CLI + WhatsApp), conversational workspace setup, the reveal, agent handoff |
-| 06 | [Context Milestones](./06-context-milestones.md) | Marketplace flywheel triggers, milestone definitions, implementation spec, async architecture |
-| 07 | [CLI Package](./07-cli-package.md) | npm package spec, command reference, auth flow, agent interaction patterns |
-| 08 | [Category & Positioning](./08-category-positioning.md) | Agent-native business infrastructure, TAM reframe, competitive positioning, narrative |
-| 09 | [Build Plan](./09-build-plan.md) | Two-ship strategy, week-by-week scope, Ship 1 vs Ship 2 boundaries, risk register |
-| 03a | [Agent Runtime Tech Spec](./03a-agent-runtime-tech-spec.md) | Deployment topology, MC Router dispatch, CoreToolkit (Prisma-direct), session management, Railway service config |
-| 10 | [Addenda & Open Items](./10-addenda.md) | Canvas UI strategy, data migration/import, multi-workspace, API versioning, "Meet Your Team" reveal UI spec |
-
----
-
-## Key Design Decisions (Cross-Cutting)
-
-These decisions recur across documents. They're stated here once as axioms.
-
-**One schema, all tiers.** Every tenant gets the full database schema from day one. Tier differences are enforced at the application layer (ModuleGuard middleware + agent instruction sets), never the data layer. Upgrades are instant — a Stripe webhook, a BillingTier update, and the new agent appears. No migrations, no downtime.
-
-**Agents are the product.** Not a feature, not an implementation detail. Each mode has a dedicated agent. Each marketplace module ships with its own agent. Users don't "enable features" — they meet new team members. The agent ecosystem is what compounds value.
-
-**Shared context graph.** All agents read from and write to the same ContextEntry store per organization. The context graph is the moat. It compounds weekly. It's non-portable. It makes every agent smarter the more any agent is used.
-
-**Uncapped agent credits, soft throttle.** Credits never gate usage. A per-minute rate limit protects against abuse without interrupting the context accumulation engine. The COGS of free users is CAC.
-
-**The marketplace is the business.** Platform tiers ($29–149/mo) fund infrastructure. Marketplace modules ($5–15/mo each, every module ships with its own agent) are the expansion revenue engine. Third-party SDK opens the Shopify App Store model.
-
-**Two launch tracks.** CLI for developers (global). WhatsApp for service businesses (MENA first, then global). Both converge on the same product. Day-one parity, not sequential phases.
-
----
-
-## Architecture Overview
-
+# Start development
+spokestack dev
 ```
-[User Surfaces]                  [SpokeStack Cloud]
-┌──────────────┐                ┌──────────────────────────────────────┐
-│ CLI (npx)    │                │                                      │
-│ Web Dashboard│── HTTPS ──→    │  Auth (Supabase)                     │
-│ Desktop (Tau)│                │  ERP Core (Vercel/Next.js)           │
-│ Mobile (PWA) │                │  Agent Runtime (Railway)             │
-│ WhatsApp     │                │    ├─ Onboarding Agent               │
-└──────────────┘                │    ├─ Tasks Agent                    │
-                                │    ├─ Projects Agent                 │
-                                │    ├─ Briefs Agent                   │
-                                │    ├─ Orders Agent                   │
-                                │    └─ Marketplace Module Agents      │
-                                │  MC Router (Orchestrator)            │
-                                │  AgentVBX (Redis Streams)            │
-                                │  Context Graph (PostgreSQL)          │
-                                │  Billing Engine (Stripe)             │
-                                │  Storage (S3/Supabase)               │
-                                │  Notification Router                 │
-                                └──────────────────────────────────────┘
+
+Or the full non-interactive flow for AI agents:
+
+```bash
+spokestack init \
+  --email you@company.com \
+  --password yourpassword \
+  --name "Your Name" \
+  --org "Your Company" \
+  --template agency \
+  --supabase-url <URL> \
+  --supabase-key <KEY> \
+  --tier ENTERPRISE \
+  --yes
 ```
 
 ---
 
-## Documentation
+## Architecture
 
-| Document | Description |
-|----------|-------------|
-| [Product Architecture](./docs/product-architecture.md) | Canonical architectural spec — tiers, agents, marketplace, context graph |
-| [API Reference](./docs/API.md) | Full endpoint reference for all 90+ API routes |
-| [Phase 9C Hotfix](./docs/Phase-9C-Database-Hotfix.md) | Database hotfix diagnosis and resolution (April 2026) |
+```
+┌─────────────────────┐     ┌──────────────────────────────┐
+│   Frontend (Next.js) │     │   ongoing_agent_builder       │
+│                      │     │   (Python, Railway)           │
+│   Dashboard Pages    │     │                              │
+│   Mission Control    │◄───►│   47 Agent Types             │
+│   Onboarding        │     │   Tool Registry              │
+│   CLI               │     │   OpenRouter LLM             │
+│                      │     │   Execution Engine           │
+├─────────────────────┤     └──────────────────────────────┘
+│   API Routes         │              │
+│   /api/v1/*          │◄─────────────┘ (tools call CRUD APIs)
+├─────────────────────┤
+│   Prisma + Supabase  │
+│   39 Models          │
+│   PostgreSQL         │
+└─────────────────────┘
+```
+
+### The Agent Execution Loop
+
+```
+User message → Mission Control → agent-builder-client.ts
+    → POST /api/v1/core/execute (ongoing_agent_builder)
+    → Agent selects tools → Tools call spokestack-core CRUD APIs
+    → Results streamed back via SSE → UI updates
+```
+
+**What's connected today:**
+- spokestack-core has all CRUD APIs (114+ routes)
+- ongoing_agent_builder has agent definitions + OpenRouter LLM
+- agent-builder-client.ts sends requests via `/api/v1/core/execute`
+- Auth: `X-Agent-Secret` header on all runtime calls
+
+**What's being wired (Phase 10B):**
+- Canonical agent type alignment (47 types → builder's registry)
+- Tool registration: `brief_writer` can call `approve_brief` → `PATCH /api/v1/briefs/{id}`
+- The builder executes tools against core's APIs — closing the autonomous execution loop
 
 ---
 
-## Current Status (Phase 9C — April 2026)
+## Modules (23)
 
-**Deployment:** [spokestack-core.vercel.app](https://spokestack-core.vercel.app)
-**Database:** Supabase (Mumbai `ap-south-1`), Prisma 7 with `@prisma/adapter-pg`
-**Schema:** 39 models, 27 enums — fully synced with production
+### Core (always available at tier)
 
-**What's working:**
-- Dashboard with full sidebar navigation (core + 19 marketplace/enterprise modules)
-- Tasks kanban with drag-and-drop, detail drawer, comments
-- Projects with phases, milestones, canvas
-- Briefs lifecycle with artifacts
-- Orders with invoicing
-- Mission Control with 13 agents, chat, command palette (Cmd+K), notifications
-- Marketplace with install/uninstall, tier gating, demo sandbox
-- Settings (org, billing, members, integrations)
-- Context graph with weekly synthesis
-- Asset management (libraries, folders, versioning, comments)
-- Event system with subscriptions and handler logs
-- Integration framework (Nango-based OAuth)
+| Module | Page | API Routes | Features |
+|--------|------|------------|----------|
+| **Tasks** | `/tasks` | `/api/v1/tasks/*` | Kanban DnD, inline create, detail drawer, filters |
+| **Projects** | `/projects` | `/api/v1/projects/*` | Card grid, phases timeline, milestones, detail page |
+| **Briefs** | `/briefs` | `/api/v1/briefs/*` | Review pipeline (DRAFT→ACTIVE→IN_REVIEW→COMPLETED), approve/revise, artifact generation |
+| **Orders** | `/orders` | `/api/v1/orders/*` | Fulfillment pipeline (PENDING→CONFIRMED→IN_PROGRESS→COMPLETED), invoice generation |
 
-**Build history:** Phase 2 → 6 → 7 → 8A → 8B → 8C → 9A → 9B → 9C (current)
+### Marketplace
+
+| Module | Page | Features |
+|--------|------|----------|
+| **CRM** | `/crm` | Clients CRUD, pipeline kanban (Lead→Won), deals (orders-as-deals), activity timeline |
+| **Content Studio** | `/content-studio` | 5 tabs: Libraries (DAM), Moodboards, Video Projects, Documents, Calendar |
+| **Analytics** | `/analytics` | 6 metric cards, task velocity chart, revenue chart, project health, brief pipeline, team utilization |
+| **Finance** | `/finance` | Invoice/order tabs, revenue summary, AED currency, create invoice |
+| **Social Publishing** | `/social-publishing` | Post queue + scheduling, monthly calendar, platform accounts, engagement analytics |
+| **Workflows** | `/workflows` | Event subscriptions, 6 pre-built templates, canvas integration |
+| **Time & Leave** | `/time-leave` | Weekly timesheet grid, leave requests + approval, team directory |
+| **Surveys** | `/surveys` | Survey builder (text/rating/multiple-choice), responses, 4 templates |
+| **NPS** | `/nps` | SVG gauge, score calculation, response recording, trend chart, per-client scores |
+| **Boards** | `/boards` | Simplified kanban from tasks, board templates |
+| **Listening** | `/listening` | Brand monitor setup, context-based mentions, sentiment placeholder |
+| **Media Buying** | `/media-buying` | Campaign pipeline, spend tracking |
+| **LMS** | `/lms` | Courses, enrollments, completion rate |
+| **Client Portal** | `/client-portal` | Portal users from clients, approvals, activity |
+
+### Enterprise
+
+| Module | Page | Features |
+|--------|------|----------|
+| **SpokeChat** | `/spokechat` | Internal team chat channels |
+| **Delegation** | `/delegation` | Delegation of authority profiles |
+| **Access Control** | `/access-control` | RBAC policies and rules |
+| **API Management** | `/api-management` | API keys, webhooks, request logs |
+| **Builder** | `/builder` | Templates, permissions, audit log |
 
 ---
 
-## Quick Reference — Tier Summary
+## API Reference
 
-| | Free | Starter ($29) | Pro ($59) | Business ($149) | Enterprise |
-|---|---|---|---|---|---|
-| Members | 3 | 10 | 25 | 50 | Unlimited |
-| Agents | Tasks | + Projects | + Briefs | + Orders | + Custom |
-| Credits | Uncapped | Uncapped | Uncapped | Uncapped | Uncapped |
-| Surfaces | CLI + Web | + Desktop/Mobile/WhatsApp | All | All | All |
-| Marketplace | Browse | Browse | 3 modules | Unlimited | Unlimited |
+### Authentication
+
+All API routes require a Bearer token from Supabase Auth:
+
+```
+Authorization: Bearer <supabase-access-token>
+```
+
+Multi-org: pass `X-Organization-Id` header to target a specific org.
+
+### Core Entity APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/v1/tasks` | List/create tasks |
+| GET/PATCH/DELETE | `/api/v1/tasks/:taskId` | Get/update/delete task |
+| GET/POST | `/api/v1/projects` | List/create projects |
+| GET/PATCH/DELETE | `/api/v1/projects/:projectId` | Get/update/delete project |
+| GET/POST | `/api/v1/briefs` | List/create briefs |
+| GET/PATCH/DELETE | `/api/v1/briefs/:briefId` | Get/update/delete brief |
+| GET/POST | `/api/v1/orders` | List/create orders |
+| GET/PATCH | `/api/v1/orders/:orderId` | Get/update order |
+| POST | `/api/v1/orders/:orderId/invoice` | Generate invoice from order |
+| GET/POST | `/api/v1/clients` | List/create clients |
+| GET/PATCH/DELETE | `/api/v1/clients/:clientId` | Get/update/delete client |
+| GET/POST | `/api/v1/invoices` | List/create invoices |
+| GET/PATCH | `/api/v1/invoices/:invoiceId` | Get/update invoice |
+
+### Mission Control APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/v1/mission-control/chats` | List/create chat sessions |
+| GET/PATCH/DELETE | `/api/v1/mission-control/chats/:chatId` | Get/update/archive chat |
+| GET/POST | `/api/v1/mission-control/chats/:chatId/messages` | List messages / Send message (SSE streaming) |
+| GET | `/api/v1/mission-control/agents` | List available agents |
+| GET/PATCH | `/api/v1/mission-control/notifications` | List/mark-read notifications |
+
+### Module System APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/modules` | List all available modules from registry |
+| GET | `/api/v1/modules/installed` | List installed modules for org |
+| POST | `/api/v1/modules/install` | Install a module |
+| DELETE | `/api/v1/modules/:moduleType/uninstall` | Uninstall a module |
+| GET | `/api/v1/modules/recommend?industry=agency` | Get recommended modules for industry |
+| POST | `/api/v1/modules/install-batch` | Install multiple modules |
+
+### Event System APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/v1/events` | List/create entity events |
+| GET | `/api/v1/events/:eventId` | Get event with handler logs |
+| GET/POST | `/api/v1/events/subscriptions` | List/create event subscriptions |
+| PATCH/DELETE | `/api/v1/events/subscriptions/:id` | Update/delete subscription |
+
+### Digital Asset Management APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/v1/assets/libraries` | List/create asset libraries |
+| GET/PATCH | `/api/v1/assets/libraries/:libraryId` | Get/update library |
+| POST | `/api/v1/assets/folders` | Create folder |
+| GET/PATCH/DELETE | `/api/v1/assets/folders/:folderId` | Get/update/delete folder |
+| GET/POST | `/api/v1/assets` | Search/create assets |
+| GET/PATCH/DELETE | `/api/v1/assets/:assetId` | Get/update/soft-delete asset |
+| POST | `/api/v1/assets/:assetId/versions` | Upload new version |
+| GET/POST | `/api/v1/assets/:assetId/comments` | List/add comments |
+
+### Integration APIs (Nango)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/integrations/connect` | Initiate OAuth flow |
+| GET | `/api/v1/integrations` | List all connections |
+| GET/DELETE | `/api/v1/integrations/:provider` | Get status / Disconnect |
+| POST | `/api/v1/integrations/proxy` | Proxy API call through Nango |
+
+### Admin APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/PATCH | `/api/v1/billing` | Get billing / Upgrade tier |
+| GET/PATCH | `/api/v1/settings` | Get/update org settings |
+| GET/PATCH | `/api/v1/org` | Get/update organization |
+| GET/POST | `/api/v1/members` | List/invite members |
+| POST | `/api/v1/admin/seed` | Seed database (billing tiers, modules, settings) |
+| GET | `/api/v1/activity` | Unified activity feed |
+| GET/POST | `/api/v1/context` | Read/write context graph |
+| POST | `/api/v1/context/synthesize` | Trigger weekly insight synthesis |
+
+### Onboarding APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/v1/onboarding` | Get/set onboarding completion status |
+| POST | `/api/v1/onboarding/chat` | Streaming onboarding agent chat (SSE) |
+| POST | `/api/v1/onboarding/action` | Execute onboarding actions (create entities) |
+
+### Cron Jobs
+
+| Schedule | Endpoint | Description |
+|----------|----------|-------------|
+| Monday 09:00 UTC | `/api/cron/weekly-synthesis` | Generate INSIGHT context entries |
+| Every 2 hours | `/api/cron/sync` | Dispatch integration syncs |
+| Sunday 03:00 UTC | `/api/cron/events/cleanup` | Delete processed events >30 days |
+
+---
+
+## CLI Commands
+
+```bash
+# Setup & Deployment
+spokestack init          # Full first-run: account + org + env + seed
+spokestack setup         # Write .env.local, generate Prisma client
+spokestack seed          # Seed billing tiers, modules, settings
+spokestack dev           # Start Next.js dev server
+spokestack deploy        # Deploy to Vercel
+spokestack status        # Full health check
+
+# Entity CRUD (all support --yes for non-interactive)
+spokestack task add --title "Fix login" --priority HIGH --yes
+spokestack project new --name "Q2 Campaign" --yes
+spokestack brief create --title "Social Strategy" --yes
+spokestack order new --client "Etihad" --items '[...]' --yes
+
+# Agent
+spokestack agent chat                    # Interactive chat
+spokestack agent chat --message "..." --json  # Single message, JSON output
+spokestack agent ask "What should I work on?" --json
+
+# Modules
+spokestack module install CRM --yes
+spokestack module uninstall SURVEYS --yes
+spokestack modules list
+
+# Workspace
+spokestack workspace info
+spokestack connect google_drive --yes
+spokestack export
+```
+
+---
+
+## Environment Variables
+
+```bash
+# Required
+DATABASE_URL=                          # Supabase PostgreSQL
+NEXT_PUBLIC_SUPABASE_URL=              # Supabase project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=         # Supabase anon key
+
+# Agent Runtime (ongoing_agent_builder)
+AGENT_RUNTIME_URL=                     # Railway URL
+AGENT_RUNTIME_SECRET=                  # Shared secret (X-Agent-Secret header)
+
+# Optional
+SUPABASE_SERVICE_ROLE_KEY=             # For admin operations
+NANGO_SECRET_KEY=                      # OAuth integration broker
+NANGO_PUBLIC_KEY=                      # Frontend OAuth popup
+STRIPE_SECRET_KEY=                     # Billing (future)
+CRON_SECRET=                           # Vercel Cron authentication
+REDIS_URL=                             # Rate limiting + caching
+```
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, TypeScript, Tailwind CSS v4)
+- **Database:** Supabase PostgreSQL via Prisma 7
+- **Auth:** Supabase Auth (JWT)
+- **AI Runtime:** ongoing_agent_builder (Python, OpenRouter)
+- **Integrations:** Nango (OAuth broker, 13 providers)
+- **Deployment:** Vercel (frontend + API) + Railway (agent runtime)
+- **CLI:** Commander + Inquirer + Chalk
+
+---
+
+## Prisma Schema
+
+39 models, 35+ enums. Key models:
+
+**Core:** Organization, User, Team, TeamMember, OrgSettings, OrgModule, FeatureFlag, Client
+**Billing:** BillingAccount, BillingTier, BillingMeterEvent, BillingInvoice
+**Work:** Task, TaskList, TaskComment, Project, ProjectPhase, ProjectMilestone, Brief, BriefPhase, Artifact, ArtifactReview, Order, OrderItem, Invoice, InvoiceItem
+**Canvas:** WfCanvas, WfCanvasNode, WfCanvasEdge
+**Agent:** AgentSession, AgentMessage, ContextEntry, ContextMilestone
+**Events:** EntityEvent, EventSubscription, EventHandlerLog, SyncJob
+**DAM:** AssetLibrary, AssetFolder, Asset, AssetVersion, AssetComment
+**Infrastructure:** Integration, Notification, NotificationPreference, FileAsset, FileVersion
+
+---
+
+## What's Next
+
+### Phase 10B: Agent Tool Registration (ongoing_agent_builder)
+
+The execution bridge between Mission Control and module CRUD. When the MC agent says "approve this brief," it should call `PATCH /api/v1/briefs/{id}` autonomously.
+
+**What's needed in ongoing_agent_builder:**
+1. `GET /api/v1/agents/registry` — canonical agent type list with `mcTranslationMap`
+2. Tool registration per agent: `brief_writer` → `approve_brief` → `PATCH /api/v1/briefs/{id}`
+3. Accept MC agent types and translate internally
+4. Execute tools against spokestack-core's CRUD APIs with `X-Agent-Secret` auth
+
+**The loop:**
+```
+MC Agent decides → calls tool → builder executes → PATCH spokestack-core API → entity updated → event emitted → subscriptions fire → next action triggered
+```
+
+This is the last piece to make SpokeStack fully autonomous — agents that don't just suggest, but execute.
 
 ---
 
 ## Origin
 
-SpokeStack ERP: 267 Prisma models, 186 enums, 191 API routes, 14 active modules, built over a decade of operating a 40+ person creative digital agency across Dubai and Abu Dhabi. `spokestack-core` extracts the universal primitives — Tasks, Projects, Briefs, Orders — into a product any business can use, with agents that learn how each business works.
+SpokeStack ERP: 267 Prisma models, 186 enums, 191 API routes, 14 active modules, built over a decade of operating a 40+ person creative digital agency across Dubai and Abu Dhabi. `spokestack-core` extracts the universal primitives into a product any business can use, with agents that learn how each business works.
