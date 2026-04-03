@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       agent_type: payload.metadata?.agentType ?? "assistant",
       task: payload.message,
-      tenant_id: auth.organizationId,
+      org_id: auth.organizationId,
       user_id: auth.user.id,
       stream: false,
     }),

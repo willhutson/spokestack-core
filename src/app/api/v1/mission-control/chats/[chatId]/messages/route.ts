@@ -264,7 +264,7 @@ async function streamFromAgentRuntime(
       agent_type: agentType,
       task: history[history.length - 1]?.content ?? "",
       conversation_history: history,
-      tenant_id: organizationId,
+      org_id: organizationId,
       stream: true,
     }),
   });

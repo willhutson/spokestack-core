@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         agent_type: payload.metadata?.agentType ?? "assistant",
         task: payload.message,
-        tenant_id: payload.orgId,
+        org_id: payload.orgId,
         user_id: payload.userId,
         stream: true,
         conversation_history: chatHistory ?? [],

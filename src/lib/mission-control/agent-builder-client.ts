@@ -128,7 +128,18 @@ export async function executeAgentStream(
   const res = await fetch(url, {
     method: "POST",
     headers: runtimeHeaders(),
-    body: JSON.stringify({ ...req, stream: true }),
+    body: JSON.stringify({
+      agent_type: req.agentType,
+      task: req.prompt,
+      system_prompt: req.systemPrompt,
+      org_id: req.organizationId,
+      user_id: req.userId,
+      session_id: req.sessionId,
+      context: req.context,
+      max_tokens: req.maxTokens,
+      temperature: req.temperature,
+      stream: true,
+    }),
   });
 
   if (!res.ok) {
@@ -205,7 +216,18 @@ export async function executeAgent(
 ): Promise<AgentExecutionResponse> {
   return runtimeFetch<AgentExecutionResponse>("/api/v1/core/execute", {
     method: "POST",
-    body: JSON.stringify({ ...req, stream: false }),
+    body: JSON.stringify({
+      agent_type: req.agentType,
+      task: req.prompt,
+      system_prompt: req.systemPrompt,
+      org_id: req.organizationId,
+      user_id: req.userId,
+      session_id: req.sessionId,
+      context: req.context,
+      max_tokens: req.maxTokens,
+      temperature: req.temperature,
+      stream: false,
+    }),
   });
 }
 
@@ -222,10 +244,10 @@ export async function chatWithAgent(
   return runtimeFetch<AgentExecutionResponse>("/api/v1/core/execute", {
     method: "POST",
     body: JSON.stringify({
-      chatId,
+      chat_id: chatId,
       messages,
-      agentType,
-      organizationId: orgId,
+      agent_type: agentType,
+      org_id: orgId,
     }),
   });
 }

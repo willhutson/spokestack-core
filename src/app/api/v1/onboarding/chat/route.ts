@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
             content: m.content,
           })
         ),
-        tenant_id: auth.organizationId,
+        org_id: auth.organizationId,
         user_id: auth.user.id,
         stream: true,
         metadata: {
