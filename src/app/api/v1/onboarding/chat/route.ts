@@ -94,7 +94,7 @@ Be genuinely curious. Ask follow-ups. You're a helpful colleague getting them se
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await authenticate(req as any);
+  const auth = await authenticate(req);
   if (!auth) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,

@@ -74,13 +74,13 @@ export async function POST(req: NextRequest) {
       where: {
         organizationId_moduleType: {
           organizationId: auth.organizationId,
-          moduleType: moduleType as any,
+          moduleType: moduleType as import("@prisma/client").ModuleType,
         },
       },
       update: { active: true },
       create: {
         organizationId: auth.organizationId,
-        moduleType: moduleType as any,
+        moduleType: moduleType as import("@prisma/client").ModuleType,
         active: true,
       },
     });

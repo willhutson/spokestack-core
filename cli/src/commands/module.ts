@@ -153,8 +153,8 @@ export function registerModuleCommand(program: Command): void {
 
       const s = ui.spinner(`Installing ${slug}...`);
       const res = await post<{ module: Module; message: string }>(
-        `/api/v1/modules/${slug}/install`,
-        {}
+        "/api/v1/modules/install",
+        { moduleType: slug.toUpperCase().replace(/-/g, "_") }
       );
       s.stop();
 
@@ -186,7 +186,10 @@ export function registerModuleCommand(program: Command): void {
       }
 
       const s = ui.spinner(`Removing ${slug}...`);
-      const res = await del<{ message: string }>(`/api/v1/modules/${slug}/install`);
+      const res = await post<{ message: string }>(
+        `/api/v1/modules/${slug.toUpperCase().replace(/-/g, "_")}/uninstall`,
+        {}
+      );
       s.stop();
 
       if (ui.handleError(res.error, res.upgradeRequired, res.requiredTier)) {

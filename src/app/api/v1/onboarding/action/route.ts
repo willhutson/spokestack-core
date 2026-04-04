@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
           organizationId: auth.organizationId,
           title: action.data.title,
           description: action.data.description ?? null,
-          status: (action.data.status as any) ?? "TODO",
+          status: (action.data.status as "TODO" | "IN_PROGRESS" | "DONE") ?? "TODO",
           priority: "MEDIUM",
         },
       });

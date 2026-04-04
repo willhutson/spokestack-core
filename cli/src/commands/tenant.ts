@@ -93,7 +93,16 @@ export function registerTenantCommand(program: Command): void {
           }
         );
 
-        const supabaseData = await supabaseRes.json();
+        const supabaseData = await supabaseRes.json() as {
+          error_code?: string;
+          msg?: string;
+          message?: string;
+          id?: string;
+          access_token?: string;
+          refresh_token?: string;
+          user?: { id: string };
+          session?: { access_token: string; refresh_token: string };
+        };
 
         if (!supabaseRes.ok || supabaseData.error_code) {
           s.stop();
@@ -108,8 +117,8 @@ export function registerTenantCommand(program: Command): void {
           return;
         }
 
-        supabaseUser = supabaseData.user || { id: supabaseData.id };
-        accessToken = supabaseData.access_token || supabaseData.session?.access_token;
+        supabaseUser = supabaseData.user || { id: supabaseData.id! };
+        accessToken = supabaseData.access_token || supabaseData.session!.access_token;
         refreshToken = supabaseData.refresh_token || supabaseData.session?.refresh_token || "";
       } catch (err) {
         s.stop();

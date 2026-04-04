@@ -81,9 +81,9 @@ export async function POST(req: NextRequest) {
     data: {
       organizationId: auth.organizationId,
       userId: auth.user.id,
-      agentType: prismaAgentType as any,
+      agentType: prismaAgentType as import("@prisma/client").AgentType,
       surface: "WEB",
-      metadata: metadata as any,
+      metadata: metadata as unknown as import("@prisma/client").Prisma.InputJsonValue,
     },
     include: {
       _count: { select: { messages: true } },

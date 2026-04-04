@@ -1,13 +1,22 @@
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://dufujpalmzbbwtofpgyv.supabase.co";
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_i6oqMxrglFTbVpmzFMtUuA_eehALBQR";
+function getSupabaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) throw new Error("NEXT_PUBLIC_SUPABASE_URL is required. Run: spokestack setup");
+  return url;
+}
+
+function getSupabaseAnonKey(): string {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!key) throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY is required. Run: spokestack setup");
+  return key;
+}
 
 export function createServiceClient() {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
 
-  return createClient(SUPABASE_URL, key, {
+  return createClient(getSupabaseUrl(), serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
@@ -19,7 +28,7 @@ export async function getAuthUser(authHeader: string | null) {
 
   const token = authHeader.replace("Bearer ", "");
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  const supabase = createClient(getSupabaseUrl(), getSupabaseAnonKey(), {
     global: { headers: { Authorization: `Bearer ${token}` } },
   });
 

@@ -67,7 +67,7 @@ export async function PATCH(req: NextRequest, ctx: RouteContext) {
 
   const chat = await prisma.agentSession.update({
     where: { id: chatId },
-    data: { metadata: updatedMeta as any },
+    data: { metadata: updatedMeta as unknown as import("@prisma/client").Prisma.InputJsonValue },
   });
 
   return json({ chat });

@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import { BillingTierType } from "@prisma/client";
+import { BillingTierType, ModuleType } from "@prisma/client";
 
 let _stripe: Stripe | null = null;
 function getStripe(): Stripe {
@@ -156,7 +156,7 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
         });
 
         if (billing) {
-          const periodEnd = new Date((subscription as any).current_period_end * 1000);
+          const periodEnd = new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000);
           const statusMap: Record<string, "ACTIVE" | "PAST_DUE" | "CANCELED"> = {
             active: "ACTIVE",
             past_due: "PAST_DUE",
@@ -201,7 +201,7 @@ export async function downgradeTier(
   targetTier: BillingTierType
 ): Promise<void> {
   // Determine which core modules the new tier grants
-  const TIER_MODULES: Record<BillingTierType, string[]> = {
+  const TIER_MODULES: Record<BillingTierType, ModuleType[]> = {
     FREE: ["TASKS"],
     STARTER: ["TASKS", "PROJECTS"],
     PRO: ["TASKS", "PROJECTS", "BRIEFS"],
@@ -215,7 +215,7 @@ export async function downgradeTier(
   await prisma.orgModule.updateMany({
     where: {
       organizationId: orgId,
-      moduleType: { notIn: allowedModules as any },
+      moduleType: { notIn: allowedModules },
       active: true,
     },
     data: { active: false },

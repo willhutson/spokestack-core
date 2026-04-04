@@ -283,7 +283,7 @@ export function registerCustomerCommand(program: Command): void {
     .option("--format <fmt>", "Output format: table, json, minimal", "table")
     .action(async (opts) => {
       const s = ui.spinner("Loading customers...");
-      const res = await get<{ customers: Customer[] }>("/api/v1/orders/customers");
+      const res = await get<{ customers: Customer[] }>("/api/v1/clients");
       s.stop();
 
       if (ui.handleError(res.error, res.upgradeRequired, res.requiredTier)) {
@@ -354,7 +354,7 @@ export function registerCustomerCommand(program: Command): void {
       }
 
       const s = ui.spinner("Adding customer...");
-      const res = await post<{ customer: Customer }>("/api/v1/orders/customers", {
+      const res = await post<{ customer: Customer }>("/api/v1/clients", {
         name,
         email: opts.email,
         phone: opts.phone,

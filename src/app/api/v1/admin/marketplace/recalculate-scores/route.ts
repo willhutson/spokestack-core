@@ -8,8 +8,9 @@ import { json, error } from "@/lib/api";
  * Auth: X-Cron-Secret header must match CRON_SECRET env var.
  */
 export async function POST(req: NextRequest) {
-  const cronSecret = req.headers.get("x-cron-secret");
-  if (cronSecret !== process.env.CRON_SECRET) {
+  const authHeader = req.headers.get("authorization");
+  const expected = process.env.CRON_SECRET;
+  if (!expected || authHeader !== `Bearer ${expected}`) {
     return error("Unauthorized", 401);
   }
 
