@@ -1,416 +1,427 @@
 # SpokeStack Core — Overnight Audit
-*Generated: 2026-04-03*
+*Generated: 2026-04-04*
 
 ## Summary
-- **8 dead component files** found, **5 missing API route implementations**, **2 duplicate UI components**
-- **107 API routes** audited (3 missing endpoints called by pages, 1 CORS issue)
-- **0 TypeScript errors** in main app; **11 errors** in CLI (`cli/src/commands/tenant.ts`)
-- **9 `as any` casts**, 0 `@ts-ignore`/`@ts-expect-error`
-- **4 security concerns** (CORS wildcard, hardcoded Supabase keys, missing security headers, 16 undocumented env vars)
-- **25 CLI commands** verified (3 endpoint path mismatches)
-- **7 unused Prisma models**
-- **12 npm vulnerabilities** (5 moderate, 7 high — all in transitive deps)
+- **0 dead source files** found (previous cleanup was thorough)
+- **130+ API routes** audited (**12 issues** flagged)
+- **0 TypeScript errors** (main app); **~279 errors** in CLI
+- **1 security concern** (timing attack vulnerability)
+- **24 CLI commands** verified (**4 broken endpoints**)
+- **46 UI pages** audited (**4 empty shells**, **6 with hardcoded data**)
+- **49 Prisma models** checked (**7 unused**)
+- **33 environment variables** mapped (**2 undocumented**)
+- **0 npm vulnerabilities**
 
 ---
 
 ## Dead Code
 
-### Unused Components (never imported anywhere)
+### Source Files
+**Status: CLEAN.** All files in `src/` are actively imported. The April 3 cleanup was thorough — all previously flagged dead components have been removed:
+- ~~ActivityFeed.tsx~~ removed
+- ~~MissionControlHeader.tsx~~ removed
+- ~~BriefCreateForm.tsx~~ removed
+- ~~TaskCreateForm.tsx~~ removed
+- ~~OrderCreateForm.tsx~~ removed
+- ~~ModulePageShell.tsx~~ removed
+- ~~Duplicate UI components~~ removed
 
-| File | Description |
-|------|-------------|
-| `src/components/mission-control/ActivityFeed.tsx` | Activity feed display — orphaned |
-| `src/components/mission-control/MissionControlHeader.tsx` | Header UI — orphaned |
-| `src/components/modules/briefs/BriefCreateForm.tsx` | Brief creation form — orphaned |
-| `src/components/modules/tasks/TaskCreateForm.tsx` | Task creation form — orphaned |
-| `src/components/modules/orders/OrderCreateForm.tsx` | Order creation form — orphaned |
-| `src/components/module-page/ModulePageShell.tsx` | Layout wrapper — orphaned |
-
-### Duplicate Components
-
-| File | Duplicate Of |
-|------|-------------|
-| `src/components/ui/phases-timeline.tsx` | `shared/PhasesTimeline` (the used version) |
-| `src/components/ui/status-badge.tsx` | `shared/StatusBadge` (the used version) |
-
-### Missing API Route Implementations (pages call these but no route.ts exists)
-
-| Called Endpoint | Called From |
-|----------------|------------|
-| `/api/v1/access-control/policies` | `src/app/(dashboard)/access-control/page.tsx` |
-| `/api/v1/api-keys` | `src/app/(dashboard)/api-management/page.tsx` |
-| `/api/v1/webhooks` | `src/app/(dashboard)/api-management/page.tsx` |
-| `/api/v1/builder/templates` | `src/app/(dashboard)/builder/page.tsx` |
-| `/api/v1/delegations` | `src/app/(dashboard)/delegation/page.tsx` |
-
-### API Routes Never Called From Frontend
-
-These routes exist but are never called from any page or client component. Some may be called externally (webhooks, cron, CLI).
+### Potentially Unused API Routes (infrastructure/preparatory)
+These routes exist but have no frontend consumers — they may be CLI-only, internal, or planned:
 
 | Route | Notes |
 |-------|-------|
-| `/api/v1/agents/sessions` | May be CLI-only |
-| `/api/v1/modules/recommend` | Unused recommendation engine |
-| `/api/v1/customers`, `/api/v1/customers/[customerId]` | Duplicate of `/api/v1/clients` |
-| `/api/v1/notifications` | Not wired into UI |
+| `/api/v1/agents/sessions` | CLI-only session management |
+| `/api/v1/modules/recommend` | Recommendation engine — not wired |
+| `/api/v1/customers/*` | Alias for `/api/v1/clients` — consolidate |
+| `/api/v1/notifications` | Not wired to UI |
 | `/api/v1/events/subscriptions/[id]` | Event subscription CRUD |
 | `/api/v1/briefs/[briefId]/phases` | Phase management |
 | `/api/v1/briefs/[briefId]/artifacts` | Artifact management |
 | `/api/v1/assets/[assetId]/versions` | Version management |
-| `/api/v1/task-lists`, `/api/v1/task-lists/[listId]` | Task list CRUD |
-| `/api/v1/projects/[projectId]/canvas` | Canvas endpoint |
+| `/api/v1/task-lists/*` | Task list CRUD — not wired |
 | `/api/v1/projects/[projectId]/milestones` | Milestones endpoint |
 | `/api/admin/onboarding/draft` | Draft management |
 
-### Phase 10A References
-No references to "Phase 10A" or old runtime code found in the codebase.
+### Potentially Unused Lib Files
+| File | Notes |
+|------|-------|
+| `src/lib/platform/role-templates.ts` | Not imported anywhere — verify if needed |
 
 ---
 
 ## API Routes
 
-**Total: 107 route files**
-
-### Health Overview
-- **Authentication**: 106/107 routes use `authenticate()` — the 1 exception is `/api/v1/modules` (GET, intentionally public catalog)
-- **Error Handling**: All routes use try/catch with proper error responses. No empty catch blocks found.
-- **Body Validation**: All POST/PATCH routes validate required fields before processing.
-- **Direct LLM Calls**: 0 — all agent calls go through `agent-builder-client` abstraction.
-- **Module Guards**: Domain routes enforce module availability via `moduleGuard()`.
-
-### Routes With Issues
+### Route Inventory (130+ routes)
 
 | Route | Methods | Auth | Issues |
 |-------|---------|------|--------|
-| `/api/v1/modules` | GET | None | Intentionally public — OK |
-| `/api/v1/auth` | POST, PUT | Supabase ID | No org auth (user registration) — OK |
-| `/api/v1/auth/login` | POST | None | Supabase credential check — OK |
-| `/api/v1/auth/refresh` | POST | None | Token refresh — OK |
-| `/api/internal/webhooks/stripe` | POST | Stripe sig | Webhook — OK |
-| `/api/internal/webhooks/telnyx` | POST | Ed25519 sig | Webhook — OK |
-| `/api/cron/*` | GET | Bearer CRON_SECRET | Cron jobs — OK |
-| `/api/v1/admin/marketplace/recalculate-scores` | POST | X-Cron-Secret header | Uses different header name than other cron routes |
-| `/api/v1/onboarding/chat` | POST | authenticate() | Uses `req as any` cast (line 97) |
+| `/api/v1/auth` | GET, POST, PUT | YES (Supabase) | None |
+| `/api/v1/auth/login` | POST | NO (public) | None — proper error handling |
+| `/api/v1/auth/refresh` | POST | NO (public) | None — proper error handling |
+| `/api/v1/agents/ask` | POST | YES | Silent `.catch(() => {})` on canvas update |
+| `/api/v1/agents/chat` | POST | YES | Silent `.catch(() => {})` on correction detection |
+| `/api/v1/agents/sessions` | GET, POST | YES | None |
+| `/api/v1/access-control/policies` | GET, POST | YES | None |
+| `/api/v1/api-keys` | GET, POST, DELETE | YES | None |
+| `/api/v1/assets/*` | CRUD | YES | No validation on PATCH fields |
+| `/api/v1/billing` | GET, POST | YES | None |
+| `/api/v1/billing/webhook` | POST | Stripe sig | None |
+| `/api/v1/briefs/*` | CRUD | YES + module guard | Event emission `.catch(() => {})` |
+| `/api/v1/builder/templates` | GET | YES | None |
+| `/api/v1/clients/*` | CRUD | YES + module guard | None |
+| `/api/v1/context/*` | GET, POST | YES | None |
+| `/api/v1/customers/*` | CRUD | YES + module guard | Alias of `/clients` — naming mismatch |
+| `/api/v1/delegations` | GET, POST | YES | None |
+| `/api/v1/events/*` | CRUD | YES | None |
+| `/api/v1/export` | GET | YES (OWNER/ADMIN) | None |
+| `/api/v1/instance/configure` | PUT | YES | Domain input not validated |
+| `/api/v1/integrations/*` | CRUD | YES | None |
+| `/api/v1/invoices/*` | CRUD | YES + module guard | None |
+| `/api/v1/marketplace/*` | Various | YES | None |
+| `/api/v1/members/*` | CRUD | YES (OWNER/ADMIN) | None |
+| `/api/v1/mission-control/*` | Various | YES | Missing try-catch for `req.json()` in chats POST |
+| `/api/v1/modules` | GET | NO (public) | Intentionally public |
+| `/api/v1/modules/install` | POST | YES | None |
+| `/api/v1/notifications` | GET, PATCH | YES | Missing validation for PATCH |
+| `/api/v1/onboarding/*` | Various | YES | None |
+| `/api/v1/orders/*` | CRUD | YES + module guard | None |
+| `/api/v1/org` | GET, PATCH | YES (OWNER/ADMIN) | None |
+| `/api/v1/projects/*` | CRUD | YES + module guard | Direct delete — orphans phases/milestones |
+| `/api/v1/settings` | GET, PATCH | YES (OWNER/ADMIN) | None |
+| `/api/v1/tasks/*` | CRUD | YES + module guard | Direct delete — orphans comments |
+| `/api/v1/teams/*` | CRUD | YES (OWNER/ADMIN) | None |
+| `/api/v1/webhooks` | GET, POST | YES | None |
+| `/api/cron/sync` | GET | CRON_SECRET | None |
+| `/api/cron/events/cleanup` | GET | CRON_SECRET | None |
+| `/api/cron/weekly-synthesis` | GET | CRON_SECRET | None |
+| `/api/internal/webhooks/stripe` | POST | Stripe signature | None |
+| `/api/internal/webhooks/telnyx` | POST | Telnyx ED25519 | None |
 
-### Webhook Security
-- **Stripe**: Full `constructEvent()` signature verification
-- **Telnyx**: Ed25519 signature validation with `crypto.verify()`
-- **Cron**: Bearer token validation with `CRON_SECRET`
+### Flagged Issues
 
-### Fire-and-Forget Patterns
-Multiple routes use `.catch(() => {})` for non-critical operations (event emission, canvas updates). This is intentional but means failures in these operations are silently dropped.
+1. **Silent error swallowing** — Multiple routes use `.catch(() => {})` on event emission and fire-and-forget operations. At minimum these should log warnings.
+   - `src/app/api/v1/agents/chat/route.ts` (lines 46-65)
+   - `src/app/api/v1/agents/ask/route.ts` (lines 52, 88)
+   - `src/app/api/v1/briefs/[briefId]/route.ts` (lines 57, 71, 73)
+
+2. **Missing request body validation** — Most POST/PATCH endpoints use TypeScript type assertions (`body as { ... }`) without runtime validation. No zod/yup schemas.
+
+3. **Missing `req.json()` try-catch** — `/api/v1/mission-control/chats` POST calls `await req.json()` without explicit error handling.
+
+4. **Cascading delete risk** — Direct deletes on projects, tasks, and briefs may orphan child records (phases, milestones, comments, attachments).
+
+5. **No OPENAI_API_KEY references** — All LLM calls properly route through `AGENT_RUNTIME_URL` + `AGENT_RUNTIME_SECRET`.
 
 ---
 
 ## Type Safety
 
-### Main App (`npx tsc --noEmit`)
-**0 errors** — Clean build after `npm install`.
+### Main App: `npx tsc --noEmit`
+**0 errors** (with dependencies installed)
 
-### CLI (`cd cli && npx tsc --noEmit`)
-**11 errors** — All in `cli/src/commands/tenant.ts`:
+*Note: Without `node_modules`, 8,108 errors appear — all from missing type declarations (react, next, etc.). This is expected.*
 
-| Line | Error |
-|------|-------|
-| 98, 100, 105, 111, 112, 113 | `'supabaseData' is of type 'unknown'` (TS18046) — needs type assertion or type guard |
+### CLI: `cd cli && npx tsc --noEmit`
+**~279 errors** across all command files. Root causes:
+- Missing `@types/node` in devDependencies (83 errors — `process`, `Buffer`, `node:fs`, etc.)
+- Missing module declarations for `commander`, `inquirer`, `open` (12 errors)
+- Implicit `any` on function parameters (50+ errors — `opts`, `input`, `err`, `code`, `l`)
+- Missing `fetch`, `Response`, `ReadableStream`, `TextDecoder` types (15 errors)
+- `'auth' is possibly 'null'` (3 errors)
 
-Root cause: `supabaseData` from a JSON response is typed as `unknown` but accessed without narrowing.
+### Type Bypasses
 
-### `as any` Casts (9 total)
+**`as any` casts (1 total):**
 
-| File | Line | Context |
+| File | Line | Code |
+|------|------|------|
+| `cli/src/commands/modules.ts` | 121 | `(res.data as any).requiredTier` |
+
+**`as unknown as` double casts (7 total):**
+
+| File | Line | Purpose |
 |------|------|---------|
-| `src/lib/billing/stripe.ts` | 159 | `(subscription as any).current_period_end` — Stripe type incomplete |
-| `src/lib/billing/stripe.ts` | 218 | `allowedModules as any` — Prisma enum array cast |
-| `src/app/api/v1/onboarding/action/route.ts` | 80 | `action.data.status as any` — dynamic status |
-| `src/app/api/v1/onboarding/chat/route.ts` | 97 | `req as any` — Request type mismatch |
-| `src/app/api/v1/mission-control/chats/[chatId]/route.ts` | 70 | `updatedMeta as any` — JSON metadata |
-| `src/app/api/v1/admin/seed/route.ts` | 77 | `moduleType as any` — enum cast |
-| `src/app/api/v1/admin/seed/route.ts` | 83 | `moduleType as any` — enum cast |
-| `src/app/api/v1/mission-control/chats/route.ts` | 84 | `prismaAgentType as any` — enum mapping |
-| `src/app/api/v1/mission-control/chats/route.ts` | 86 | `metadata as any` — JSON metadata |
+| `src/lib/prisma.ts` | 4 | Prisma singleton on globalThis |
+| `src/lib/billing/stripe.ts` | 159 | Stripe subscription period access |
+| `cli/src/api.ts` | 78, 91, 101 | Generic API response casting |
+| `src/app/api/v1/agents/ask/route.ts` | 52 | Agent result to Record |
+| `src/app/api/v1/mission-control/chats/route.ts` | 86 | Metadata to Prisma JSON |
+| `src/app/api/v1/mission-control/chats/[chatId]/route.ts` | 70 | Metadata to Prisma JSON |
 
-### `@ts-ignore` / `@ts-expect-error`
-**0 found.**
+**`@ts-ignore` / `@ts-expect-error`: 0 found**
 
 ---
 
 ## Prisma
 
-### Schema Models (52 total)
+### Schema: 49 Models, 33 Enums
 
-**Foundation (7):** Organization, User, Team, TeamMember, OrgSettings, OrgModule, FeatureFlag
+### Unused Models (never directly queried in `src/`)
 
-**Marketplace (4):** PublishedModule, ModuleReview, ModuleInstall, ModuleBillingEvent
+| Model | Status | Notes |
+|-------|--------|-------|
+| `FeatureFlag` | Unused | No feature flag system implemented |
+| `TaskAttachment` | Unused | File attachment not wired |
+| `ArtifactReview` | Unused | Review workflow not implemented |
+| `NotificationPreference` | Unused | Preference UI not built |
+| `FileVersion` | Unused | Versioning not wired |
+| `OrderItem` | Nested only | Only via `Order.items` nested creates |
+| `InvoiceItem` | Nested only | Only via `Invoice.items` nested creates |
 
-**Billing (4):** BillingAccount, BillingTier, BillingMeterEvent, BillingInvoice
+### Deprecated Fields
+- **`Brief.clientName`** — Still actively used in 15+ locations despite being deprecated. Should be migrated to `clientId` FK.
 
-**Tasks (4):** TaskList, Task, TaskComment, TaskAttachment
+### Raw SQL
+**None found.** All queries use Prisma client methods exclusively. No `$queryRaw` or `$executeRaw`.
 
-**Projects (6):** Project, ProjectPhase, ProjectMilestone, WfCanvas, WfCanvasNode, WfCanvasEdge
-
-**Briefs (4):** Brief, BriefPhase, Artifact, ArtifactReview
-
-**Orders (5):** Client, Order, OrderItem, Invoice, InvoiceItem
-
-**Agent (4):** AgentSession, AgentMessage, ContextEntry, ContextMilestone
-
-**Infrastructure (5):** Integration, Notification, NotificationPreference, FileAsset, FileVersion
-
-**Events (4):** EntityEvent, EventSubscription, EventHandlerLog, SyncJob
-
-**Digital Assets (5):** AssetLibrary, AssetFolder, Asset, AssetVersion, AssetComment
-
-### Unused Models (never directly queried in src/)
-
-| Model | Notes |
-|-------|-------|
-| `FeatureFlag` | Defined but never referenced — no feature flag system implemented |
-| `TaskAttachment` | Defined but never referenced — file attachment not wired |
-| `ArtifactReview` | Defined but never referenced — review workflow not implemented |
-| `NotificationPreference` | Defined but never referenced — preference UI not built |
-| `FileVersion` | Defined but never referenced — versioning not wired |
-| `OrderItem` | Only created via nested writes (`items.create`), never directly queried |
-| `InvoiceItem` | Only created via nested writes, never directly queried |
-
-### Raw SQL Queries
-**0 found.** All database access uses Prisma's type-safe query builder.
-
-### Field Name Consistency
-All field names used in API route queries match the schema definitions exactly. Verified across Client, Task, Order, Invoice, Asset, Brief, Project, ContextEntry, and OrgModule models. All enum values and composite unique constraints are used correctly.
+### Field Name Accuracy
+All API routes verified against schema — no field name mismatches detected.
 
 ---
 
 ## Environment Variables
 
-### All Variables Referenced (31 unique)
+### All Referenced Variables (33 total)
 
-#### Documented in `.env.example` (15)
-| Variable | Used In |
-|----------|---------|
-| `DATABASE_URL` | Prisma config |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase client |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase server |
-| `STRIPE_SECRET_KEY` | Billing |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhooks |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client-side Stripe |
-| `AGENT_RUNTIME_URL` | Agent chat/ask endpoints |
-| `AGENT_RUNTIME_SECRET` | Service-to-service auth |
-| `REDIS_URL` | Caching |
-| `TELNYX_API_KEY` | Telnyx integration |
-| `TELNYX_WEBHOOK_SECRET` | Telnyx webhooks |
-| `NANGO_SECRET_KEY` | Nango integration |
-| `NANGO_PUBLIC_KEY` | Nango integration |
-| `NANGO_HOST` | Nango integration |
+| Variable | Count | Server/Client | In .env.example |
+|----------|-------|---------------|-----------------|
+| `AGENT_RUNTIME_URL` | 11 | Server | YES |
+| `AGENT_RUNTIME_SECRET` | 10 | Server | YES |
+| `AGENT_BUILDER_URL` | 2 | Server | YES |
+| `DATABASE_URL` | 3 | Server | YES |
+| `DIRECT_URL` | 1 | Server | YES |
+| `NEXT_PUBLIC_SUPABASE_URL` | 4 | Public | YES |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 4 | Public | YES |
+| `SUPABASE_SERVICE_ROLE_KEY` | 1 | Server | YES |
+| `STRIPE_SECRET_KEY` | 3 | Server | YES |
+| `STRIPE_WEBHOOK_SECRET` | 2 | Server | YES |
+| `STRIPE_PRICE_STARTER` | 1 | Server | YES |
+| `STRIPE_PRICE_PRO` | 1 | Server | YES |
+| `STRIPE_PRICE_BUSINESS` | 1 | Server | YES |
+| `NEXT_PUBLIC_APP_URL` | 2 | Public | YES |
+| `REDIS_URL` | 5 | Server | YES |
+| `CRON_SECRET` | 4 | Server | YES |
+| `SPOKESTACK_ADMIN_ORG_ID` | 2 | Server | YES |
+| `TELNYX_API_KEY` | 1 | Server | YES |
+| `TELNYX_WEBHOOK_SECRET` | 1 | Server | YES |
+| `TELNYX_PUBLIC_KEY` | 1 | Server | YES |
+| `TELNYX_MESSAGING_PROFILE_ID` | 1 | Server | YES |
+| `TELNYX_SMS_FROM` | 1 | Server | YES |
+| `TELNYX_WHATSAPP_FROM` | 1 | Server | YES |
+| `NANGO_SECRET_KEY` | 3 | Server | YES |
+| `NANGO_HOST` | 1 | Server | YES |
+| `NANGO_BASE_URL` | 1 | Server | **MISSING** |
+| `EMAIL_SERVICE_URL` | 1 | Server | YES |
+| `PUSH_SERVICE_URL` | 1 | Server | YES |
+| `VERCEL_TOKEN` | 1 | Server | YES |
+| `VERCEL_PROJECT_ID` | 1 | Server | YES |
+| `SPOKESTACK_API_URL` | 1 | CLI only | **MISSING** |
+| `NODE_ENV` | 3 | Framework | N/A |
+| `NO_COLOR` | 1 | CLI | N/A |
 
-#### Missing From `.env.example` (16)
-| Variable | Used In | Priority |
-|----------|---------|----------|
-| `CRON_SECRET` | 5 cron/admin routes | HIGH — required for cron jobs |
-| `NEXT_PUBLIC_APP_URL` | `src/lib/billing/stripe.ts` | HIGH — billing redirects |
-| `AGENT_BUILDER_URL` | `src/lib/events/processor.ts`, `src/lib/modules/installer.ts` | HIGH — event processing |
-| `SPOKESTACK_ADMIN_ORG_ID` | Marketplace review route | MEDIUM |
-| `STRIPE_PRICE_STARTER` | `src/lib/billing/stripe.ts` | MEDIUM — billing tiers |
-| `STRIPE_PRICE_PRO` | `src/lib/billing/stripe.ts` | MEDIUM |
-| `STRIPE_PRICE_BUSINESS` | `src/lib/billing/stripe.ts` | MEDIUM |
-| `EMAIL_SERVICE_URL` | `src/lib/notifications.ts` | LOW — optional |
-| `PUSH_SERVICE_URL` | `src/lib/notifications.ts` | LOW — optional |
-| `NANGO_BASE_URL` | `src/lib/sync/runner.ts` | LOW — has default |
-| `TELNYX_MESSAGING_PROFILE_ID` | `src/lib/integrations/telnyx.ts` | LOW |
-| `TELNYX_PUBLIC_KEY` | Telnyx webhook validation | LOW |
-| `TELNYX_SMS_FROM` | `src/lib/notifications.ts` | LOW |
-| `TELNYX_WHATSAPP_FROM` | `src/lib/integrations/telnyx.ts` | LOW |
-| `VERCEL_TOKEN` | Instance configure route | LOW |
-| `VERCEL_PROJECT_ID` | Instance configure route | LOW |
-| `DIRECT_URL` | `prisma.config.ts` | LOW — migration fallback |
+### Issues
 
-#### Client-Side Usage
-All client-side env vars are properly prefixed with `NEXT_PUBLIC_`. No leaks of server-side secrets to the client.
-
-#### AGENT_RUNTIME_URL vs AGENT_BUILDER_URL
-
-| Variable | Default | Used For | Locations |
-|----------|---------|----------|-----------|
-| `AGENT_RUNTIME_URL` | `http://localhost:8100` | Chat, ask, onboarding, context synthesis | 19 locations |
-| `AGENT_BUILDER_URL` | `http://localhost:4100` | Event handler triggers, module agent registration | 2 locations |
-
-These are **two separate services**. `AGENT_RUNTIME_URL` is the primary AI runtime. `AGENT_BUILDER_URL` is a secondary builder service for event-driven agent execution. Only `AGENT_RUNTIME_URL` is documented in `.env.example`.
+- **Missing from `.env.example`:** `NANGO_BASE_URL` (has safe fallback), `SPOKESTACK_API_URL` (has safe fallback)
+- **Defined in `.env.example` but unused:** `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `NANGO_PUBLIC_KEY`
+- **No client-side secret leakage** — all `NEXT_PUBLIC_*` vars are safe for exposure
+- **AGENT_RUNTIME_URL vs AGENT_BUILDER_URL:** Both actively used for different purposes:
+  - `AGENT_RUNTIME_URL` (11 refs) — Primary AI execution backend (agent chat, ask, synthesis)
+  - `AGENT_BUILDER_URL` (2 refs) — Module registration and event-driven agent execution
 
 ---
 
 ## UI Pages
 
-**Total: 46 pages, 3 layouts**
-
-### Pages With Data Fetching Issues
+### Page Inventory (46 pages)
 
 | Page | Route | Data Source | Issues |
 |------|-------|------------|--------|
-| Access Control | `/access-control` | `/api/v1/access-control/policies` | **Endpoint does not exist** |
-| API Management | `/api-management` | `/api/v1/api-keys`, `/api/v1/webhooks` | **Both endpoints do not exist** |
-| Builder | `/builder` | `/api/v1/builder/templates` | **Endpoint does not exist** |
-| Delegation | `/delegation` | `/api/v1/delegations` | **Endpoint does not exist** |
+| Landing | `/` | None | Static hero — no functionality |
+| Signup | `/signup` | `/api/v1/auth` | None |
+| Login | `/login` | Supabase OAuth | None |
+| Conversation | `/conversation` | `/api/v1/agents/chat` | None — streams from agent |
+| Onboarding | `/onboarding` | `/api/v1/onboarding` | None |
+| Reveal | `/reveal` | `/api/v1/onboarding/summary` | Hardcoded agent cards (4) |
+| Admin Onboarding | `/admin/onboarding` | `/api/admin/onboarding` | None |
+| Tasks | `/tasks` | `/api/v1/tasks` | None |
+| Projects | `/projects` | `/api/v1/projects` | None |
+| Projects Detail | `/projects/[id]` | `/api/v1/projects/:id` | None |
+| Briefs | `/briefs` | `/api/v1/briefs` | None |
+| Briefs Detail | `/briefs/[id]` | `/api/v1/briefs/:id` | None |
+| Orders | `/orders` | `/api/v1/orders` | None |
+| CRM | `/crm` | `/api/v1/clients`, `/orders` | Hardcoded pipeline stages (6) |
+| Client Portal | `/client-portal` | `/api/v1/clients` | Partially placeholder |
+| Client Reporting | `/client-reporting` | `/api/v1/briefs`, `/context` | Hardcoded report templates (4) |
+| Access Control | `/access-control` | `/api/v1/access-control/policies` | None |
+| Analytics | `/analytics` | API calls present | None |
+| Finance | `/finance` | API calls present | None |
+| API Management | `/api-management` | API calls present | None |
+| Settings | `/settings` | Multiple API calls | None — comprehensive settings page |
+| Marketplace | `/marketplace` | `/api/v1/modules` | Hardcoded categories (6) |
+| Marketplace Browse | `/marketplace/browse` | `/api/v1/marketplace/browse` | None |
+| Marketplace Publish | `/marketplace/publish` | None (form only) | Hardcoded form options |
+| Marketplace My Modules | `/marketplace/my-modules` | `/api/v1/marketplace/my-modules` | None |
+| Marketplace Detail | `/marketplace/[id]` | `/api/v1/marketplace/:id` | None |
+| Workflows | `/workflows` | API calls present | None |
+| Events | `/events` | API calls present | None |
+| Insights | `/insights` | API calls present | Minimal page |
+| Press Releases | `/press-releases` | `/api/v1/briefs`, `/context` | None |
+| Content Studio | `/content-studio` | `/api/v1/assets`, `/briefs` | None |
+| NPS | `/nps` | `/api/v1/clients`, `/context` | None |
+| Crisis Comms | `/crisis-comms` | `/api/v1/projects`, `/context` | Hardcoded crisis playbooks (5) |
+| Listening | `/listening` | `/api/v1/context` | Mockup sentiment chart |
+| Media Relations | `/media-relations` | API calls present | None |
+| Social Publishing | `/social-publishing` | API calls present | None |
+| Surveys | `/surveys` | API calls present | None |
+| Boards | `/boards` | API calls present | None |
+| Builder | `/builder` | API calls present | None |
+| Delegation | `/delegation` | API calls present | None |
+| Influencer Mgmt | `/influencer-mgmt` | API calls present | None |
+| Time & Leave | `/time-leave` | API calls present | None |
+| Mission Control | `/mission-control` | Via MissionControlLayout | Thin wrapper — data fetching in component |
+| **Spokechat** | `/spokechat` | **None** | **EMPTY SHELL — "Coming soon"** |
+| **LMS** | `/lms` | **None** | **EMPTY SHELL — hardcoded "0" metrics, no API** |
+| **Media Buying** | `/media-buying` | `/api/v1/clients` | **EMPTY SHELL — hardcoded "0" metrics** |
 
-### Pages Overview
-
-| Page | Route | Data Source | Loading | Errors |
-|------|-------|------------|---------|--------|
-| Landing | `/` | Static | N/A | N/A |
-| Login | `/login` | Supabase OAuth | Yes | Yes |
-| Signup | `/signup` | Supabase + API | Yes | Yes |
-| Conversation | `/conversation` | SSE stream + API | Yes | Yes |
-| Reveal | `/reveal` | `/api/v1/onboarding/summary` | Yes | Yes |
-| Analytics | `/analytics` | 7 parallel API calls | Yes (skeleton) | try/catch silent |
-| Boards | `/boards` | `/api/v1/tasks` | Yes (skeleton) | try/catch silent |
-| Briefs | `/briefs` | `/api/v1/briefs`, `/api/v1/clients` | Yes | Yes |
-| Client Portal | `/client-portal` | `/api/v1/clients` | Yes (skeleton) | try/catch silent |
-| Client Reporting | `/client-reporting` | `/api/v1/briefs`, `/api/v1/context` | Yes (skeleton) | Yes |
-| Content Studio | `/content-studio` | `/api/v1/assets/*`, `/api/v1/briefs` | Yes | try/catch silent |
-| Crisis Comms | `/crisis-comms` | `/api/v1/projects`, `/api/v1/context`, `/api/v1/briefs` | Yes | try/catch silent |
-| CRM | `/crm` | `/api/v1/clients`, `/api/v1/orders`, `/api/v1/activity` | Yes | try/catch silent |
-| Finance | `/finance` | None visible | - | - |
-| Marketplace | `/marketplace` | `/api/v1/modules`, `/api/v1/modules/installed` | Yes | Yes (banner) |
-| Mission Control | `/mission-control` | Multiple MC endpoints | Yes | Yes |
-| Orders | `/orders` | `/api/v1/orders` | Yes | try/catch silent |
-| Press Releases | `/press-releases` | `/api/v1/briefs`, `/api/v1/context` | Yes | try/catch silent |
-| Projects | `/projects` | `/api/v1/projects` | Yes | try/catch silent |
-| Settings | `/settings` | `/api/v1/settings`, `/api/v1/integrations` | Yes | Yes |
-| Tasks | `/tasks` | `/api/v1/tasks` | Yes | Optimistic rollback |
-
-**Common pattern**: Most pages use `try/catch` with silent failure (no user-visible error state). Data fails silently and the page renders with empty arrays.
+### Flagged Issues
+- **3 empty shells:** `/spokechat`, `/lms`, `/media-buying`
+- **6 pages with hardcoded data:** `/reveal`, `/crm`, `/client-reporting`, `/crisis-comms`, `/marketplace`, `/listening`
 
 ---
 
 ## CLI
 
-### Commands (25 total)
+### Command Inventory (24 commands)
 
 | Command | Calls | Status |
 |---------|-------|--------|
-| `agent chat` | `/api/v1/agents/chat` (SSE) | OK |
-| `agent ask` | `/api/v1/agents/ask` | OK |
-| `setup` | None (local config) | OK |
-| `deploy` | None (Vercel CLI wrapper) | OK |
-| `project new` | `/api/v1/projects` (POST) | OK |
-| `project list` | `/api/v1/projects` (GET) | OK |
-| `project show` | `/api/v1/projects/{id}` (GET) | OK |
-| `project canvas` | None (opens browser) | OK |
-| `task add` | `/api/v1/tasks` (POST) | OK |
-| `task list` | `/api/v1/tasks` (GET) | OK |
-| `task done` | `/api/v1/tasks/{id}` (PATCH) | OK |
-| `task show` | `/api/v1/tasks/{id}` (GET) | OK |
-| `brief create` | `/api/v1/briefs` (POST) | OK |
-| `brief list` | `/api/v1/briefs` (GET) | OK |
-| `brief show` | `/api/v1/briefs/{id}` (GET) | OK |
-| `brief review` | `/api/v1/briefs/artifacts/{id}/review` (PATCH) | UNVERIFIED — endpoint may not exist |
-| `module list` | `/api/v1/modules` (GET) | OK |
-| `module add` | `/api/v1/modules/{slug}/install` (POST) | PATH MISMATCH — UI uses `/api/v1/modules/install` |
-| `module remove` | `/api/v1/modules/{slug}/install` (DELETE) | PATH MISMATCH — UI uses different path |
+| `init` | POST `/api/v1/auth/signup`, POST `/api/v1/auth`, PUT `/api/v1/auth`, POST `/api/v1/admin/seed` | **BROKEN** — `/auth/signup` does not exist |
+| `login` | POST `/api/v1/auth/login` | OK |
+| `logout` | Local only | OK |
+| `whoami` | Local only | OK |
+| `task add` | POST `/api/v1/tasks` | OK |
+| `task list` | GET `/api/v1/tasks` | OK |
+| `task done` | PATCH `/api/v1/tasks/:id` | OK |
+| `task show` | GET `/api/v1/tasks/:id` | OK |
+| `project new` | POST `/api/v1/projects` | OK |
+| `project list` | GET `/api/v1/projects` | OK |
+| `project show` | GET `/api/v1/projects/:id` | OK |
+| `project canvas` | Opens browser | OK |
+| `brief create` | POST `/api/v1/briefs` | OK |
+| `brief list` | GET `/api/v1/briefs` | OK |
+| `brief show` | GET `/api/v1/briefs/:id` | OK |
+| `brief review` | PATCH `/api/v1/briefs/artifacts/:id/review` | **BROKEN** — endpoint path mismatch |
+| `order new` | POST `/api/v1/orders` | OK |
+| `order list` | GET `/api/v1/orders` | OK |
+| `order invoice` | POST `/api/v1/orders/:id/invoice` | OK |
+| `customer list` | GET `/api/v1/clients` | OK |
+| `customer add` | POST `/api/v1/clients` | OK |
+| `agent chat` | POST `/api/v1/agents/chat` | OK |
+| `agent ask` | POST `/api/v1/agents/ask` | OK |
+| `workspace list` | GET `/api/v1/auth/workspaces` | **BROKEN** — endpoint does not exist |
+| `workspace switch` | POST `/api/v1/auth/switch` | **BROKEN** — endpoint does not exist |
+| `workspace current` | Local only | OK |
+| `connect slack` | POST `/api/v1/integrations/slack/connect` | **MISMATCH** — generic `/connect` route exists instead |
+| `connect whatsapp` | POST `/api/v1/integrations/whatsapp/connect` | **MISMATCH** — generic `/connect` route exists instead |
 | `module create` | Local scaffolding | OK |
 | `module test` | Local validation | OK |
-| `module publish` | `/api/v1/marketplace/publish` (POST) | OK |
-| `module analytics` | `/api/v1/marketplace/analytics/{id}` (GET) | OK |
-| `marketplace browse` | `/api/v1/marketplace/browse` (GET) | OK |
-| `marketplace install` | `/api/v1/marketplace/install` (POST) | OK |
-| `order new` | `/api/v1/orders` (POST) | OK |
-| `order list` | `/api/v1/orders` (GET) | OK |
-| `order invoice` | `/api/v1/orders/{id}/invoice` (POST) | OK |
-| `customer list` | `/api/v1/orders/customers` (GET) | PATH MISMATCH — should be `/api/v1/customers` |
-| `customer add` | `/api/v1/orders/customers` (POST) | PATH MISMATCH — should be `/api/v1/customers` |
-| `tenant provision` | Supabase API | Has 11 TS errors (unknown type) |
+| `module publish` | POST `/api/v1/marketplace/publish` | OK |
+| `module analytics` | GET `/api/v1/marketplace/:id`, `/analytics/:id` | OK |
+| `module list` | GET `/api/v1/modules` | OK |
+| `module add` | POST `/api/v1/modules/install` | OK |
+| `modules list` | GET `/api/v1/modules`, `/installed` | OK |
+| `modules install` | POST `/api/v1/modules/install` | OK |
+| `marketplace browse` | GET `/api/v1/marketplace/browse` | OK |
+| `marketplace search` | GET `/api/v1/marketplace/browse?q=` | OK |
+| `marketplace install` | POST `/api/v1/marketplace/install` | OK |
+| `marketplace info` | GET `/api/v1/marketplace/:id` | OK |
+| `status` | Multiple GET endpoints | OK |
+| `export` | GET `/api/v1/export` | OK |
+| `upgrade` | GET/POST `/api/v1/billing` | OK |
+| `tenant create` | POST `/api/v1/auth`, PUT, POST `/modules/install-batch` | OK |
+| `instance configure` | PUT `/api/v1/instance/configure` | OK |
+| `dev` | Spawns Next.js | OK |
+| `deploy` | Vercel CLI | OK |
+| `setup` | Local env | OK |
+| `seed` | POST `/api/v1/admin/seed` | OK |
 
-### CLI Build (`cd cli && npx tsc --noEmit`)
-**11 errors** in `cli/src/commands/tenant.ts` — all `TS18046: 'supabaseData' is of type 'unknown'`. Missing `@types/node` is resolved after `npm install`, but the `tenant.ts` type narrowing issue persists.
+### CLI TypeScript Build
+**FAILS** with ~279 errors. Fix: add `@types/node` to `cli/devDependencies` and install missing type packages.
 
 ---
 
 ## Security
 
-### Issues Found
+### Findings
 
-#### 1. CORS Wildcard (MEDIUM)
-**File**: `vercel.json` (lines 23-32)
-```json
-"Access-Control-Allow-Origin": "*"
+| Category | Status | Details |
+|----------|--------|---------|
+| Auth on all protected routes | PASS | All use `authenticate()` + `unauthorized()` |
+| Webhook signature validation | PASS | Stripe + Telnyx properly validated |
+| Cron job protection | PASS | All use `CRON_SECRET` bearer token |
+| Hardcoded secrets | PASS | None found — all via `process.env` |
+| `eval()` usage | PASS | None found |
+| `new Function()` usage | PASS | None found |
+| XSS vectors | PASS | No `dangerouslySetInnerHTML` |
+| SQL injection | PASS | Prisma ORM only, no raw queries |
+| CORS / security headers | PASS | `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` |
+| Client-side secret leakage | PASS | All `NEXT_PUBLIC_*` vars are safe |
+| **Timing attack** | **FAIL** | `src/lib/auth.ts:57` uses `!==` instead of `timingSafeEqual()` for `AGENT_RUNTIME_SECRET` comparison |
+| Domain input validation | WARN | `src/app/api/v1/instance/configure/route.ts` accepts unvalidated domain for Vercel API |
+
+### Timing Attack Detail
 ```
-All API routes allow requests from any origin. Combined with all HTTP methods being allowed, this is overly permissive. Should be restricted to specific domains.
-
-#### 2. Hardcoded Supabase Credentials (LOW)
-**Files**: `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts`, `src/app/api/v1/auth/login/route.ts`, `src/app/api/v1/auth/refresh/route.ts`
-
-Hardcoded fallback values for `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. These are publishable keys (not secrets), but hardcoding project-specific credentials is poor practice. Should throw an error if env vars are missing.
-
-#### 3. Missing Security Headers (LOW-MEDIUM)
-**File**: `src/middleware.ts`
-
-Middleware is a pass-through (`return NextResponse.next()`). No security headers configured:
-- No `Content-Security-Policy`
-- No `X-Frame-Options`
-- No `X-Content-Type-Options`
-- No `Referrer-Policy`
-
-#### 4. Inconsistent Cron Auth Header (LOW)
-`/api/v1/admin/marketplace/recalculate-scores` uses `X-Cron-Secret` header, while all other cron routes use `Authorization: Bearer <CRON_SECRET>`. Should be consistent.
-
-### No Issues Found
-- No `eval()` or `Function()` usage
-- No `dangerouslySetInnerHTML`
-- No raw SQL / SQL injection vectors
-- No XSS vulnerabilities
-- No hardcoded secret keys (only publishable keys)
-- No sensitive data in logs
-- Webhook signatures properly validated (Stripe + Telnyx)
-- All auth routes properly validate credentials
+// src/lib/auth.ts:57
+if (!expectedSecret || agentSecret !== expectedSecret) return null;
+```
+**Fix:** Replace with `crypto.timingSafeEqual()` (the Telnyx webhook handler already does this correctly at `src/lib/integrations/telnyx.ts:36-39`).
 
 ---
 
 ## Dependencies
 
-### npm audit Results
-**12 vulnerabilities** (5 moderate, 7 high) — all in transitive dependencies:
-
-| Package | Severity | Issue | Via |
-|---------|----------|-------|-----|
-| `@hono/node-server` <1.19.10 | HIGH | Auth bypass via encoded slashes | prisma -> @prisma/dev |
-| `hono` <=4.12.6 | HIGH | 9 issues (XSS, cache deception, IP spoofing, etc.) | prisma -> @prisma/dev |
-| `lodash` <=4.17.23 | HIGH | Prototype pollution (3 CVEs) | prisma -> chevrotain |
-| `effect` <3.20.0 | HIGH | AsyncLocalStorage context contamination | prisma -> @prisma/config |
-| `brace-expansion` <1.1.13 | MODERATE | Zero-step sequence hang | direct dep |
-
-All vulnerabilities are fixable via `npm audit fix`. None are in direct application code — all flow through `prisma` toolchain dependencies.
+### npm audit
+```
+found 0 vulnerabilities
+```
 
 ### Duplicate Packages
-**None** — no package appears in both `dependencies` and `devDependencies`.
+No duplicates between `dependencies` and `devDependencies`.
+- 31 dependencies
+- 7 devDependencies
 
-### Node Version Compatibility
-- **Required**: `>=18` (in `package.json` engines)
-- **Current runtime**: `v22.22.2`
-- **Status**: Compatible. The EBADENGINE warning with Node v25 would occur since `>=18` technically allows it, but no explicit upper bound is set.
+### Node Version
+- **Required:** `>=18` (per `engines` field)
+- **Running:** v22.22.2
+- No EBADENGINE warnings with current setup
+
+### CLI Dependencies
+CLI `package.json` does not include `@types/node` in devDependencies, causing all 279 TypeScript errors.
 
 ---
 
 ## Recommended Next Steps
 
-### Critical (do first)
-1. **Implement missing API routes** or remove the pages that call them: `/api/v1/access-control/policies`, `/api/v1/api-keys`, `/api/v1/webhooks`, `/api/v1/builder/templates`, `/api/v1/delegations`
-2. **Fix CORS** in `vercel.json` — restrict `Access-Control-Allow-Origin` to your actual domains instead of `*`
-3. **Document all 16 missing env vars** in `.env.example`, especially `CRON_SECRET`, `AGENT_BUILDER_URL`, and `NEXT_PUBLIC_APP_URL`
+### Critical (fix immediately)
+1. **Fix timing attack** in `src/lib/auth.ts:57` — use `crypto.timingSafeEqual()` for `AGENT_RUNTIME_SECRET` comparison
+2. **Add missing CLI endpoints** — implement `GET /api/v1/auth/workspaces` and `POST /api/v1/auth/switch` (or update CLI to use existing auth flow)
+3. **Fix CLI TypeScript build** — add `@types/node`, `@types/commander`, `@types/inquirer` to `cli/devDependencies`
 
-### High Priority
-4. **Fix CLI endpoint paths** — `module add/remove` and `customer list/add` call wrong paths
-5. **Fix CLI type error** — add type narrowing for `supabaseData` in `cli/src/commands/tenant.ts`
-6. **Remove hardcoded Supabase fallbacks** — fail with clear error if env vars are missing
-7. **Run `npm audit fix`** to resolve the 12 transitive dependency vulnerabilities
+### High Priority (fix soon)
+4. **Add request body validation** — implement zod schemas for all POST/PATCH routes (replace `body as { ... }` type assertions with runtime validation)
+5. **Fix silent error handling** — add `console.error()` at minimum to all `.catch(() => {})` blocks
+6. **Add cascading delete protection** — use transactions for project/task/brief deletes to prevent orphaned child records
+7. **Migrate `Brief.clientName`** — deprecated field still used in 15+ locations; migrate to `clientId` FK
 
 ### Medium Priority
-8. **Delete 8 dead component files** — `ActivityFeed`, `MissionControlHeader`, `BriefCreateForm`, `TaskCreateForm`, `OrderCreateForm`, `ModulePageShell`, `phases-timeline`, `status-badge`
-9. **Add security headers** to `src/middleware.ts` (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
-10. **Add user-visible error states** to pages that silently swallow fetch errors
-11. **Clean up 9 `as any` casts** — most can be replaced with proper types or type guards
+8. **Remove unused Prisma models** or document as planned features: `FeatureFlag`, `TaskAttachment`, `ArtifactReview`, `NotificationPreference`, `FileVersion`
+9. **Fix CLI endpoint mismatches** — `init` signup flow, `brief review` path, `connect` integration routing
+10. **Document `.env.example`** — add `NANGO_BASE_URL` and `SPOKESTACK_API_URL`; remove unused `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `NANGO_PUBLIC_KEY`
+11. **Build out empty shell pages** — `/spokechat`, `/lms`, `/media-buying` are placeholders with no functionality
+12. **Add domain validation** — `src/app/api/v1/instance/configure/route.ts` should validate domain format before passing to Vercel API
 
 ### Low Priority
-12. **Evaluate 7 unused Prisma models** — document their intended use or remove them (FeatureFlag, TaskAttachment, ArtifactReview, NotificationPreference, FileVersion, OrderItem, InvoiceItem)
-13. **Standardize cron auth** — use `Authorization: Bearer` consistently instead of mixing with `X-Cron-Secret`
-14. **Consolidate `/api/v1/customers` and `/api/v1/clients`** — both map to the Client model, creating confusion
-15. **Wire up uncalled API routes** or document them as CLI/external-only
+13. **Consolidate customer/client naming** — CLI uses "customer" commands but calls `/api/v1/clients`; API has both `/customers` and `/clients` routes
+14. **Replace hardcoded data** — pipeline stages in CRM, report templates, crisis playbooks should come from config or API
+15. **Add structured logging** — replace `console.error` with a proper logging service for production observability
