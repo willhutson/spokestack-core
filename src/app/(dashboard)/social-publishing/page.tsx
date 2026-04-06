@@ -1,5 +1,6 @@
 "use client";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import { PublisherNav } from "./PublisherNav";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -95,6 +96,7 @@ export default function SocialPublishingPage() {
   return (
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
     <div className="p-6 bg-white min-h-full">
+      <PublisherNav />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Social Publishing</h1>
