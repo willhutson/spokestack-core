@@ -1,5 +1,325 @@
 @import "tailwindcss";
 
+/* ============================================================
+   SpokeStack Theme System — 7 Curated Themes
+   Each theme defines 14 core tokens + typography + shadcn mapping.
+   Activate by setting data-theme="x" on a parent element.
+   Source of truth: docs/design/DESIGN.*.md
+   ============================================================ */
+
+/* --- OBSIDIAN (Default) --- */
+[data-theme="obsidian"] {
+  --bg-base: #0f1011;
+  --bg-surface: #191a1b;
+  --bg-elevated: #28282c;
+  --bg-hover: #2e2e33;
+  --text-primary: #f7f8f8;
+  --text-secondary: #8a8f98;
+  --text-tertiary: #62666d;
+  --accent: #7170ff;
+  --accent-hover: #828fff;
+  --accent-subtle: rgba(113,112,255,0.12);
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.12);
+  --border-neutral: rgba(255,255,255,0.06);
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+  --font-heading: 'Inter Variable', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Berkeley Mono', 'Fira Code', 'JetBrains Mono', monospace;
+  --tracking-heading: -0.04em;
+  --weight-heading: 600;
+  color-scheme: dark;
+
+  /* shadcn mapping */
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- VOLT --- */
+[data-theme="volt"] {
+  --bg-base: #0a0a0a;
+  --bg-surface: #121212;
+  --bg-elevated: #1a1a1a;
+  --bg-hover: #222222;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --text-tertiary: #555555;
+  --accent: #00E5A0;
+  --accent-hover: #00FFB3;
+  --accent-subtle: rgba(0,229,160,0.10);
+  --border: rgba(0,229,160,0.12);
+  --border-strong: rgba(0,229,160,0.20);
+  --border-neutral: rgba(255,255,255,0.06);
+  --radius: 4px;
+  --shadow: 0 0 0 1px rgba(0,229,160,0.08), 0 4px 20px rgba(0,229,160,0.05);
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Berkeley Mono', 'Fira Code', monospace;
+  --tracking-heading: -0.05em;
+  --weight-heading: 700;
+  color-scheme: dark;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #0a0a0a;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- INDIGO --- */
+[data-theme="indigo"] {
+  --bg-base: #0e0e2e;
+  --bg-surface: #161640;
+  --bg-elevated: #1e1e52;
+  --bg-hover: #24245c;
+  --text-primary: #f0f0ff;
+  --text-secondary: #9999cc;
+  --text-tertiary: #666699;
+  --accent: #6C63FF;
+  --accent-hover: #7C74FF;
+  --accent-subtle: rgba(108,99,255,0.12);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --border-neutral: rgba(255,255,255,0.06);
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(14,14,46,0.6), 0 8px 24px rgba(0,0,0,0.4);
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Berkeley Mono', 'Fira Code', monospace;
+  --tracking-heading: -0.02em;
+  --weight-heading: 700;
+  color-scheme: dark;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- CANVAS (Light) --- */
+[data-theme="canvas"] {
+  --bg-base: #faf9f7;
+  --bg-surface: #f4f2ef;
+  --bg-elevated: #ffffff;
+  --bg-hover: #eceae6;
+  --text-primary: rgba(0,0,0,0.92);
+  --text-secondary: #615d59;
+  --text-tertiary: #999999;
+  --accent: #0075de;
+  --accent-hover: #005bab;
+  --accent-subtle: rgba(0,117,222,0.08);
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --border-neutral: rgba(0,0,0,0.06);
+  --radius: 8px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+  --font-heading: 'Lora', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --tracking-heading: -0.02em;
+  --weight-heading: 700;
+  color-scheme: light;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #cf222e;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- MONOLITH (Light) --- */
+[data-theme="monolith"] {
+  --bg-base: #ffffff;
+  --bg-surface: #f5f5f5;
+  --bg-elevated: #ffffff;
+  --bg-hover: #ebebeb;
+  --text-primary: #171717;
+  --text-secondary: #737373;
+  --text-tertiary: #a3a3a3;
+  --accent: #171717;
+  --accent-hover: #262626;
+  --accent-subtle: rgba(23,23,23,0.06);
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --border-neutral: rgba(0,0,0,0.06);
+  --radius: 6px;
+  --shadow: 0 0 0 1px rgba(0,0,0,0.06);
+  --font-heading: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-body: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'Fira Code', monospace;
+  --tracking-heading: -0.05em;
+  --weight-heading: 600;
+  color-scheme: light;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- COPPER --- */
+[data-theme="copper"] {
+  --bg-base: #120e0a;
+  --bg-surface: #1c1610;
+  --bg-elevated: #261e14;
+  --bg-hover: #302618;
+  --text-primary: #f5ede0;
+  --text-secondary: #a08060;
+  --text-tertiary: #6b5535;
+  --accent: #C47A2B;
+  --accent-hover: #D4893A;
+  --accent-subtle: rgba(196,122,43,0.12);
+  --border: rgba(196,122,43,0.15);
+  --border-strong: rgba(196,122,43,0.25);
+  --border-neutral: rgba(255,255,255,0.06);
+  --radius: 10px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.4);
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --tracking-heading: 0.01em;
+  --weight-heading: 600;
+  color-scheme: dark;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #120e0a;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #c44040;
+  --destructive-foreground: #f5ede0;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* --- SAGE (Light) --- */
+[data-theme="sage"] {
+  --bg-base: #f4f6f2;
+  --bg-surface: #eceee8;
+  --bg-elevated: #ffffff;
+  --bg-hover: #e4e6e0;
+  --text-primary: #1a2414;
+  --text-secondary: #5a6b52;
+  --text-tertiary: #8a9982;
+  --accent: #3a6b35;
+  --accent-hover: #4a8040;
+  --accent-subtle: rgba(58,107,53,0.08);
+  --border: rgba(58,107,53,0.12);
+  --border-strong: rgba(58,107,53,0.20);
+  --border-neutral: rgba(0,0,0,0.06);
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(26,36,20,0.06), 0 4px 12px rgba(26,36,20,0.08);
+  --font-heading: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --tracking-heading: -0.01em;
+  --weight-heading: 400;
+  color-scheme: light;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent-color: var(--accent-subtle);
+  --accent-foreground: var(--accent);
+  --destructive: #b04040;
+  --destructive-foreground: #ffffff;
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+/* ============================================================
+   Base Styles — applied via CSS vars from active theme
+   ============================================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;

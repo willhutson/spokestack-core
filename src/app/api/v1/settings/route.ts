@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
     name: org?.name ?? "",
     timezone: settings.timezone,
     language: settings.language,
+    branding: settings.branding ?? { theme: "obsidian" },
   });
 }
 

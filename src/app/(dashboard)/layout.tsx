@@ -7,6 +7,7 @@ import { getAuthHeaders } from "@/lib/client-auth";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/AppSidebar";
 import { OrgProvider } from "@/lib/context/OrgContext";
+import { ThemeProvider, type ThemeName, VALID_THEMES } from "@/components/theme/ThemeProvider";
 import { getAvailableModules } from "@/lib/modules/registry";
 import type { BillingTierType } from "@prisma/client";
 
@@ -34,6 +35,7 @@ export default function DashboardLayout({
   const [branding, setBranding] = useState<{
     primaryColor?: string;
     logoUrl?: string;
+    theme?: string;
   }>();
 
   const allModules = getAvailableModules();
@@ -128,19 +130,28 @@ export default function DashboardLayout({
     );
   }
 
+  const resolvedTheme: ThemeName =
+    branding?.theme && VALID_THEMES.includes(branding.theme as ThemeName)
+      ? (branding.theme as ThemeName)
+      : "obsidian";
+
   return (
-    <OrgProvider orgSlug={orgSlug} orgName={orgName}>
-      <SidebarProvider>
-        <AppSidebar
-          installed={installed}
-          orgName={orgName}
-          userEmail={userEmail}
-          userName={userName}
-          tier={tier}
-          branding={branding}
-        />
-        <SidebarInset>{children}</SidebarInset>
-      </SidebarProvider>
-    </OrgProvider>
+    <div id="theme-root" data-theme={resolvedTheme} className="h-full" style={{ backgroundColor: "var(--bg-base)", color: "var(--text-primary)" }}>
+      <ThemeProvider initialTheme={resolvedTheme}>
+        <OrgProvider orgSlug={orgSlug} orgName={orgName}>
+          <SidebarProvider>
+            <AppSidebar
+              installed={installed}
+              orgName={orgName}
+              userEmail={userEmail}
+              userName={userName}
+              tier={tier}
+              branding={branding}
+            />
+            <SidebarInset>{children}</SidebarInset>
+          </SidebarProvider>
+        </OrgProvider>
+      </ThemeProvider>
+    </div>
   );
 }
