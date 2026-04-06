@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -48,6 +49,7 @@ export default function AccessControlPage() {
   const totalRules = policies.reduce((sum, p) => sum + (p.rulesCount ?? 0), 0);
 
   return (
+    <ModuleLayoutShell moduleType="ACCESS_CONTROL">
     <div className="p-6 bg-white min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -157,5 +159,6 @@ export default function AccessControlPage() {
         )}
       </section>
     </div>
+    </ModuleLayoutShell>
   );
 }

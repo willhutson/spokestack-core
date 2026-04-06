@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -45,6 +46,7 @@ export default function BuilderPage() {
   }, [loadTemplates]);
 
   return (
+    <ModuleLayoutShell moduleType="BUILDER">
     <div className="p-6 bg-white min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -142,5 +144,6 @@ export default function BuilderPage() {
         )}
       </section>
     </div>
+    </ModuleLayoutShell>
   );
 }

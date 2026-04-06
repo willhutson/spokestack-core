@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { getAuthHeaders } from "@/lib/client-auth";
-import { openChatWithContext } from "@/lib/chat-event";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 interface OrderItem {
   description: string;
@@ -161,7 +161,8 @@ export default function OrdersPage() {
   const formTotal = formItems.reduce((s, it) => s + it.quantity * it.unitPrice, 0);
 
   return (
-    <div className="p-6">
+    <ModuleLayoutShell moduleType="ORDERS">
+      <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -169,12 +170,6 @@ export default function OrdersPage() {
           <p className="text-sm text-gray-500 mt-0.5">Track customer orders, invoices, and fulfillment</p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => openChatWithContext("Summarize my current orders and fulfillment status")}
-            className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            Ask Agent
-          </button>
           {!showForm && (
             <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
               + Create Order
@@ -334,5 +329,6 @@ export default function OrdersPage() {
         </div>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

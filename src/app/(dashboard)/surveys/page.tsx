@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
-import { openChatWithContext } from "@/lib/chat-event";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 type QuestionType = "text" | "rating" | "multiple-choice";
 interface Question { text: string; type: QuestionType; options?: string[] }
@@ -120,7 +120,8 @@ export default function SurveysPage() {
   ];
 
   return (
-    <div className="p-6 bg-white min-h-full">
+    <ModuleLayoutShell moduleType="SURVEYS">
+      <div className="p-6 bg-white min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Surveys</h1>
@@ -214,7 +215,6 @@ export default function SurveysPage() {
                       <div className="flex gap-1 justify-end">
                         {s.status === "Draft" && <button onClick={() => updateStatus(s, "Active")} className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 rounded hover:bg-green-100">Activate</button>}
                         {s.status === "Active" && <button onClick={() => updateStatus(s, "Closed")} className="px-2.5 py-1 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100">Close</button>}
-                        <button onClick={() => openChatWithContext(`Help me share survey "${s.title}" with recipients`)} className="px-2.5 py-1 text-xs font-medium text-indigo-600 bg-indigo-50 rounded hover:bg-indigo-100">Share</button>
                       </div>
                     </td>
                   </tr>
@@ -295,5 +295,6 @@ export default function SurveysPage() {
         </div>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

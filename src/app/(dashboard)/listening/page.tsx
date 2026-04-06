@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -59,6 +60,7 @@ export default function ListeningPage() {
   }
 
   return (
+    <ModuleLayoutShell moduleType="LISTENING">
     <div className="p-6 h-full flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -232,5 +234,6 @@ export default function ListeningPage() {
         </section>
       </div>
     </div>
+    </ModuleLayoutShell>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -105,6 +106,7 @@ export default function NPSPage() {
   const pctOf = (n: number) => total > 0 ? Math.round((n / total) * 100) : 0;
 
   return (
+    <ModuleLayoutShell moduleType="NPS">
     <div className="p-6 bg-white min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -243,5 +245,6 @@ export default function NPSPage() {
         </div>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

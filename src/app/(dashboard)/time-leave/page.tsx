@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthHeaders } from "@/lib/client-auth";
-import { openChatWithContext } from "@/lib/chat-event";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 interface Member {
   id: string;
@@ -216,7 +216,8 @@ export default function TimeLeavePage() {
   ];
 
   return (
-    <div className="p-6">
+    <ModuleLayoutShell moduleType="TIME_LEAVE">
+      <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -224,7 +225,6 @@ export default function TimeLeavePage() {
           <p className="text-sm text-gray-500 mt-0.5">{members.length} team member{members.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me log my working hours for today.")} className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Log Hours</button>
           <button onClick={() => { setTab("leave"); setShowLeaveForm(true); }} className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Request Leave</button>
           <button onClick={() => router.push("/settings")} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Invite Member</button>
         </div>
@@ -476,5 +476,6 @@ export default function TimeLeavePage() {
         </div>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

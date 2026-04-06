@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -115,6 +116,7 @@ export default function AnalyticsPage() {
   const TYPE_COLORS: Record<string, string> = { TASK: "bg-blue-100 text-blue-700", PROJECT: "bg-purple-100 text-purple-700", BRIEF: "bg-amber-100 text-amber-700", ORDER: "bg-emerald-100 text-emerald-700" };
 
   return (
+    <ModuleLayoutShell moduleType="ANALYTICS">
     <div className="p-6 bg-white min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -300,5 +302,6 @@ export default function AnalyticsPage() {
         </>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

@@ -7,6 +7,9 @@
     "minTier": "FREE",
     "price": null,
     "agentName": "Tasks Agent",
+    "agentType": "task_assistant",
+    "iconName": "CheckCircle",
+    "href": "/tasks",
     "surfaces": ["dashboard", "cli", "whatsapp"]
   },
   {
@@ -17,6 +20,9 @@
     "minTier": "STARTER",
     "price": null,
     "agentName": "Projects Agent",
+    "agentType": "project_planner",
+    "iconName": "FolderKanban",
+    "href": "/projects",
     "surfaces": ["dashboard", "cli"]
   },
   {
@@ -27,6 +33,9 @@
     "minTier": "PRO",
     "price": null,
     "agentName": "Briefs Agent",
+    "agentType": "brief_writer",
+    "iconName": "FileText",
+    "href": "/briefs",
     "surfaces": ["dashboard", "cli"]
   },
   {
@@ -37,6 +46,9 @@
     "minTier": "BUSINESS",
     "price": null,
     "agentName": "Orders Agent",
+    "agentType": "orders_assistant",
+    "iconName": "ShoppingCart",
+    "href": "/orders",
     "surfaces": ["dashboard", "cli"]
   },
   {
@@ -47,6 +59,9 @@
     "minTier": "PRO",
     "price": 1000,
     "agentName": "CRM Agent",
+    "agentType": "crm_assistant",
+    "iconName": "Users",
+    "href": "/crm",
     "surfaces": ["dashboard"]
   },
   {
@@ -57,6 +72,9 @@
     "minTier": "PRO",
     "price": 1000,
     "agentName": "Publishing Agent",
+    "agentType": "publishing_assistant",
+    "iconName": "Send",
+    "href": "/social-publishing",
     "surfaces": ["dashboard"]
   },
   {
@@ -67,6 +85,9 @@
     "minTier": "PRO",
     "price": 1500,
     "agentName": "Content Agent",
+    "agentType": "content_creator",
+    "iconName": "Palette",
+    "href": "/content-studio",
     "surfaces": ["dashboard"]
   },
   {
@@ -77,6 +98,9 @@
     "minTier": "PRO",
     "price": 1000,
     "agentName": "Analytics Agent",
+    "agentType": "analytics_assistant",
+    "iconName": "BarChart3",
+    "href": "/analytics",
     "surfaces": ["dashboard"]
   },
   {
@@ -87,6 +111,9 @@
     "minTier": "PRO",
     "price": 500,
     "agentName": "Surveys Agent",
+    "agentType": "survey_builder",
+    "iconName": "ClipboardList",
+    "href": "/surveys",
     "surfaces": ["dashboard"]
   },
   {
@@ -97,6 +124,9 @@
     "minTier": "BUSINESS",
     "price": 1500,
     "agentName": "Listening Agent",
+    "agentType": "listening_assistant",
+    "iconName": "Radio",
+    "href": "/listening",
     "surfaces": ["dashboard"]
   },
   {
@@ -107,6 +137,9 @@
     "minTier": "BUSINESS",
     "price": 1500,
     "agentName": "Media Agent",
+    "agentType": "media_buying_assistant",
+    "iconName": "Megaphone",
+    "href": "/media-buying",
     "surfaces": ["dashboard"]
   },
   {
@@ -117,6 +150,9 @@
     "minTier": "BUSINESS",
     "price": 1000,
     "agentName": "LMS Agent",
+    "agentType": "lms_assistant",
+    "iconName": "GraduationCap",
+    "href": "/lms",
     "surfaces": ["dashboard"]
   },
   {
@@ -127,6 +163,9 @@
     "minTier": "PRO",
     "price": 500,
     "agentName": "NPS Agent",
+    "agentType": "nps_assistant",
+    "iconName": "ThumbsUp",
+    "href": "/nps",
     "surfaces": ["dashboard"]
   },
   {
@@ -137,6 +176,9 @@
     "minTier": "STARTER",
     "price": 500,
     "agentName": "Time Agent",
+    "agentType": "time_assistant",
+    "iconName": "Clock",
+    "href": "/time-leave",
     "surfaces": ["dashboard"]
   },
   {
@@ -147,6 +189,9 @@
     "minTier": "STARTER",
     "price": 500,
     "agentName": "Boards Agent",
+    "agentType": "board_assistant",
+    "iconName": "Kanban",
+    "href": "/boards",
     "surfaces": ["dashboard"]
   },
   {
@@ -157,6 +202,9 @@
     "minTier": "BUSINESS",
     "price": 1500,
     "agentName": "Finance Agent",
+    "agentType": "finance_assistant",
+    "iconName": "DollarSign",
+    "href": "/finance",
     "surfaces": ["dashboard"]
   },
   {
@@ -167,6 +215,9 @@
     "minTier": "BUSINESS",
     "price": 1000,
     "agentName": "Workflows Agent",
+    "agentType": "workflow_builder",
+    "iconName": "GitBranch",
+    "href": "/workflows",
     "surfaces": ["dashboard"]
   },
   {
@@ -177,6 +228,9 @@
     "minTier": "BUSINESS",
     "price": 1500,
     "agentName": "Portal Agent",
+    "agentType": "portal_assistant",
+    "iconName": "Globe",
+    "href": "/client-portal",
     "surfaces": ["dashboard"]
   },
   {
@@ -187,6 +241,9 @@
     "minTier": "ENTERPRISE",
     "price": null,
     "agentName": "Chat Agent",
+    "agentType": "chat_assistant",
+    "iconName": "MessageCircle",
+    "href": "/spokechat",
     "surfaces": ["dashboard"]
   },
   {
@@ -197,6 +254,9 @@
     "minTier": "ENTERPRISE",
     "price": null,
     "agentName": "Delegation Agent",
+    "agentType": "delegation_assistant",
+    "iconName": "UserCheck",
+    "href": "/delegation",
     "surfaces": ["dashboard"]
   },
   {
@@ -207,6 +267,9 @@
     "minTier": "ENTERPRISE",
     "price": null,
     "agentName": "Access Agent",
+    "agentType": "access_control_assistant",
+    "iconName": "Shield",
+    "href": "/access-control",
     "surfaces": ["dashboard"]
   },
   {
@@ -217,6 +280,9 @@
     "minTier": "ENTERPRISE",
     "price": null,
     "agentName": "API Agent",
+    "agentType": "api_management_assistant",
+    "iconName": "Code",
+    "href": "/api-management",
     "surfaces": ["dashboard"]
   },
   {
@@ -227,6 +293,9 @@
     "minTier": "ENTERPRISE",
     "price": null,
     "agentName": "Builder Agent",
+    "agentType": "builder_assistant",
+    "iconName": "Wrench",
+    "href": "/builder",
     "surfaces": ["dashboard"]
   },
   {
@@ -237,6 +306,9 @@
     "minTier": "PRO",
     "price": 1500,
     "agentName": "Media Relations Agent",
+    "agentType": "media_relations_assistant",
+    "iconName": "Newspaper",
+    "href": "/media-relations",
     "surfaces": ["dashboard"]
   },
   {
@@ -247,6 +319,9 @@
     "minTier": "PRO",
     "price": 1000,
     "agentName": "Press Release Agent",
+    "agentType": "press_release_assistant",
+    "iconName": "FileText",
+    "href": "/press-releases",
     "surfaces": ["dashboard"]
   },
   {
@@ -257,6 +332,9 @@
     "minTier": "BUSINESS",
     "price": 2000,
     "agentName": "Crisis Comms Agent",
+    "agentType": "crisis_comms_assistant",
+    "iconName": "AlertTriangle",
+    "href": "/crisis-comms",
     "surfaces": ["dashboard"]
   },
   {
@@ -267,6 +345,9 @@
     "minTier": "PRO",
     "price": 1000,
     "agentName": "Reporting Agent",
+    "agentType": "reporting_assistant",
+    "iconName": "PieChart",
+    "href": "/client-reporting",
     "surfaces": ["dashboard"]
   },
   {
@@ -277,6 +358,9 @@
     "minTier": "PRO",
     "price": 1500,
     "agentName": "Influencer Agent",
+    "agentType": "influencer_assistant",
+    "iconName": "Star",
+    "href": "/influencer-mgmt",
     "surfaces": ["dashboard"]
   },
   {
@@ -287,6 +371,9 @@
     "minTier": "PRO",
     "price": 1500,
     "agentName": "Events Agent",
+    "agentType": "events_assistant",
+    "iconName": "Calendar",
+    "href": "/events",
     "surfaces": ["dashboard"]
   }
 ]

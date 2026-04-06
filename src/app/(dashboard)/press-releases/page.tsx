@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -144,6 +145,7 @@ export default function PressReleasesPage() {
   }
 
   return (
+    <ModuleLayoutShell moduleType="PRESS_RELEASES">
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -324,5 +326,6 @@ export default function PressReleasesPage() {
         </>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

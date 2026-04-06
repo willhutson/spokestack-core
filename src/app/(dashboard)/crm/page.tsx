@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { openChatWithContext } from "@/lib/chat-event";
@@ -189,6 +190,7 @@ export default function CRMPage() {
   );
 
   return (
+    <ModuleLayoutShell moduleType="CRM">
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -411,5 +413,6 @@ export default function CRMPage() {
         </>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

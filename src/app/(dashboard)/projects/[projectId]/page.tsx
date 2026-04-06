@@ -1,4 +1,5 @@
 "use client";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
@@ -189,6 +190,7 @@ export default function ProjectDetailPage({
   );
 
   return (
+    <ModuleLayoutShell moduleType="PROJECTS">
     <div className="p-6">
       {/* Back button */}
       <button
@@ -340,5 +342,6 @@ export default function ProjectDetailPage({
         )}
       </div>
     </div>
+    </ModuleLayoutShell>
   );
 }

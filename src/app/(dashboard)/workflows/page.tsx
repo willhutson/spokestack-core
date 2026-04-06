@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
-import { openChatWithContext } from "@/lib/chat-event";
+import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 import CanvasRenderer, { type CanvasEdgeData } from "@/components/mission-control/CanvasRenderer";
 import type { CanvasNodeData } from "@/components/mission-control/CanvasNode";
 
@@ -133,7 +133,8 @@ export default function WorkflowsPage() {
   }
 
   return (
-    <div className="p-6 h-full flex flex-col bg-white">
+    <ModuleLayoutShell moduleType="WORKFLOWS">
+      <div className="p-6 h-full flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -141,7 +142,6 @@ export default function WorkflowsPage() {
           <p className="text-sm text-gray-500 mt-0.5">{subscriptions.length} workflow{subscriptions.length !== 1 ? "s" : ""} configured</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me set up an automation workflow.")} className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Ask Agent</button>
           {tab === "active" && (
             <button onClick={() => setShowForm(!showForm)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Create Workflow</button>
           )}
@@ -281,14 +281,12 @@ export default function WorkflowsPage() {
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-1">No canvas data</h2>
                 <p className="text-sm text-gray-500 max-w-md mb-4">Create a workflow canvas from Mission Control to visualize your automation graph.</p>
-                <button onClick={() => openChatWithContext("Create a workflow canvas for my automation.")} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
-                  Create Workflow Canvas
-                </button>
               </div>
             )
           )}
         </>
       )}
     </div>
+    </ModuleLayoutShell>
   );
 }

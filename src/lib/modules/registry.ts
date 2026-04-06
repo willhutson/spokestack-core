@@ -9,6 +9,9 @@ export interface RegistryModule {
   minTier: BillingTierType;
   price: number | null; // cents per month, null = included in tier
   agentName: string;
+  agentType: string | null;
+  iconName: string;
+  href: string;
   surfaces: string[];
 }
 
