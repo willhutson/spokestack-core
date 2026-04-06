@@ -4,15 +4,27 @@
  * Populates the Houbara demo org with realistic UAE PR agency data.
  * All entities prefixed with [DEMO] so real data is never confused.
  *
+ * Pure HTTP — no imports from src/, no Prisma. Uses fetch() against the
+ * deployed Vercel app and @supabase/supabase-js for authentication.
+ *
  * Usage:
  *   npx tsx scripts/seed-houbara-demo.ts
  *
- * Environment (or hardcoded defaults):
- *   SPOKESTACK_CORE_URL  — defaults to https://spokestack-core.vercel.app
- *   DEMO_EMAIL           — defaults to demo@houbaracomms.agency
- *   DEMO_PASSWORD        — defaults to Houbara2026!
- *   DEMO_ORG_ID          — defaults to cmp0houbara000001lmtdhoubara
+ * Environment (loaded from .env.local via dotenv):
+ *   SPOKESTACK_CORE_URL          — defaults to https://spokestack-core.vercel.app
+ *   DEMO_EMAIL                   — defaults to demo@houbaracomms.agency
+ *   DEMO_PASSWORD                — defaults to Houbara2026!
+ *   DEMO_ORG_ID                  — defaults to cmp0houbara000001lmtdhoubara
+ *   NEXT_PUBLIC_SUPABASE_URL     — required (from .env.local)
+ *   NEXT_PUBLIC_SUPABASE_ANON_KEY — required (from .env.local)
  */
+
+import { config } from "dotenv";
+import { createClient } from "@supabase/supabase-js";
+
+// Load .env.local first, then .env as fallback
+config({ path: ".env.local" });
+config({ path: ".env" });
 
 const BASE_URL =
   process.env.SPOKESTACK_CORE_URL || "https://spokestack-core.vercel.app";
@@ -21,34 +33,41 @@ const PASSWORD = process.env.DEMO_PASSWORD || "Houbara2026!";
 const ORG_ID =
   process.env.DEMO_ORG_ID || "cmp0houbara000001lmtdhoubara";
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error(
+    "  ✗ Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  );
+  console.error(
+    "    Make sure .env.local exists with these variables, or set them directly."
+  );
+  process.exit(1);
+}
+
 let AUTH_TOKEN = "";
 
 // ── Helpers ──────────────────────────────────────────────────────
 
 async function authenticate(): Promise<string> {
-  // Authenticate via Supabase auth directly, then use the token
-  const supabaseUrl = "https://dufujpalmzbbwtofpgyv.supabase.co";
-  const supabaseKey = "sb_publishable_i6oqMxrglFTbVpmzFMtUuA_eehALBQR";
+  const supabase = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!);
 
-  const res = await fetch(
-    `${supabaseUrl}/auth/v1/token?grant_type=password`,
-    {
-      method: "POST",
-      headers: {
-        apikey: supabaseKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: EMAIL, password: PASSWORD }),
-    }
-  );
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.signInWithPassword({
+    email: EMAIL,
+    password: PASSWORD,
+  });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Auth failed (${res.status}): ${err}`);
+  if (error || !session) {
+    throw new Error(
+      `Auth failed: ${error?.message || "No session returned"}`
+    );
   }
 
-  const data = await res.json();
-  return data.access_token;
+  return session.access_token;
 }
 
 async function api<T = unknown>(
