@@ -7,7 +7,7 @@
 - **8,106 TypeScript errors** (main app) — all from missing `node_modules`; **0 real type errors** in main app
 - **279 TypeScript errors** (CLI) — missing `@types/node`, implicit `any` on params, null checks
 - **4 security concerns** (low severity)
-- **25 CLI commands** verified — **5 call nonexistent endpoints**
+- **25 CLI commands** verified — **7 call nonexistent endpoints**
 - **3 unused Prisma models**, **2 unused Prisma models with zero queries**
 - **3 env vars** missing from `.env.example`
 - **3 env vars** in `.env.example` not referenced in code
@@ -316,7 +316,8 @@ These are **intentionally separate services**, not an inconsistency.
 | Command | API Endpoints Called | Status |
 |---------|-------------------|--------|
 | agent | `/api/v1/agents/ask`, `/api/v1/agents/chat` | OK |
-| brief | `/api/v1/briefs`, `/api/v1/briefs/:id/artifacts` | OK |
+| brief (create/list/show) | `/api/v1/briefs`, `/api/v1/briefs/:id` | OK |
+| **brief (review)** | **`/api/v1/briefs/artifacts/:id`**, **`/api/v1/briefs/artifacts/:id/review`** | **BROKEN — endpoints don't exist** |
 | **connect** | **`/api/v1/integrations/slack/connect`**, **`/api/v1/integrations/whatsapp/connect`** | **BROKEN — endpoints don't exist** |
 | deploy | None (runs shell commands) | OK |
 | dev | None (runs shell commands) | OK |
@@ -407,7 +408,7 @@ None found in `package.json`.
 
 3. **Remove 5 dead Prisma models** — `FeatureFlag`, `TaskAttachment`, `ArtifactReview`, `NotificationPreference`, `FileVersion`. Create a migration to drop the corresponding tables.
 
-4. **Fix 5 broken CLI endpoints** — The `connect`, `init` (signup), and `workspace` commands call API routes that don't exist. Either create the missing routes or update the CLI to use existing endpoints.
+4. **Fix 7 broken CLI endpoints** — The `connect`, `init` (signup), `workspace`, and `brief review` commands call API routes that don't exist. Missing: `/api/v1/integrations/slack/connect`, `/api/v1/integrations/whatsapp/connect`, `/api/v1/auth/signup`, `/api/v1/auth/switch`, `/api/v1/auth/workspaces`, `/api/v1/briefs/artifacts/:id`, `/api/v1/briefs/artifacts/:id/review`. Either create the missing routes or update the CLI to use existing endpoints.
 
 5. **Add `loading.tsx` and `error.tsx` files** — Zero loading states and zero error boundaries across the entire app. At minimum, add these to the `(dashboard)` layout segment.
 
