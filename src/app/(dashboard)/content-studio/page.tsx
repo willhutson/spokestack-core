@@ -1,6 +1,6 @@
 "use client";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
-
+import { StudioNav } from "./StudioNav";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
 import { openChatWithContext } from "@/lib/chat-event";
@@ -196,6 +196,7 @@ export default function ContentStudioPage() {
 
   return (
     <ModuleLayoutShell moduleType="CONTENT_STUDIO">
+    <StudioNav />
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
