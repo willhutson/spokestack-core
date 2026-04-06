@@ -6,7 +6,7 @@
 - **104 API routes** audited (5 issues flagged)
 - **8,106 TypeScript errors** (main app) — all from missing `node_modules`; **0 real type errors** in main app
 - **279 TypeScript errors** (CLI) — missing `@types/node`, implicit `any` on params, null checks
-- **4 security concerns** (low severity)
+- **5 security concerns** (1 medium: hardcoded Supabase fallback creds; rest low)
 - **25 CLI commands** verified — **7 call nonexistent endpoints**
 - **3 unused Prisma models**, **2 unused Prisma models with zero queries**
 - **3 env vars** missing from `.env.example`
@@ -356,13 +356,24 @@ These are **intentionally separate services**, not an inconsistency.
 All 95 authenticated routes use `authenticate()` from `src/lib/auth.ts`. The 9 unauthenticated routes all have valid alternative auth (CRON_SECRET, webhook signatures, or intentionally public). **No issues.**
 
 ### 2. Hardcoded Secrets
-**None found.** All secrets come from environment variables.
+**Hardcoded Supabase fallback credentials found in 2 files:**
+- `src/app/api/v1/auth/login/route.ts:6-11` — Hardcoded Supabase URL (`https://dufujpalmzbbwtofpgyv.supabase.co`) and anon key (`sb_publishable_...`) as fallbacks if env vars are unset
+- `src/app/api/v1/auth/refresh/route.ts:5-10` — Same hardcoded fallbacks
+
+While anon keys are designed to be public, hardcoding them means misconfigured deployments silently connect to the wrong Supabase project instead of failing. **Remove fallbacks and require env vars.**
+
+No other hardcoded secrets found.
 
 ### 3. `eval()` / `Function()` Usage
 **None found.** Clean.
 
 ### 4. CORS Configuration
-No explicit CORS headers are set. The app relies on Next.js default same-origin policy. **This is correct** for a same-origin app, but if the CLI or external services need to call the API directly, CORS headers may need to be added to specific routes.
+CORS is configured in `vercel.json` with a **restricted origin**:
+- `Access-Control-Allow-Origin: https://spokestack-core.vercel.app`
+- `Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,OPTIONS`
+- `Access-Control-Allow-Headers: Content-Type,Authorization,X-Organization-Id`
+
+This is secure (no wildcard `*`). Note: CLI calls will bypass CORS since they're server-to-server, not browser-based.
 
 ### 5. Security Headers (Middleware)
 Properly configured in `src/middleware.ts`:
