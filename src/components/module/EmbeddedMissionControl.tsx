@@ -22,7 +22,7 @@ export function EmbeddedMissionControl({
   return (
     <div
       className={cn(
-        "border-l bg-background flex flex-col overflow-hidden transition-all duration-300 ease-in-out shrink-0",
+        "border-l bg-background flex flex-col overflow-hidden transition-all duration-300 ease-in-out shrink-0 h-full",
         isOpen ? "w-[400px]" : "w-0"
       )}
       aria-hidden={!isOpen}

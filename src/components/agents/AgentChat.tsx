@@ -50,7 +50,19 @@ export function AgentChat({
           body: JSON.stringify({ agentType, message: messageText }),
         });
 
-        if (!res.ok) throw new Error(`Chat error: ${res.status}`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          const errMsg = (errData as Record<string, string>).error || `Error ${res.status}`;
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "agent",
+              content: `The agent is currently unavailable. This usually means the agent runtime isn't connected yet.\n\nYou can still use all module features — the agent will be available once the runtime is online.`,
+            },
+          ]);
+          setIsLoading(false);
+          return;
+        }
 
         const reader = res.body?.getReader();
         const decoder = new TextDecoder();
@@ -83,12 +95,15 @@ export function AgentChat({
           userMsg,
           { role: "agent", content: agentContent },
         ]);
-      } catch {
+      } catch (err) {
+        const isNetworkError = err instanceof TypeError && (err as TypeError).message.includes("fetch");
         setMessages((prev) => [
           ...prev,
           {
             role: "agent",
-            content: "Sorry, something went wrong. Please try again.",
+            content: isNetworkError
+              ? "Could not reach the agent runtime. The agent will be available once the runtime is online."
+              : "Something went wrong. Please try again.",
           },
         ]);
       } finally {

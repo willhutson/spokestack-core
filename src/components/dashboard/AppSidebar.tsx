@@ -298,6 +298,28 @@ export function AppSidebar({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/team" || pathname.startsWith("/team/")}
+                >
+                  <Link href="/team">
+                    <Users className="w-4 h-4" />
+                    <span>Team</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/settings")}
+                >
+                  <Link href="/settings">
+                    <Settings className="w-4 h-4" />
+                    <span>Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -323,12 +345,12 @@ export function AppSidebar({
         </Link>
 
         {/* User dropdown */}
-        <div className="p-3">
+        <div className="p-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-full flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
+              <button className="w-full flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-muted transition-colors text-left">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold text-primary shrink-0">
                     {userAvatarUrl ? (
                       <img
                         src={userAvatarUrl}
@@ -351,7 +373,7 @@ export function AppSidebar({
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent side="top" align="start" className="w-56 mb-1">
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="flex items-center">
                   <Settings className="mr-2 h-4 w-4" />

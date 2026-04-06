@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthHeaders } from "@/lib/client-auth";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import { TimeLeaveNav } from "./TimeLeaveNav";
 
 interface Member {
   id: string;
@@ -218,6 +219,7 @@ export default function TimeLeavePage() {
   return (
     <ModuleLayoutShell moduleType="TIME_LEAVE">
       <div className="p-6">
+      <TimeLeaveNav />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
