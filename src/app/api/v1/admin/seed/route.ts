@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
+import { getModuleManifest } from "@/lib/modules/getModuleManifest";
 
 const BILLING_TIERS = [
   { type: "FREE" as const, name: "Free", priceMonthly: 0, maxMembers: 3, maxStorageGb: 1, maxMarketplaceModules: 0, surfacesIncluded: ["cli", "web"], modesIncluded: ["tasks"] },
@@ -86,6 +87,30 @@ export async function POST(req: NextRequest) {
     });
   }
   results.push(`Modules installed (${allModules.size}): ${[...allModules].join(", ")}`);
+
+  // Register modules with agent builder (fire-and-forget)
+  if (process.env.AGENT_RUNTIME_URL) {
+    for (const moduleType of allModules) {
+      const manifest = getModuleManifest(moduleType);
+      if (manifest?.agentType) {
+        fetch(`${process.env.AGENT_RUNTIME_URL}/api/v1/modules/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Agent-Secret": process.env.AGENT_RUNTIME_SECRET ?? "",
+          },
+          body: JSON.stringify({
+            orgId: auth.organizationId,
+            moduleType,
+            agentType: manifest.agentType,
+            tools: manifest.tools ?? [],
+          }),
+        }).catch((err) =>
+          console.error(`[seed] agent registration failed for ${moduleType}:`, err)
+        );
+      }
+    }
+  }
 
   // 4. OrgSettings
   await prisma.orgSettings.upsert({

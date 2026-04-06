@@ -4,6 +4,7 @@ import { authenticate } from "@/lib/auth";
 import { getOrgTier } from "@/lib/guard/module-guard";
 import { json, error, unauthorized, forbidden } from "@/lib/api";
 import { ModuleType } from "@prisma/client";
+import { getModuleManifest } from "@/lib/modules/getModuleManifest";
 
 // Core modules cannot be installed via marketplace
 const CORE_MODULES: ModuleType[] = ["TASKS", "PROJECTS", "BRIEFS", "ORDERS"];
@@ -232,6 +233,26 @@ export async function POST(req: NextRequest) {
         metadata: { moduleType },
       },
     });
+  }
+
+  // Register with agent builder (fire-and-forget)
+  const manifest = getModuleManifest(moduleType);
+  if (process.env.AGENT_RUNTIME_URL && manifest?.agentType) {
+    fetch(`${process.env.AGENT_RUNTIME_URL}/api/v1/modules/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Agent-Secret": process.env.AGENT_RUNTIME_SECRET ?? "",
+      },
+      body: JSON.stringify({
+        orgId: auth.organizationId,
+        moduleType,
+        agentType: manifest.agentType,
+        tools: manifest.tools ?? [],
+      }),
+    }).catch((err) =>
+      console.error("[module install] agent builder registration failed:", err)
+    );
   }
 
   return json(

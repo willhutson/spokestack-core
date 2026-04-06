@@ -6,6 +6,7 @@ import { moduleCreateCommand } from "./module-create.js";
 import { moduleTestCommand } from "./module-test.js";
 import { modulePublishCommand } from "./module-publish.js";
 import { moduleAnalyticsCommand } from "./module-analytics.js";
+import { moduleSyncCommand } from "./module-sync.js";
 
 interface Module {
   id: string;
@@ -69,6 +70,16 @@ export function registerModuleCommand(program: Command): void {
     .description("View install, revenue, and rating analytics for a published module")
     .option("--json", "Output analytics as JSON")
     .action(moduleAnalyticsCommand);
+
+  // ── module sync ──────────────────────────────────────────────────
+
+  module
+    .command("sync [module]")
+    .description("Sync tool definitions from agent builder registry")
+    .option("--url <url>", "Agent builder base URL")
+    .option("--validate", "Validate tool definitions after syncing")
+    .option("--json", "Output JSON")
+    .action(moduleSyncCommand);
 
   // ── module list ───────────────────────────────────────────────────
 
