@@ -1,24 +1,36 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { MCMessage } from "@/lib/mission-control/types";
+import type { AgentArtifact } from "@/lib/mission-control/agent-builder-client";
 import { MC_API } from "@/lib/mission-control/constants";
 import { getAuthHeaders } from "@/lib/client-auth";
+import {
+  extractArtifactsFromResponse,
+  stripArtifactBlocks,
+  toAgentArtifact,
+} from "@/lib/mission-control/artifact-extraction";
+import HandoffPrompt from "@/app/(dashboard)/components/handoff-prompt";
+import type { HandoffEvent } from "@/app/(dashboard)/components/handoff-prompt";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
+import type { ChatAttachment } from "./ChatInput";
 import { MCHomeView } from "../home/MCHomeView";
 
 interface ChatPaneProps {
   chatId: string | null;
   agentType?: string;
   onCreateChat?: (agentType: string) => Promise<void>;
+  onArtifactClick?: (artifact: AgentArtifact) => void;
 }
 
-export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
+export function ChatPane({ chatId, agentType, onCreateChat, onArtifactClick }: ChatPaneProps) {
   const [messages, setMessages] = useState<MCMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [streamingContent, setStreamingContent] = useState<string | null>(null);
+  const [pendingHandoff, setPendingHandoff] = useState<HandoffEvent | null>(null);
+  const messageArtifactsRef = useRef<Map<string, AgentArtifact[]>>(new Map());
 
   const fetchMessages = useCallback(async () => {
     if (!chatId) return;
@@ -43,7 +55,7 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
   }, [fetchMessages]);
 
   const sendMessage = useCallback(
-    async (content: string) => {
+    async (content: string, attachments?: ChatAttachment[]) => {
       if (!chatId || sending) return;
       setSending(true);
       setStreamingContent("");
@@ -60,10 +72,19 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
 
       try {
         const headers = await getAuthHeaders();
+        const payload: Record<string, unknown> = { content, role: "user" };
+        if (attachments && attachments.length > 0) {
+          payload.attachments = attachments.map((a) => ({
+            id: a.id,
+            name: a.name,
+            type: a.type,
+            size: a.size,
+          }));
+        }
         const res = await fetch(MC_API.messages(chatId), {
           method: "POST",
           headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ content, role: "user" }),
+          body: JSON.stringify(payload),
         });
 
         if (!res.ok) throw new Error("Failed to send message");
@@ -90,6 +111,13 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
                   }
                   try {
                     const parsed = JSON.parse(payload);
+
+                    // Detect handoff events
+                    if (parsed.type === "handoff") {
+                      setPendingHandoff(parsed as HandoffEvent);
+                      continue;
+                    }
+
                     // Server sends { text: "..." } in chunk events
                     const text = parsed.text ?? parsed.content ?? parsed.delta ?? "";
                     if (text) {
@@ -114,15 +142,25 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
 
         // Finalize: add the streamed content as a message if not already added
         if (accumulated) {
+          // Extract artifacts from the response
+          const extracted = extractArtifactsFromResponse(accumulated);
+          const artifacts = extracted.map(toAgentArtifact);
+          const displayContent = extracted.length > 0 ? stripArtifactBlocks(accumulated) : accumulated;
+
           const agentMsg: MCMessage = {
             id: `agent-${Date.now()}`,
             chatId,
             role: "agent",
-            content: accumulated,
+            content: displayContent,
             agentType: agentType ?? null,
             createdAt: new Date().toISOString(),
           };
           setMessages((prev) => [...prev, agentMsg]);
+
+          // Store artifacts in message metadata for rendering
+          if (artifacts.length > 0) {
+            messageArtifactsRef.current.set(agentMsg.id, artifacts);
+          }
         }
       } catch {
         // Could show error toast
@@ -149,8 +187,22 @@ export function ChatPane({ chatId, agentType, onCreateChat }: ChatPaneProps) {
           messages={messages}
           streamingContent={streamingContent}
           streamingAgentType={agentType}
+          messageArtifacts={messageArtifactsRef.current}
+          onArtifactClick={onArtifactClick}
         />
       )}
+
+      {pendingHandoff && (
+        <HandoffPrompt
+          handoff={pendingHandoff}
+          onSwitch={(handoff) => {
+            setPendingHandoff(null);
+            onCreateChat?.(handoff.target_agent);
+          }}
+          onDismiss={() => setPendingHandoff(null)}
+        />
+      )}
+
       <ChatInput onSend={sendMessage} disabled={sending} />
     </div>
   );

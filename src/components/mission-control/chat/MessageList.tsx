@@ -2,13 +2,22 @@
 
 import { useEffect, useRef } from "react";
 import type { MCMessage } from "@/lib/mission-control/types";
+import type { AgentArtifact } from "@/lib/mission-control/agent-builder-client";
 import { AGENTS } from "@/lib/mission-control/constants";
+import {
+  extractArtifactsFromResponse,
+  stripArtifactBlocks,
+  toAgentArtifact,
+} from "@/lib/mission-control/artifact-extraction";
 import { cn } from "@/lib/utils";
+import { ArtifactChip } from "../artifacts/ArtifactChip";
 
 interface MessageListProps {
   messages: MCMessage[];
   streamingContent?: string | null;
   streamingAgentType?: string | null;
+  messageArtifacts?: Map<string, AgentArtifact[]>;
+  onArtifactClick?: (artifact: AgentArtifact) => void;
 }
 
 function formatTime(date: string | Date) {
@@ -25,7 +34,7 @@ function TypingDots() {
   );
 }
 
-export function MessageList({ messages, streamingContent, streamingAgentType }: MessageListProps) {
+export function MessageList({ messages, streamingContent, streamingAgentType, messageArtifacts, onArtifactClick }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,6 +46,24 @@ export function MessageList({ messages, streamingContent, streamingAgentType }: 
       {messages.map((msg) => {
         const isUser = msg.role === "user";
         const agent = msg.agentType ? AGENTS[msg.agentType] : null;
+
+        // Check for artifacts in agent messages
+        const precomputedArtifacts = messageArtifacts?.get(msg.id);
+        let artifacts: AgentArtifact[] | undefined;
+        let displayContent = msg.content;
+
+        if (!isUser && msg.role !== "system") {
+          if (precomputedArtifacts && precomputedArtifacts.length > 0) {
+            artifacts = precomputedArtifacts;
+            displayContent = stripArtifactBlocks(msg.content);
+          } else {
+            const extracted = extractArtifactsFromResponse(msg.content);
+            if (extracted.length > 0) {
+              artifacts = extracted.map(toAgentArtifact);
+              displayContent = stripArtifactBlocks(msg.content);
+            }
+          }
+        }
 
         return (
           <div
@@ -53,22 +80,35 @@ export function MessageList({ messages, streamingContent, streamingAgentType }: 
                 {agent?.icon ?? "🤖"}
               </div>
             )}
-            <div
-              className={cn(
-                "max-w-[70%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
-                isUser
-                  ? "bg-indigo-600 text-white rounded-br-md"
-                  : "bg-gray-800 text-gray-100 rounded-bl-md",
+            <div className="max-w-[70%]">
+              <div
+                className={cn(
+                  "rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                  isUser
+                    ? "bg-indigo-600 text-white rounded-br-md"
+                    : "bg-gray-800 text-gray-100 rounded-bl-md",
+                )}
+              >
+                {msg.role === "system" ? (
+                  <p className="text-xs text-gray-400 italic">{displayContent}</p>
+                ) : (
+                  <div className="whitespace-pre-wrap">{displayContent}</div>
+                )}
+                <p className={cn("mt-1 text-[10px]", isUser ? "text-indigo-300" : "text-gray-500")}>
+                  {formatTime(msg.createdAt)}
+                </p>
+              </div>
+              {artifacts && artifacts.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {artifacts.map((artifact) => (
+                    <ArtifactChip
+                      key={artifact.id}
+                      artifact={artifact}
+                      onClick={() => onArtifactClick?.(artifact)}
+                    />
+                  ))}
+                </div>
               )}
-            >
-              {msg.role === "system" ? (
-                <p className="text-xs text-gray-400 italic">{msg.content}</p>
-              ) : (
-                <div className="whitespace-pre-wrap">{msg.content}</div>
-              )}
-              <p className={cn("mt-1 text-[10px]", isUser ? "text-indigo-300" : "text-gray-500")}>
-                {formatTime(msg.createdAt)}
-              </p>
             </div>
           </div>
         );

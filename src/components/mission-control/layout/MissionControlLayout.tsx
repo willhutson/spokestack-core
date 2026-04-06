@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { AGENTS } from "@/lib/mission-control/constants";
+import type { AgentArtifact } from "@/lib/mission-control/agent-builder-client";
 import {
   useChatList,
   useNotifications,
@@ -11,6 +12,7 @@ import {
 } from "@/hooks/mission-control";
 import { ChatSidebar } from "../sidebar/ChatSidebar";
 import { ChatPane } from "../chat/ChatPane";
+import { ArtifactPanel } from "../artifacts/ArtifactPanel";
 import { StatusBar } from "./StatusBar";
 import { CommandPalette } from "../command-palette/CommandPalette";
 import { NotificationBell } from "../notifications/NotificationBell";
@@ -34,6 +36,9 @@ export function MissionControlLayout() {
 
   // Notifications hook (updated API)
   const { unreadCount } = useNotifications();
+
+  // Artifact pane state
+  const [selectedArtifact, setSelectedArtifact] = useState<AgentArtifact | null>(null);
 
   // UI state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -197,8 +202,15 @@ export function MissionControlLayout() {
             onCreateChat={async (type) => {
               await handleNewChat(type);
             }}
+            onArtifactClick={setSelectedArtifact}
           />
         </div>
+
+        {/* Artifact panel (conditional) */}
+        <ArtifactPanel
+          artifact={selectedArtifact}
+          onClose={() => setSelectedArtifact(null)}
+        />
       </div>
 
       {/* Status bar */}
