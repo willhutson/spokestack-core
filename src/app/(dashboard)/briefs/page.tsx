@@ -1,5 +1,6 @@
 "use client";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import { BriefsNav } from "./BriefsNav";
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -161,6 +162,7 @@ export default function BriefsPage() {
   return (
     <ModuleLayoutShell moduleType="BRIEFS">
     <div className="p-6">
+      <BriefsNav />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
