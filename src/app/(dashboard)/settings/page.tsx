@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthHeaders } from "@/lib/client-auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import BrandingSettingsPage from "./branding/page";
 
 interface OrgSettings {
   name: string;
@@ -71,7 +72,7 @@ function ErrorMsg({ message }: { message: string }) {
 }
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<"general" | "billing" | "team" | "integrations">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "billing" | "team" | "integrations" | "branding">("general");
   const [currentUserEmail, setCurrentUserEmail] = useState<string>("");
 
   // General state
@@ -253,6 +254,7 @@ export default function SettingsPage() {
 
   const TABS = [
     { key: "general" as const, label: "General" },
+    { key: "branding" as const, label: "Branding" },
     { key: "billing" as const, label: "Billing" },
     { key: "team" as const, label: "Team" },
     { key: "integrations" as const, label: "Integrations" },
@@ -485,6 +487,11 @@ export default function SettingsPage() {
             </>
           )}
         </div>
+      )}
+
+      {/* Branding */}
+      {activeTab === "branding" && (
+        <BrandingSettingsPage />
       )}
 
       {/* Integrations */}
