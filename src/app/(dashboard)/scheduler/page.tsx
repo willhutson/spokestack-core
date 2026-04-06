@@ -373,7 +373,7 @@ export default function SchedulerCalendarPage() {
                         {(a.value.time as string) || "09:00"} --{" "}
                         {(a.value.duration as number) || 60} min
                       </p>
-                      {a.value.location && (
+                      {(a.value.location as string) && (
                         <p className="text-xs text-gray-400 mt-0.5">
                           {a.value.location as string}
                         </p>
