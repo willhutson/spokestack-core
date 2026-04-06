@@ -2,7 +2,7 @@
 *Generated: 2026-04-06*
 
 ## Summary
-- **8 dead source files** found (972 lines of unused code)
+- **22 dead source files** found (~2,000+ lines of unused code)
 - **104 API routes** audited (5 issues flagged)
 - **8,106 TypeScript errors** (main app) — all from missing `node_modules`; **0 real type errors** in main app
 - **279 TypeScript errors** (CLI) — missing `@types/node`, implicit `any` on params, null checks
@@ -30,13 +30,46 @@
 | `src/lib/milestones/checker.ts` | 197 | Milestone progress checker — never imported |
 | `src/lib/vbx/streams.ts` | 202 | Redis stream helpers for VBX — never imported |
 
-**Total: 972 lines of dead code across 8 files.**
+### Dead UI Components (11 files — shadcn/ui scaffolded but never imported)
+
+| File | Lines |
+|------|-------|
+| `src/components/ui/badge.tsx` | ~30 |
+| `src/components/ui/button.tsx` | ~50 |
+| `src/components/ui/dialog.tsx` | ~60 |
+| `src/components/ui/dropdown-menu.tsx` | ~60 |
+| `src/components/ui/input.tsx` | ~20 |
+| `src/components/ui/label.tsx` | ~20 |
+| `src/components/ui/scroll-area.tsx` | ~40 |
+| `src/components/ui/select.tsx` | ~60 |
+| `src/components/ui/switch.tsx` | ~30 |
+| `src/components/ui/textarea.tsx` | ~20 |
+| `src/components/ui/tooltip.tsx` | ~30 |
+
+Note: `skeleton.tsx` and `card.tsx` ARE used and should be kept.
+
+### Dead Dashboard Components (2 files)
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/app/(dashboard)/orders/components/invoice-view.tsx` | ~80 | Invoice display modal — implemented but never rendered |
+| `src/app/(dashboard)/projects/components/canvas-view.tsx` | ~100 | Canvas visualization — implemented but never rendered |
+
+### Additional Dead Library Files (3 more beyond the 8 above)
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/lib/billing/tiers.ts` | ~50 | Billing tier config (FREE/STARTER/PRO/BUSINESS/ENTERPRISE) — never imported |
+| `src/lib/milestones/definitions.ts` | ~135 | Milestone specifications — never imported |
+| `src/lib/vbx/surfaces.ts` | ~30 | Surface type configs (CLI/WEB/DESKTOP/MOBILE) — never imported |
+
+**Total: ~2,000+ lines of dead code across 22 files.**
 
 ### Notes
-- All components in `src/components/` are actively used (either directly by pages or internally within the mission-control component tree).
 - No references to "Phase 10A" found in the codebase — cleanup appears complete.
 - `src/lib/notifications.ts` references `EMAIL_SERVICE_URL`, `PUSH_SERVICE_URL`, and `TELNYX_SMS_FROM` but is never called from any route or service.
 - `src/lib/billing/metering.ts` defines token usage tracking but nothing invokes it.
+- The 11 dead UI components were scaffolded (shadcn/ui) but the codebase uses native HTML + Tailwind instead.
 
 ---
 
@@ -415,7 +448,7 @@ None found in `package.json`.
 
 1. **Install dependencies and re-run `tsc --noEmit`** — The 8,385 combined TS errors are almost entirely from missing `node_modules`. After install, expect near-zero errors in the main app and ~50 real errors in the CLI.
 
-2. **Delete 8 dead library files** (972 lines) — `db.ts`, `notifications.ts`, `ratelimit.ts`, `platform/role-templates.ts`, `platform/module-registry.ts`, `billing/metering.ts`, `milestones/checker.ts`, `vbx/streams.ts`. These add confusion and maintenance burden.
+2. **Delete 22 dead files** (~2,000+ lines) — 11 unused UI components (`src/components/ui/`), 11 unused library files (`db.ts`, `notifications.ts`, `ratelimit.ts`, `platform/role-templates.ts`, `platform/module-registry.ts`, `billing/metering.ts`, `billing/tiers.ts`, `milestones/checker.ts`, `milestones/definitions.ts`, `vbx/streams.ts`, `vbx/surfaces.ts`), and 2 dead dashboard components (`invoice-view.tsx`, `canvas-view.tsx`). These add confusion and maintenance burden.
 
 3. **Remove 5 dead Prisma models** — `FeatureFlag`, `TaskAttachment`, `ArtifactReview`, `NotificationPreference`, `FileVersion`. Create a migration to drop the corresponding tables.
 
