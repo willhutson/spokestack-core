@@ -134,7 +134,7 @@ export default function AnalyticsPage() {
 
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 mb-6 animate-pulse">
-          {[1,2,3,4,5,6].map(i => <div key={i} className="bg-white border border-[var(--border)] rounded-xl p-5"><div className="h-3 w-20 bg-gray-200 rounded mb-2" /><div className="h-6 w-16 bg-gray-200 rounded" /></div>)}
+          {[1,2,3,4,5,6].map(i => <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5"><div className="h-3 w-20 bg-[var(--bg-surface)] rounded mb-2" /><div className="h-6 w-16 bg-[var(--bg-surface)] rounded" /></div>)}
         </div>
       ) : (
         <>
@@ -204,7 +204,7 @@ export default function AnalyticsPage() {
                           <span className="text-xs font-medium text-[var(--text-primary)] truncate">{p.name}</span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-[var(--text-secondary)]"}`}>{p.status}</span>
                         </div>
-                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mb-1">
+                        <div className="w-full h-1.5 bg-[var(--bg-surface)] rounded-full overflow-hidden mb-1">
                           <div className="h-full bg-[var(--accent)] rounded-full transition-all" style={{ width: `${progress}%` }} />
                         </div>
                         <div className="flex justify-between text-[10px] text-[var(--text-tertiary)]">
@@ -257,7 +257,7 @@ export default function AnalyticsPage() {
                 <div className="space-y-2.5">
                   {activity.map(item => (
                     <div key={item.id} className="flex items-start gap-2">
-                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase ${TYPE_COLORS[item.type] ?? "bg-gray-100 text-[var(--text-secondary)]"}`}>{item.type}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase ${TYPE_COLORS[item.type] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{item.type}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-[var(--text-primary)] truncate">{item.title}</p>
                         <p className="text-[10px] text-[var(--text-tertiary)]">{new Date(item.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
@@ -289,7 +289,7 @@ export default function AnalyticsPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-[var(--text-primary)] truncate">{m.user?.name ?? m.user?.email ?? "Unknown"}</p>
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="flex-1 h-1.5 bg-[var(--bg-surface)] rounded-full overflow-hidden">
                             <div className="h-full bg-[var(--accent)] rounded-full" style={{ width: `${(taskCount / maxTasks) * 100}%` }} />
                           </div>
                           <span className="text-[10px] text-[var(--text-secondary)]">{taskCount} task{taskCount !== 1 ? "s" : ""}</span>

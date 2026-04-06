@@ -33,7 +33,7 @@ const TAB_LABELS: { key: Tab; label: string }[] = [
 
 const KANBAN_COLS = ["TODO", "IN_PROGRESS", "DONE"] as const;
 const KANBAN_COLORS: Record<string, string> = {
-  TODO: "bg-gray-50 border-gray-200",
+  TODO: "bg-[var(--bg-base)] border-[var(--border)]",
   IN_PROGRESS: "bg-blue-50 border-blue-200",
   DONE: "bg-emerald-50 border-emerald-200",
 };
@@ -78,29 +78,29 @@ function AddInfluencerForm({ onCreated, onCancel }: { onCreated: () => void; onC
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-[var(--text-primary)]">Add Influencer</h2>
-        <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+        <button onClick={onCancel} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Influencer name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Handle</label>
-            <input value={handle} onChange={e => setHandle(e.target.value)} placeholder="@handle" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Platform</label>
-            <select value={platform} onChange={e => setPlatform(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name *</label>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Influencer name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Handle</label>
+            <input value={handle} onChange={e => setHandle(e.target.value)} placeholder="@handle" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Platform</label>
+            <select value={platform} onChange={e => setPlatform(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
               <option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X (Twitter)</option><option>LinkedIn</option>
             </select></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Followers</label>
-            <input type="number" value={followers} onChange={e => setFollowers(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Rate (AED)</label>
-            <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Followers</label>
+            <input type="number" value={followers} onChange={e => setFollowers(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Rate (AED)</label>
+            <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
-          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
             {submitting ? "Adding..." : "Add Influencer"}
           </button>
         </div>
@@ -175,11 +175,11 @@ export default function InfluencerMgmtPage() {
   }, [tasks]);
 
   const Skeleton = () => (
-    <div className="animate-pulse bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
       {[1, 2, 3].map(i => (
-        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-gray-100 last:border-b-0">
-          <div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-4 w-24 bg-gray-200 rounded" />
-          <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-[var(--border)] last:border-b-0">
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded" /><div className="h-4 w-24 bg-[var(--bg-surface)] rounded" />
+          <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full ml-auto" />
         </div>
       ))}
     </div>
@@ -198,40 +198,40 @@ export default function InfluencerMgmtPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Influencer Management</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage influencer partnerships, campaigns, and deliverables.</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Manage influencer partnerships, campaigns, and deliverables.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me plan an influencer marketing campaign.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Ask Agent</button>
+          <button onClick={() => openChatWithContext("Help me plan an influencer marketing campaign.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Ask Agent</button>
           {tab === "influencers" && !showForm && (
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Add Influencer</button>
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">Add Influencer</button>
           )}
         </div>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Influencers</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Influencers</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{influencers.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Campaigns</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Campaigns</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{campaigns.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Total Spend</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Total Spend</p>
           <p className="text-xl font-bold text-amber-600 mt-1">{fmtAED(roiData.totalSpend)}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Total Reach</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Total Reach</p>
           <p className="text-xl font-bold text-blue-600 mt-1">{fmtFollowers(roiData.totalReach)}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {TAB_LABELS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>
             {t.label}
           </button>
         ))}
@@ -244,27 +244,27 @@ export default function InfluencerMgmtPage() {
           {/* Influencers */}
           {tab === "influencers" && (
             influencers.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No influencers yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Add influencer contacts to start managing partnerships.</p>
-                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Influencer</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Add influencer contacts to start managing partnerships.</p>
+                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add Influencer</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
-                  <thead><tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Name</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Handle</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Platform</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Followers</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Rate (AED)</th>
+                  <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Name</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Handle</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Platform</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Followers</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Rate (AED)</th>
                   </tr></thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {influencers.map(inf => { const d = parseVal(inf.value); return (
-                      <tr key={inf.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={inf.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                         <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{inf.key}</td>
-                        <td className="px-5 py-4 text-sm text-indigo-600">{(d.handle as string) || "-"}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.platform as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--accent)]">{(d.handle as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.platform as string) || "-"}</td>
                         <td className="px-5 py-4 text-right text-sm text-[var(--text-primary)]">{fmtFollowers(Number(d.followers) || 0)}</td>
                         <td className="px-5 py-4 text-right text-sm font-medium text-[var(--text-primary)]">{fmtAED(Number(d.rateAED) || 0)}</td>
                       </tr>
@@ -278,21 +278,21 @@ export default function InfluencerMgmtPage() {
           {/* Campaigns */}
           {tab === "campaigns" && (
             campaigns.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No campaigns yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Create an influencer campaign to start tracking.</p>
-                <button onClick={() => openChatWithContext("Create a new influencer marketing campaign.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Campaign</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create an influencer campaign to start tracking.</p>
+                <button onClick={() => openChatWithContext("Create a new influencer marketing campaign.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">New Campaign</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {campaigns.map(c => (
-                  <div key={c.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+                  <div key={c.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{c.name}</h3>
                       <StatusBadge status={c.status} />
                     </div>
-                    {c.description && <p className="text-xs text-gray-500 mb-3 line-clamp-2">{c.description}</p>}
-                    <p className="text-xs text-gray-400">{fmtDate(c.createdAt)}</p>
+                    {c.description && <p className="text-xs text-[var(--text-secondary)] mb-3 line-clamp-2">{c.description}</p>}
+                    <p className="text-xs text-[var(--text-tertiary)]">{fmtDate(c.createdAt)}</p>
                   </div>
                 ))}
               </div>
@@ -302,24 +302,24 @@ export default function InfluencerMgmtPage() {
           {/* Deliverables Kanban */}
           {tab === "deliverables" && (
             tasks.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No deliverables yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Track influencer deliverables and content submissions.</p>
-                <button onClick={() => openChatWithContext("Help me set up influencer deliverable tracking.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Deliverable</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Track influencer deliverables and content submissions.</p>
+                <button onClick={() => openChatWithContext("Help me set up influencer deliverable tracking.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add Deliverable</button>
               </div>
             ) : (
               <div className="flex gap-4 overflow-x-auto pb-4">
                 {KANBAN_COLS.map(col => (
                   <div key={col} className={`min-w-[240px] flex-1 rounded-xl border p-3 ${KANBAN_COLORS[col]}`}>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">{col.replace(/_/g, " ")}</h3>
-                      <span className="text-xs text-gray-500 font-medium">{kanban[col]?.length ?? 0}</span>
+                      <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{col.replace(/_/g, " ")}</h3>
+                      <span className="text-xs text-[var(--text-secondary)] font-medium">{kanban[col]?.length ?? 0}</span>
                     </div>
                     <div className="space-y-2">
                       {(kanban[col] ?? []).map(t => (
-                        <div key={t.id} className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                        <div key={t.id} className="bg-[var(--bg-base)] rounded-lg p-3 shadow-sm border border-[var(--border)]">
                           <h4 className="text-xs font-medium text-[var(--text-primary)] mb-1">{t.title}</h4>
-                          {t.dueDate && <p className="text-xs text-gray-400">Due {fmtDate(t.dueDate)}</p>}
+                          {t.dueDate && <p className="text-xs text-[var(--text-tertiary)]">Due {fmtDate(t.dueDate)}</p>}
                         </div>
                       ))}
                     </div>
@@ -333,38 +333,38 @@ export default function InfluencerMgmtPage() {
           {tab === "roi" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Total Investment</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Total Investment</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">{fmtAED(roiData.totalSpend)}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Total Reach</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Total Reach</p>
                   <p className="text-2xl font-bold text-blue-600">{fmtFollowers(roiData.totalReach)}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Cost per Reach</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Cost per Reach</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">{roiData.totalReach > 0 ? fmtAED(roiData.totalSpend / roiData.totalReach) : "AED 0.00"}</p>
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
                 <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Spend by Platform</h3>
                 {roiData.entries.length === 0 ? (
                   <div className="text-center py-6">
-                    <p className="text-sm text-gray-400">No influencer data available yet.</p>
+                    <p className="text-sm text-[var(--text-tertiary)]">No influencer data available yet.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {roiData.entries.map(([platform, data]) => (
                       <div key={platform}>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm text-gray-700">{platform}</span>
+                          <span className="text-sm text-[var(--text-secondary)]">{platform}</span>
                           <span className="text-sm font-medium text-[var(--text-primary)]">{fmtAED(data.spend)}</span>
                         </div>
-                        <div className="w-full bg-gray-100 rounded-full h-3">
-                          <div className="bg-indigo-500 h-3 rounded-full transition-all" style={{ width: `${(data.spend / roiData.maxSpend) * 100}%` }} />
+                        <div className="w-full bg-[var(--bg-surface)] rounded-full h-3">
+                          <div className="bg-[var(--accent)] h-3 rounded-full transition-all" style={{ width: `${(data.spend / roiData.maxSpend) * 100}%` }} />
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{fmtFollowers(data.reach)} reach</p>
+                        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">{fmtFollowers(data.reach)} reach</p>
                       </div>
                     ))}
                   </div>

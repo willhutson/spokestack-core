@@ -36,17 +36,17 @@ function daysRemaining(deadlineStr: string | undefined): number | null {
 }
 
 function deadlineColor(days: number | null): string {
-  if (days === null) return "text-gray-500";
+  if (days === null) return "text-[var(--text-secondary)]";
   if (days < 7) return "text-red-600 font-semibold";
   if (days < 14) return "text-amber-600 font-medium";
-  return "text-gray-600";
+  return "text-[var(--text-secondary)]";
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: "bg-gray-100 text-gray-600",
+  DRAFT: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   IN_PROGRESS: "bg-blue-50 text-blue-600",
   REVIEW: "bg-purple-50 text-purple-600",
-  SUBMITTED: "bg-indigo-50 text-indigo-600",
+  SUBMITTED: "bg-[var(--accent-subtle)] text-[var(--accent)]",
 };
 
 /* ------------------------------------------------------------------ */
@@ -89,7 +89,7 @@ export default function ActiveRfpPage() {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Active proposals requiring attention.
           </p>
         </div>
@@ -101,42 +101,42 @@ export default function ActiveRfpPage() {
         </h2>
 
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse">
-            <div className="h-4 w-48 bg-gray-200 rounded mb-4" />
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse">
+            <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-4" />
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded mb-2" />
+              <div key={i} className="h-12 bg-[var(--bg-surface)] rounded mb-2" />
             ))}
           </div>
         ) : rfps.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm bg-white border border-gray-200 rounded-xl">
+          <div className="text-center py-16 text-[var(--text-tertiary)] text-sm bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
             No active RFPs.
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                <tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Title
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Client
                   </th>
-                  <th className="text-right px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-right px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Est. Value
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Deadline
                   </th>
-                  <th className="text-center px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-center px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Days Left
                   </th>
-                  <th className="text-center px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-center px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {rfps.map((rfp) => {
                   const client =
                     rfp.clientName ||
@@ -149,17 +149,17 @@ export default function ActiveRfpPage() {
                   const days = daysRemaining(deadline);
 
                   return (
-                    <tr key={rfp.id} className="hover:bg-gray-50">
+                    <tr key={rfp.id} className="hover:bg-[var(--bg-hover)]">
                       <td className="px-5 py-3">
                         <p className="font-medium text-[var(--text-primary)] truncate max-w-xs">
                           {rfp.title}
                         </p>
                       </td>
-                      <td className="px-5 py-3 text-gray-600">{client}</td>
+                      <td className="px-5 py-3 text-[var(--text-secondary)]">{client}</td>
                       <td className="px-5 py-3 text-right font-medium text-[var(--text-primary)]">
                         {value > 0 ? fmtCurrency(value) : "--"}
                       </td>
-                      <td className="px-5 py-3 text-gray-600">
+                      <td className="px-5 py-3 text-[var(--text-secondary)]">
                         {deadline
                           ? new Date(deadline).toLocaleDateString()
                           : "--"}

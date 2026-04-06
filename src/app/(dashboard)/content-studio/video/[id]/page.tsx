@@ -23,7 +23,7 @@ interface VideoData {
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  draft: "bg-gray-100 text-gray-600",
+  draft: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   processing: "bg-yellow-100 text-yellow-700",
   ready: "bg-blue-100 text-blue-700",
   published: "bg-emerald-100 text-emerald-700",
@@ -109,7 +109,7 @@ export default function VideoDetailPage({ params }: { params: Promise<{ id: stri
         {/* Video player placeholder */}
         <div className="lg:col-span-2">
           <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+            <div className="w-20 h-20 rounded-full bg-[var(--bg-base)]/20 flex items-center justify-center cursor-pointer hover:bg-[var(--bg-base)]/30 transition-colors">
               <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -149,7 +149,7 @@ export default function VideoDetailPage({ params }: { params: Promise<{ id: stri
               {video.platform && (
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[var(--text-secondary)]">Platform</span>
-                  <span className="text-sm text-gray-900 capitalize">{video.platform}</span>
+                  <span className="text-sm text-[var(--text-primary)] capitalize">{video.platform}</span>
                 </div>
               )}
               <div className="flex items-center justify-between">
@@ -159,7 +159,7 @@ export default function VideoDetailPage({ params }: { params: Promise<{ id: stri
               {video.createdBy && (
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[var(--text-secondary)]">Uploaded By</span>
-                  <span className="text-sm text-gray-900 truncate max-w-[150px]">{video.createdBy}</span>
+                  <span className="text-sm text-[var(--text-primary)] truncate max-w-[150px]">{video.createdBy}</span>
                 </div>
               )}
             </div>
@@ -182,7 +182,7 @@ export default function VideoDetailPage({ params }: { params: Promise<{ id: stri
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
                 placeholder="Add tag..."
-                className="h-8 px-3 text-xs border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] flex-1"
+                className="h-8 px-3 text-xs border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] flex-1"
                 onKeyDown={(e) => e.key === "Enter" && addTag()}
               />
               <button onClick={addTag} className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add</button>

@@ -79,25 +79,25 @@ function CreateEventForm({ onCreated, onCancel }: { onCreated: () => void; onCan
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-[var(--text-primary)]">Create Event</h2>
-        <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+        <button onClick={onCancel} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Event Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Event name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Venue</label>
-            <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Venue name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Date</label>
-            <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-            <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Brief description" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Event Name *</label>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Event name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Venue</label>
+            <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Venue name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Date</label>
+            <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Description</label>
+            <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Brief description" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
-          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
             {submitting ? "Creating..." : "Create Event"}
           </button>
         </div>
@@ -167,11 +167,11 @@ export default function EventsPage() {
   const budgetPaid = useMemo(() => orders.filter(o => o.status === "PAID" || o.status === "COMPLETED").reduce((s, o) => s + o.totalCents, 0), [orders]);
 
   const Skeleton = () => (
-    <div className="animate-pulse bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
       {[1, 2, 3].map(i => (
-        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-gray-100 last:border-b-0">
-          <div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-4 w-40 bg-gray-200 rounded" />
-          <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-[var(--border)] last:border-b-0">
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded" /><div className="h-4 w-40 bg-[var(--bg-surface)] rounded" />
+          <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full ml-auto" />
         </div>
       ))}
     </div>
@@ -195,40 +195,40 @@ export default function EventsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Events</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Plan events, manage guest lists, and track budgets.</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Plan events, manage guest lists, and track budgets.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me plan and organize an event.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Ask Agent</button>
+          <button onClick={() => openChatWithContext("Help me plan and organize an event.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Ask Agent</button>
           {tab === "events" && !showForm && (
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Create Event</button>
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">Create Event</button>
           )}
         </div>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Total Events</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Total Events</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{events.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Guests Confirmed</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Guests Confirmed</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{guestStats.confirmed}/{guestStats.total}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Run of Show Items</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Run of Show Items</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{tasks.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Total Budget</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Total Budget</p>
           <p className="text-xl font-bold text-amber-600 mt-1">{fmtAED(budgetTotal / 100)}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {TAB_LABELS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>
             {t.label}
           </button>
         ))}
@@ -241,28 +241,28 @@ export default function EventsPage() {
           {/* Events Calendar + Cards */}
           {tab === "events" && (
             events.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No events yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Create your first event to get started.</p>
-                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Event</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create your first event to get started.</p>
+                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Create Event</button>
               </div>
             ) : (
               <div className="space-y-6">
                 {eventsByMonth.map(([month, evts]) => (
                   <div key={month}>
-                    <h3 className="text-sm font-semibold text-gray-700 mb-3">{month}</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">{month}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {evts.map(ev => (
-                        <div key={ev.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+                        <div key={ev.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                           <div className="flex items-start justify-between mb-2">
                             <div>
                               <h4 className="text-sm font-semibold text-[var(--text-primary)]">{ev.name}</h4>
-                              {ev.metadata?.venue ? <p className="text-xs text-gray-500 mt-0.5">{String(ev.metadata.venue)}</p> : null}
+                              {ev.metadata?.venue ? <p className="text-xs text-[var(--text-secondary)] mt-0.5">{String(ev.metadata.venue)}</p> : null}
                             </div>
                             <StatusBadge status={ev.status} />
                           </div>
-                          {ev.description && <p className="text-xs text-gray-600 mb-2 line-clamp-2">{ev.description}</p>}
-                          <div className="flex items-center justify-between text-xs text-gray-400">
+                          {ev.description && <p className="text-xs text-[var(--text-secondary)] mb-2 line-clamp-2">{ev.description}</p>}
+                          <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
                             <span>{ev.metadata?.eventDate ? fmtDate(ev.metadata.eventDate as string) : fmtDate(ev.createdAt)}</span>
                           </div>
                         </div>
@@ -277,10 +277,10 @@ export default function EventsPage() {
           {/* Guest Lists */}
           {tab === "guests" && (
             guests.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No guests yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Add guests and track RSVP status for your events.</p>
-                <button onClick={() => openChatWithContext("Help me create a guest list for an upcoming event.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Guests</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Add guests and track RSVP status for your events.</p>
+                <button onClick={() => openChatWithContext("Help me create a guest list for an upcoming event.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add Guests</button>
               </div>
             ) : (
               <div>
@@ -289,27 +289,27 @@ export default function EventsPage() {
                   <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded text-xs font-medium">Pending: {guestStats.pending}</span>
                   <span className="px-2 py-1 bg-red-50 text-red-600 rounded text-xs font-medium">Declined: {guestStats.declined}</span>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                   <table className="w-full">
-                    <thead><tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Guest</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Organization</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Email</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">RSVP</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Table/Seat</th>
+                    <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Guest</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Organization</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Email</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">RSVP</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Table/Seat</th>
                     </tr></thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {guests.map(g => { const d = parseVal(g.value); const rsvp = (d.rsvp as string) || "pending"; return (
-                        <tr key={g.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={g.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                           <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{g.key}</td>
-                          <td className="px-5 py-4 text-sm text-gray-600">{(d.organization as string) || "-"}</td>
-                          <td className="px-5 py-4 text-sm text-gray-600">{(d.email as string) || "-"}</td>
+                          <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.organization as string) || "-"}</td>
+                          <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.email as string) || "-"}</td>
                           <td className="px-5 py-4">
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${RSVP_COLORS[rsvp] || RSVP_COLORS.pending}`}>
                               {rsvp}
                             </span>
                           </td>
-                          <td className="px-5 py-4 text-sm text-gray-600">{(d.table as string) || "-"}</td>
+                          <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.table as string) || "-"}</td>
                         </tr>
                       ); })}
                     </tbody>
@@ -322,15 +322,15 @@ export default function EventsPage() {
           {/* Run of Show */}
           {tab === "run_of_show" && (
             tasks.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No run of show items</h3>
-                <p className="text-xs text-gray-500 mb-4">Build your event timeline with scheduled activities.</p>
-                <button onClick={() => openChatWithContext("Help me create a run of show timeline for an event.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Build Timeline</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Build your event timeline with scheduled activities.</p>
+                <button onClick={() => openChatWithContext("Help me create a run of show timeline for an event.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Build Timeline</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
                 <div className="relative">
-                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-[var(--bg-surface)]" />
                   <div className="space-y-6">
                     {tasks.sort((a, b) => {
                       const tA = (a.metadata?.time as string) || a.createdAt;
@@ -340,14 +340,14 @@ export default function EventsPage() {
                       const time = (t.metadata?.time as string) || "";
                       return (
                         <div key={t.id} className="relative pl-10">
-                          <div className={`absolute left-2.5 top-1 w-3 h-3 rounded-full border-2 ${t.status === "DONE" ? "bg-emerald-500 border-emerald-500" : t.status === "IN_PROGRESS" ? "bg-blue-500 border-blue-500" : "bg-white border-gray-300"}`} />
+                          <div className={`absolute left-2.5 top-1 w-3 h-3 rounded-full border-2 ${t.status === "DONE" ? "bg-emerald-500 border-emerald-500" : t.status === "IN_PROGRESS" ? "bg-blue-500 border-blue-500" : "bg-[var(--bg-base)] border-[var(--border-strong)]"}`} />
                           <div className="flex items-start justify-between">
                             <div>
                               <div className="flex items-center gap-2">
-                                {time && <span className="text-xs font-mono font-medium text-indigo-600">{time}</span>}
+                                {time && <span className="text-xs font-mono font-medium text-[var(--accent)]">{time}</span>}
                                 <h4 className="text-sm font-medium text-[var(--text-primary)]">{t.title}</h4>
                               </div>
-                              {t.metadata?.notes ? <p className="text-xs text-gray-500 mt-0.5">{String(t.metadata.notes)}</p> : null}
+                              {t.metadata?.notes ? <p className="text-xs text-[var(--text-secondary)] mt-0.5">{String(t.metadata.notes)}</p> : null}
                             </div>
                             <StatusBadge status={t.status} />
                           </div>
@@ -364,44 +364,44 @@ export default function EventsPage() {
           {tab === "budget" && (
             <div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Total Budget</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Total Budget</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">{fmtAED(budgetTotal / 100)}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Paid</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Paid</p>
                   <p className="text-2xl font-bold text-emerald-600">{fmtAED(budgetPaid / 100)}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Outstanding</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Outstanding</p>
                   <p className="text-2xl font-bold text-amber-600">{fmtAED((budgetTotal - budgetPaid) / 100)}</p>
                 </div>
               </div>
 
               {orders.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                   <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No vendor costs yet</h3>
-                  <p className="text-xs text-gray-500 mb-4">Track vendor contracts and payments for your events.</p>
-                  <button onClick={() => openChatWithContext("Help me set up event vendor budget tracking.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Vendor</button>
+                  <p className="text-xs text-[var(--text-secondary)] mb-4">Track vendor contracts and payments for your events.</p>
+                  <button onClick={() => openChatWithContext("Help me set up event vendor budget tracking.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add Vendor</button>
                 </div>
               ) : (
-                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                   <table className="w-full">
-                    <thead><tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Vendor</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Description</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Status</th>
-                      <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Amount (AED)</th>
-                      <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Date</th>
+                    <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Vendor</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Description</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Status</th>
+                      <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Amount (AED)</th>
+                      <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Date</th>
                     </tr></thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {orders.map(o => (
-                        <tr key={o.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={o.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                           <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{o.client?.name || (o.metadata?.vendor as string) || `Vendor #${o.id.slice(-6)}`}</td>
-                          <td className="px-5 py-4 text-sm text-gray-600">{(o.metadata?.description as string) || "-"}</td>
+                          <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(o.metadata?.description as string) || "-"}</td>
                           <td className="px-5 py-4"><StatusBadge status={o.status} /></td>
                           <td className="px-5 py-4 text-right text-sm font-medium text-[var(--text-primary)]">{fmtAED(o.totalCents / 100)}</td>
-                          <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(o.createdAt)}</td>
+                          <td className="px-5 py-4 text-right text-xs text-[var(--text-secondary)]">{fmtDate(o.createdAt)}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -76,8 +76,8 @@ export default function CanvasNode({ node, selected, onClick }: Props) {
       }}
     >
       <div
-        className={`bg-gray-900 rounded-lg border-l-[3px] p-3 ${borderColor} ${
-          selected ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-gray-950" : ""
+        className={`bg-[var(--bg-base)] rounded-lg border-l-[3px] p-3 ${borderColor} ${
+          selected ? "ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-gray-950" : ""
         } ${isActive ? "animate-pulse" : ""}`}
         style={isActive ? { animationDuration: "3s" } : undefined}
       >
@@ -89,7 +89,7 @@ export default function CanvasNode({ node, selected, onClick }: Props) {
                 className={`w-2 h-2 rounded-full ${PRIORITY_DOTS[node.priority] ?? "bg-gray-500"}`}
               />
             )}
-            <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+            <span className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
               {node.priority ?? TYPE_LABELS[node.entityType]}
             </span>
           </div>
@@ -115,13 +115,13 @@ export default function CanvasNode({ node, selected, onClick }: Props) {
 
         {/* Status + metadata */}
         <div className="flex items-center gap-1.5 mt-1.5">
-          <span className="text-[10px] text-gray-500">
+          <span className="text-[10px] text-[var(--text-secondary)]">
             {node.status.replace(/_/g, " ")}
           </span>
           {node.metadata?.dueDate ? (
             <>
-              <span className="text-[10px] text-gray-700">&middot;</span>
-              <span className="text-[10px] text-gray-500">
+              <span className="text-[10px] text-[var(--text-secondary)]">&middot;</span>
+              <span className="text-[10px] text-[var(--text-secondary)]">
                 {new Date(node.metadata.dueDate as string).toLocaleDateString(
                   "en-US",
                   { month: "short", day: "numeric" }
@@ -135,7 +135,7 @@ export default function CanvasNode({ node, selected, onClick }: Props) {
             </span>
           ) : null}
           {node.entityType === "PROJECT" && node.metadata?.phaseCount ? (
-            <span className="text-[10px] text-gray-500 ml-auto">
+            <span className="text-[10px] text-[var(--text-secondary)] ml-auto">
               {Number(node.metadata.completedPhases)}/
               {Number(node.metadata.phaseCount)} phases
             </span>

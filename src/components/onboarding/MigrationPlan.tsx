@@ -62,7 +62,7 @@ export default function MigrationPlan({
 
   if (plan.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-500">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)] p-6 text-center text-sm text-[var(--text-secondary)]">
         No tools matched our modules. You&apos;re all set to start fresh!
       </div>
     );
@@ -71,15 +71,15 @@ export default function MigrationPlan({
   return (
     <div className="w-full space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)]">
           Your Migration Plan
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           Here&apos;s how your current stack maps to SpokeStack.
         </p>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)] divide-y divide-[var(--border)]">
         {plan.map((item) => (
           <div
             key={item.module.id}
@@ -118,7 +118,7 @@ export default function MigrationPlan({
             )}
             {item.status === "coming_soon" && (
               <svg
-                className="w-4 h-4 text-gray-400 shrink-0"
+                className="w-4 h-4 text-[var(--text-tertiary)] shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -133,9 +133,9 @@ export default function MigrationPlan({
             )}
 
             <div className="flex-1 min-w-0">
-              <span className="text-sm text-gray-900">
+              <span className="text-sm text-[var(--text-primary)]">
                 {item.fromTool}{" "}
-                <span className="text-gray-400">&rarr;</span>{" "}
+                <span className="text-[var(--text-tertiary)]">&rarr;</span>{" "}
                 {item.module.label}
               </span>
             </div>
@@ -146,7 +146,7 @@ export default function MigrationPlan({
                   ? "bg-emerald-50 text-emerald-600"
                   : item.status === "install"
                     ? "bg-amber-50 text-amber-600"
-                    : "bg-gray-100 text-gray-500"
+                    : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
               }`}
             >
               {item.status === "ready"
@@ -164,7 +164,7 @@ export default function MigrationPlan({
           <button
             onClick={() => onInstallModules(toInstall)}
             disabled={isInstalling}
-            className="flex-1 rounded-xl bg-indigo-600 text-white font-medium py-3 text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            className="flex-1 rounded-xl bg-[var(--accent)] text-[var(--primary-foreground)] font-medium py-3 text-sm hover:bg-[var(--accent)] transition-colors disabled:opacity-50"
           >
             {isInstalling
               ? "Installing..."
@@ -174,7 +174,7 @@ export default function MigrationPlan({
         {toInstall.length === 0 && (
           <button
             onClick={() => onInstallModules([])}
-            className="flex-1 rounded-xl bg-indigo-600 text-white font-medium py-3 text-sm hover:bg-indigo-700 transition-colors"
+            className="flex-1 rounded-xl bg-[var(--accent)] text-[var(--primary-foreground)] font-medium py-3 text-sm hover:bg-[var(--accent)] transition-colors"
           >
             Continue to Dashboard &rarr;
           </button>

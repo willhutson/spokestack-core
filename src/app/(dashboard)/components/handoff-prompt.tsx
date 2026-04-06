@@ -35,10 +35,10 @@ export default function HandoffPrompt({
     AGENT_LABELS[handoff.target_agent] ?? handoff.target_agent;
 
   return (
-    <div className="mx-4 mb-3 flex items-start gap-3 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3">
+    <div className="mx-4 mb-3 flex items-start gap-3 rounded-lg border border-[var(--accent)] bg-[var(--accent-subtle)] px-4 py-3">
       <div className="mt-0.5 flex-shrink-0">
         <svg
-          className="h-4 w-4 text-indigo-500"
+          className="h-4 w-4 text-[var(--accent)]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -62,13 +62,13 @@ export default function HandoffPrompt({
       <div className="flex items-center gap-2 flex-shrink-0">
         <button
           onClick={() => onSwitch(handoff)}
-          className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-700 transition-colors"
+          className="rounded-md bg-[var(--accent)] px-3 py-1 text-xs font-medium text-[var(--primary-foreground)] hover:bg-[var(--accent)] transition-colors"
         >
           Switch
         </button>
         <button
           onClick={onDismiss}
-          className="rounded-md px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-100 transition-colors"
+          className="rounded-md px-2 py-1 text-xs text-[var(--accent)] hover:bg-[var(--accent-subtle)] transition-colors"
         >
           Stay
         </button>

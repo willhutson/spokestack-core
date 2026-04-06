@@ -30,7 +30,7 @@ interface VideoEntry {
 const PLATFORM_BADGE: Record<string, string> = {
   youtube: "bg-red-50 text-red-600",
   instagram: "bg-pink-50 text-pink-600",
-  tiktok: "bg-gray-100 text-gray-700",
+  tiktok: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   linkedin: "bg-blue-50 text-blue-600",
   twitter: "bg-sky-50 text-sky-600",
 };
@@ -124,7 +124,7 @@ export default function VideoPage() {
             >
               {/* Thumbnail placeholder with play icon */}
               <div className="h-40 bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-surface)] flex items-center justify-center relative">
-                <div className="w-14 h-14 rounded-full bg-white/80 flex items-center justify-center shadow-sm">
+                <div className="w-14 h-14 rounded-full bg-[var(--bg-base)]/80 flex items-center justify-center shadow-sm">
                   <svg className="w-6 h-6 text-[var(--text-secondary)] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>

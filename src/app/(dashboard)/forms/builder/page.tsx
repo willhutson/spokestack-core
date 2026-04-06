@@ -146,13 +146,13 @@ export default function FormBuilderPage() {
             placeholder="Form Name"
           />
           <div className="flex items-center gap-2">
-            <button onClick={() => setPreview(!preview)} className={cn("px-3 py-2 text-sm font-medium rounded-lg transition-colors", preview ? "bg-indigo-100 text-indigo-700" : "text-gray-600 bg-gray-100 hover:bg-gray-200")}>
+            <button onClick={() => setPreview(!preview)} className={cn("px-3 py-2 text-sm font-medium rounded-lg transition-colors", preview ? "bg-[var(--accent-subtle)] text-[var(--accent)]" : "text-[var(--text-secondary)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)]")}>
               {preview ? "Edit" : "Preview"}
             </button>
-            <button onClick={() => saveForm("DRAFT")} disabled={saving} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors">
+            <button onClick={() => saveForm("DRAFT")} disabled={saving} className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-50 transition-colors">
               {saving ? "Saving..." : "Save"}
             </button>
-            <button onClick={() => saveForm("ACTIVE")} disabled={publishing} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <button onClick={() => saveForm("ACTIVE")} disabled={publishing} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
               {publishing ? "Publishing..." : "Publish"}
             </button>
           </div>
@@ -160,49 +160,49 @@ export default function FormBuilderPage() {
 
         {preview ? (
           /* Preview Mode */
-          <div className="max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl p-8">
+          <div className="max-w-2xl mx-auto bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8">
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">{formName}</h2>
             <div className="space-y-5">
               {fields.length === 0 ? (
-                <p className="text-sm text-gray-400 text-center py-8">No fields added yet.</p>
+                <p className="text-sm text-[var(--text-tertiary)] text-center py-8">No fields added yet.</p>
               ) : (
                 fields.map((field) => (
                   <div key={field.id}>
                     {field.type === "SECTION_HEADER" ? (
-                      <div className="border-b border-gray-200 pb-2 mb-2">
+                      <div className="border-b border-[var(--border)] pb-2 mb-2">
                         <h3 className="text-sm font-semibold text-[var(--text-primary)]">{field.title}</h3>
-                        {field.description && <p className="text-xs text-gray-500">{field.description}</p>}
+                        {field.description && <p className="text-xs text-[var(--text-secondary)]">{field.description}</p>}
                       </div>
                     ) : (
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                           {field.label} {field.required && <span className="text-red-500">*</span>}
                         </label>
                         {(field.type === "TEXT" || field.type === "EMAIL" || field.type === "PHONE") && (
-                          <input type="text" placeholder={field.placeholder} disabled className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-400" />
+                          <input type="text" placeholder={field.placeholder} disabled className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-tertiary)]" />
                         )}
                         {field.type === "NUMBER" && (
-                          <input type="number" min={field.min} max={field.max} disabled className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-400" />
+                          <input type="number" min={field.min} max={field.max} disabled className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-tertiary)]" />
                         )}
                         {field.type === "DATE" && (
-                          <input type="date" disabled className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-400" />
+                          <input type="date" disabled className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-tertiary)]" />
                         )}
                         {field.type === "SELECT" && (
-                          <select disabled className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-400">
+                          <select disabled className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-tertiary)]">
                             <option>Select...</option>
                             {field.options?.map((o, i) => <option key={i}>{o}</option>)}
                           </select>
                         )}
                         {field.type === "CHECKBOX" && (
                           <div className="space-y-1">{field.options?.map((o, i) => (
-                            <label key={i} className="flex items-center gap-2 text-sm text-gray-400"><input type="checkbox" disabled />{o}</label>
+                            <label key={i} className="flex items-center gap-2 text-sm text-[var(--text-tertiary)]"><input type="checkbox" disabled />{o}</label>
                           ))}</div>
                         )}
                         {field.type === "TEXTAREA" && (
-                          <textarea rows={field.rows ?? 4} disabled placeholder={field.placeholder} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-400 resize-none" />
+                          <textarea rows={field.rows ?? 4} disabled placeholder={field.placeholder} className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-tertiary)] resize-none" />
                         )}
                         {field.type === "FILE" && (
-                          <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center text-xs text-gray-400">Drop file here or click to upload</div>
+                          <div className="border-2 border-dashed border-[var(--border)] rounded-lg p-4 text-center text-xs text-[var(--text-tertiary)]">Drop file here or click to upload</div>
                         )}
                       </div>
                     )}
@@ -219,9 +219,9 @@ export default function FormBuilderPage() {
               <div className="mb-4">
                 <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Fields</h2>
                 {fields.length === 0 ? (
-                  <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                    <p className="text-sm text-gray-500 mb-2">No fields yet</p>
-                    <p className="text-xs text-gray-400">Add fields using the panel on the right.</p>
+                  <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                    <p className="text-sm text-[var(--text-secondary)] mb-2">No fields yet</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">Add fields using the panel on the right.</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -230,21 +230,21 @@ export default function FormBuilderPage() {
                         key={field.id}
                         onClick={() => setSelectedId(field.id)}
                         className={cn(
-                          "flex items-center gap-3 bg-white border rounded-xl px-4 py-3 cursor-pointer transition-all",
-                          selectedId === field.id ? "border-indigo-300 ring-2 ring-indigo-100" : "border-gray-200 hover:shadow-sm"
+                          "flex items-center gap-3 bg-[var(--bg-base)] border rounded-xl px-4 py-3 cursor-pointer transition-all",
+                          selectedId === field.id ? "border-[var(--accent)] ring-2 ring-[var(--accent-subtle)]" : "border-[var(--border)] hover:shadow-sm"
                         )}
                       >
-                        <div className="w-6 text-center text-xs text-gray-400 cursor-grab select-none">::</div>
-                        <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-mono text-gray-500">
+                        <div className="w-6 text-center text-xs text-[var(--text-tertiary)] cursor-grab select-none">::</div>
+                        <div className="w-8 h-8 bg-[var(--bg-surface)] rounded flex items-center justify-center text-xs font-mono text-[var(--text-secondary)]">
                           {FIELD_TYPES.find((t) => t.type === field.type)?.icon ?? "?"}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-[var(--text-primary)] truncate">{field.type === "SECTION_HEADER" ? (field.title ?? "Section") : field.label}</div>
-                          <div className="text-xs text-gray-400">{field.type}{field.required ? " (required)" : ""}</div>
+                          <div className="text-xs text-[var(--text-tertiary)]">{field.type}{field.required ? " (required)" : ""}</div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <button onClick={(e) => { e.stopPropagation(); moveField(field.id, "up"); }} disabled={idx === 0} className="p-1 text-xs text-gray-400 hover:text-gray-600 disabled:opacity-30">Up</button>
-                          <button onClick={(e) => { e.stopPropagation(); moveField(field.id, "down"); }} disabled={idx === fields.length - 1} className="p-1 text-xs text-gray-400 hover:text-gray-600 disabled:opacity-30">Dn</button>
+                          <button onClick={(e) => { e.stopPropagation(); moveField(field.id, "up"); }} disabled={idx === 0} className="p-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] disabled:opacity-30">Up</button>
+                          <button onClick={(e) => { e.stopPropagation(); moveField(field.id, "down"); }} disabled={idx === fields.length - 1} className="p-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] disabled:opacity-30">Dn</button>
                           <button onClick={(e) => { e.stopPropagation(); removeField(field.id); }} className="p-1 text-xs text-red-400 hover:text-red-600">Del</button>
                         </div>
                       </div>
@@ -255,10 +255,10 @@ export default function FormBuilderPage() {
 
               {/* Add Field Buttons */}
               <div>
-                <h3 className="text-xs font-medium text-gray-500 mb-2">Add Field</h3>
+                <h3 className="text-xs font-medium text-[var(--text-secondary)] mb-2">Add Field</h3>
                 <div className="flex flex-wrap gap-1.5">
                   {FIELD_TYPES.map((ft) => (
-                    <button key={ft.type} onClick={() => addField(ft.type)} className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                    <button key={ft.type} onClick={() => addField(ft.type)} className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
                       {ft.icon} {ft.label}
                     </button>
                   ))}
@@ -269,100 +269,100 @@ export default function FormBuilderPage() {
             {/* Right Panel: Field Editor */}
             <div>
               {selectedField ? (
-                <div className="bg-white border border-gray-200 rounded-xl p-5">
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Edit: {selectedField.type}</h3>
                   <div className="space-y-4">
                     {selectedField.type === "SECTION_HEADER" ? (
                       <>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
-                          <input type="text" value={selectedField.title ?? ""} onChange={(e) => updateField(selectedField.id, { title: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Title</label>
+                          <input type="text" value={selectedField.title ?? ""} onChange={(e) => updateField(selectedField.id, { title: e.target.value })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                          <input type="text" value={selectedField.description ?? ""} onChange={(e) => updateField(selectedField.id, { description: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Description</label>
+                          <input type="text" value={selectedField.description ?? ""} onChange={(e) => updateField(selectedField.id, { description: e.target.value })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                         </div>
                       </>
                     ) : (
                       <>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Label</label>
-                          <input type="text" value={selectedField.label} onChange={(e) => updateField(selectedField.id, { label: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Label</label>
+                          <input type="text" value={selectedField.label} onChange={(e) => updateField(selectedField.id, { label: e.target.value })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                         </div>
 
                         {(selectedField.type === "TEXT" || selectedField.type === "EMAIL" || selectedField.type === "PHONE" || selectedField.type === "TEXTAREA") && (
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Placeholder</label>
-                            <input type="text" value={selectedField.placeholder ?? ""} onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Placeholder</label>
+                            <input type="text" value={selectedField.placeholder ?? ""} onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                           </div>
                         )}
 
                         {(selectedField.type === "TEXT" || selectedField.type === "EMAIL" || selectedField.type === "PHONE") && (
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Validation Pattern</label>
-                            <input type="text" value={selectedField.validation ?? ""} onChange={(e) => updateField(selectedField.id, { validation: e.target.value })} placeholder="e.g. ^[a-zA-Z]+$" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Validation Pattern</label>
+                            <input type="text" value={selectedField.validation ?? ""} onChange={(e) => updateField(selectedField.id, { validation: e.target.value })} placeholder="e.g. ^[a-zA-Z]+$" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                           </div>
                         )}
 
                         {selectedField.type === "NUMBER" && (
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Min</label>
-                              <input type="number" value={selectedField.min ?? ""} onChange={(e) => updateField(selectedField.id, { min: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Min</label>
+                              <input type="number" value={selectedField.min ?? ""} onChange={(e) => updateField(selectedField.id, { min: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Max</label>
-                              <input type="number" value={selectedField.max ?? ""} onChange={(e) => updateField(selectedField.id, { max: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Max</label>
+                              <input type="number" value={selectedField.max ?? ""} onChange={(e) => updateField(selectedField.id, { max: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                             </div>
                           </div>
                         )}
 
                         {(selectedField.type === "SELECT" || selectedField.type === "CHECKBOX") && (
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Options</label>
+                            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Options</label>
                             <div className="space-y-1.5">
                               {(selectedField.options ?? []).map((opt, idx) => (
                                 <div key={idx} className="flex items-center gap-1.5">
-                                  <input type="text" value={opt} onChange={(e) => updateOption(selectedField.id, idx, e.target.value)} className="flex-1 h-8 px-2 text-sm border border-gray-300 rounded-md bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                  <input type="text" value={opt} onChange={(e) => updateOption(selectedField.id, idx, e.target.value)} className="flex-1 h-8 px-2 text-sm border border-[var(--border-strong)] rounded-md bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                                   <button onClick={() => removeOption(selectedField.id, idx)} className="text-xs text-red-400 hover:text-red-600 px-1">x</button>
                                 </div>
                               ))}
-                              <button onClick={() => addOption(selectedField.id)} className="text-xs font-medium text-indigo-600 hover:text-indigo-700">+ Add Option</button>
+                              <button onClick={() => addOption(selectedField.id)} className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent)]">+ Add Option</button>
                             </div>
                           </div>
                         )}
 
                         {selectedField.type === "SELECT" && (
                           <div className="flex items-center gap-2">
-                            <input type="checkbox" checked={selectedField.allowMultiple ?? false} onChange={(e) => updateField(selectedField.id, { allowMultiple: e.target.checked })} className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <label className="text-xs text-gray-700">Allow Multiple Selections</label>
+                            <input type="checkbox" checked={selectedField.allowMultiple ?? false} onChange={(e) => updateField(selectedField.id, { allowMultiple: e.target.checked })} className="rounded border-[var(--border-strong)] text-[var(--accent)] focus:ring-[var(--accent)]" />
+                            <label className="text-xs text-[var(--text-secondary)]">Allow Multiple Selections</label>
                           </div>
                         )}
 
                         {selectedField.type === "TEXTAREA" && (
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Rows</label>
-                              <input type="number" min={1} max={20} value={selectedField.rows ?? 4} onChange={(e) => updateField(selectedField.id, { rows: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Rows</label>
+                              <input type="number" min={1} max={20} value={selectedField.rows ?? 4} onChange={(e) => updateField(selectedField.id, { rows: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Max Length</label>
-                              <input type="number" min={0} value={selectedField.maxLength ?? 500} onChange={(e) => updateField(selectedField.id, { maxLength: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Max Length</label>
+                              <input type="number" min={0} value={selectedField.maxLength ?? 500} onChange={(e) => updateField(selectedField.id, { maxLength: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
                             </div>
                           </div>
                         )}
 
                         <div className="flex items-center gap-2">
-                          <input type="checkbox" checked={selectedField.required} onChange={(e) => updateField(selectedField.id, { required: e.target.checked })} className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                          <label className="text-xs text-gray-700">Required</label>
+                          <input type="checkbox" checked={selectedField.required} onChange={(e) => updateField(selectedField.id, { required: e.target.checked })} className="rounded border-[var(--border-strong)] text-[var(--accent)] focus:ring-[var(--accent)]" />
+                          <label className="text-xs text-[var(--text-secondary)]">Required</label>
                         </div>
                       </>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-                  <p className="text-sm text-gray-500">Select a field to edit its properties.</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center">
+                  <p className="text-sm text-[var(--text-secondary)]">Select a field to edit its properties.</p>
                 </div>
               )}
             </div>

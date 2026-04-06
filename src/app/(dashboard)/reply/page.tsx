@@ -32,7 +32,7 @@ const PLATFORM_COLORS: Record<string, string> = {
   instagram: "bg-pink-500",
   facebook: "bg-blue-600",
   linkedin: "bg-blue-800",
-  tiktok: "bg-gray-900",
+  tiktok: "bg-[var(--bg-base)]",
 };
 
 const URGENCY_COLORS: Record<string, string> = {
@@ -119,12 +119,12 @@ export default function ReplyInboxPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Unified social inbox and response management.
             </p>
           </div>
           {unreadCount > 0 && (
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-700">
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-[var(--accent-subtle)] text-[var(--accent)]">
               {unreadCount} unread
             </span>
           )}
@@ -141,8 +141,8 @@ export default function ReplyInboxPage() {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                 filter === t.value
-                  ? "bg-indigo-100 text-indigo-700"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
               )}
             >
               {t.label}
@@ -156,15 +156,15 @@ export default function ReplyInboxPage() {
             {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse"
               >
-                <div className="h-4 w-48 bg-gray-200 rounded mb-2" />
-                <div className="h-3 w-72 bg-gray-200 rounded" />
+                <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-2" />
+                <div className="h-3 w-72 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm">
+          <div className="text-center py-16 text-[var(--text-tertiary)] text-sm">
             No messages in inbox.
           </div>
         ) : (
@@ -181,10 +181,10 @@ export default function ReplyInboxPage() {
                 <div
                   key={item.id}
                   className={cn(
-                    "bg-white border rounded-xl p-4 transition-all",
+                    "bg-[var(--bg-base)] border rounded-xl p-4 transition-all",
                     isDone
-                      ? "border-gray-100 opacity-60"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-[var(--border)] opacity-60"
+                      : "border-[var(--border)] hover:border-[var(--border-strong)]"
                   )}
                 >
                   <div className="flex items-start gap-3">
@@ -217,11 +217,11 @@ export default function ReplyInboxPage() {
                             Flagged
                           </span>
                         )}
-                        <span className="text-xs text-gray-400 ml-auto">
+                        <span className="text-xs text-[var(--text-tertiary)] ml-auto">
                           {timeAgo(item.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 truncate">
+                      <p className="text-sm text-[var(--text-secondary)] truncate">
                         {preview}
                       </p>
 
@@ -233,7 +233,7 @@ export default function ReplyInboxPage() {
                               replyingTo === item.id ? null : item.id
                             )
                           }
-                          className="px-3 py-1 text-xs font-medium rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"
+                          className="px-3 py-1 text-xs font-medium rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent-subtle)] transition-colors"
                         >
                           Reply
                         </button>
@@ -249,12 +249,12 @@ export default function ReplyInboxPage() {
                             "px-3 py-1 text-xs font-medium rounded-lg transition-colors",
                             isFlagged
                               ? "bg-orange-100 text-orange-700"
-                              : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                              : "bg-[var(--bg-base)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
                           )}
                         >
                           {isFlagged ? "Unflag" : "Flag"}
                         </button>
-                        <button className="px-3 py-1 text-xs font-medium rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors">
+                        <button className="px-3 py-1 text-xs font-medium rounded-lg bg-[var(--bg-base)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors">
                           Assign
                         </button>
                       </div>
@@ -267,10 +267,10 @@ export default function ReplyInboxPage() {
                             onChange={(e) => setReplyText(e.target.value)}
                             placeholder="Type your reply..."
                             rows={3}
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                           />
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-[var(--text-secondary)]">
                               Tone:
                             </span>
                             {(
@@ -286,8 +286,8 @@ export default function ReplyInboxPage() {
                                 className={cn(
                                   "px-2 py-1 rounded text-xs font-medium transition-colors",
                                   tone === t
-                                    ? "bg-indigo-100 text-indigo-700"
-                                    : "bg-gray-100 text-gray-500"
+                                    ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                                    : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                                 )}
                               >
                                 {t}
@@ -298,7 +298,7 @@ export default function ReplyInboxPage() {
                                 setReplyingTo(null);
                                 setReplyText("");
                               }}
-                              className="ml-auto px-3 py-1 text-xs font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+                              className="ml-auto px-3 py-1 text-xs font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] transition-colors"
                             >
                               Send
                             </button>

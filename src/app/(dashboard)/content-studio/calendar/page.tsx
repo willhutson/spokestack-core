@@ -189,7 +189,7 @@ export default function CalendarPage() {
                   className={cn(
                     "min-h-[100px] bg-[var(--bg-base)] border rounded-lg p-2 cursor-pointer hover:border-[var(--border-strong)] transition-colors",
                     isToday && "border-indigo-300 ring-1 ring-indigo-100",
-                    isSelected && "border-indigo-500 ring-2 ring-indigo-200",
+                    isSelected && "border-[var(--accent)] ring-2 ring-indigo-200",
                     !isToday && !isSelected && "border-[var(--border)]"
                   )}
                 >

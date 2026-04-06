@@ -168,7 +168,7 @@ export default function MoodboardEditorPage({ params }: { params: Promise<{ id: 
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             placeholder="Paste image URL..."
-            className="flex-1 h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            className="flex-1 h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             onKeyDown={(e) => e.key === "Enter" && addImage()}
           />
           <button onClick={addImage} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">Add</button>
@@ -233,7 +233,7 @@ export default function MoodboardEditorPage({ params }: { params: Promise<{ id: 
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
             placeholder="Add tag..."
-            className="h-8 px-3 text-xs border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            className="h-8 px-3 text-xs border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             onKeyDown={(e) => e.key === "Enter" && addTag()}
           />
           <button onClick={addTag} className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add</button>

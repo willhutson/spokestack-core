@@ -107,7 +107,7 @@ export default function NewDeckPage() {
             value={blankName}
             onChange={(e) => setBlankName(e.target.value)}
             placeholder="Deck name"
-            className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] mb-3"
+            className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] mb-3"
           />
           <button
             disabled={submitting || !blankName.trim()}

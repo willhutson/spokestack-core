@@ -32,7 +32,7 @@ export function ChatCard({ chat, active, onClick, onRename, onArchive }: ChatCar
       onClick={onClick}
       className={cn(
         "group relative flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 transition-colors",
-        active ? "bg-gray-800" : "hover:bg-gray-800/50",
+        active ? "bg-[var(--bg-surface)]" : "hover:bg-[var(--bg-surface)]/50",
       )}
     >
       <div
@@ -45,7 +45,7 @@ export function ChatCard({ chat, active, onClick, onRename, onArchive }: ChatCar
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-gray-200">{chat.title}</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-[var(--text-secondary)]">
           {timeAgo(chat.lastActivityAt ?? chat.updatedAt ?? chat.createdAt)}
         </p>
       </div>
@@ -56,7 +56,7 @@ export function ChatCard({ chat, active, onClick, onRename, onArchive }: ChatCar
           e.stopPropagation();
           setMenuOpen(!menuOpen);
         }}
-        className="invisible absolute right-2 top-2 rounded p-1 text-gray-500 hover:bg-gray-700 hover:text-gray-300 group-hover:visible"
+        className="invisible absolute right-2 top-2 rounded p-1 text-[var(--text-secondary)] hover:bg-gray-700 hover:text-[var(--text-tertiary)] group-hover:visible"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="5" r="1.5" />
@@ -66,7 +66,7 @@ export function ChatCard({ chat, active, onClick, onRename, onArchive }: ChatCar
       </button>
 
       {menuOpen && (
-        <div className="absolute right-2 top-8 z-20 w-36 rounded-lg border border-gray-700 bg-gray-900 py-1 shadow-lg">
+        <div className="absolute right-2 top-8 z-20 w-36 rounded-lg border border-gray-700 bg-[var(--bg-base)] py-1 shadow-lg">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -74,7 +74,7 @@ export function ChatCard({ chat, active, onClick, onRename, onArchive }: ChatCar
               if (title) onRename(chat.id, title);
               setMenuOpen(false);
             }}
-            className="block w-full px-3 py-1.5 text-left text-sm text-gray-300 hover:bg-gray-800"
+            className="block w-full px-3 py-1.5 text-left text-sm text-[var(--text-tertiary)] hover:bg-[var(--bg-surface)]"
           >
             Rename
           </button>

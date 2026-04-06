@@ -311,7 +311,7 @@ export default function ProjectDetailPage({
                           ? "bg-emerald-500"
                           : isPast
                             ? "bg-red-400"
-                            : "bg-gray-300"
+                            : "bg-[var(--bg-hover)]"
                       }`}
                     />
                     <span

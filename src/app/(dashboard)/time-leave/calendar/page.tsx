@@ -27,7 +27,7 @@ const TYPE_COLORS: Record<string, string> = {
   Annual: "bg-blue-200 text-blue-800",
   Sick: "bg-red-200 text-red-800",
   Personal: "bg-purple-200 text-purple-800",
-  Unpaid: "bg-gray-200 text-gray-700",
+  Unpaid: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
 };
 
 function getDaysInMonth(year: number, month: number): number {

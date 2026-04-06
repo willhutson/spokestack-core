@@ -29,7 +29,7 @@ const PLATFORM_OPTIONS = ["Instagram", "TikTok", "YouTube", "LinkedIn", "Twitter
 const statusColors: Record<string, string> = {
   PLANNING: "bg-yellow-100 text-yellow-700",
   ACTIVE: "bg-green-100 text-green-700",
-  COMPLETED: "bg-gray-100 text-gray-600",
+  COMPLETED: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
 };
 
 export default function CampaignsPage() {
@@ -116,28 +116,28 @@ export default function CampaignsPage() {
         <MarketingNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Campaigns</h1>
-            <p className="text-sm text-gray-500">Plan, launch, and track marketing campaigns.</p>
+            <h1 className="text-xl font-semibold text-[var(--text-primary)]">Campaigns</h1>
+            <p className="text-sm text-[var(--text-secondary)]">Plan, launch, and track marketing campaigns.</p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
+            className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent-hover)]"
           >
             {showForm ? "Cancel" : "New Campaign"}
           </button>
         </div>
 
         {showForm && (
-          <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">New Campaign</h3>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 mb-6">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-3">New Campaign</h3>
             <div className="grid grid-cols-2 gap-3">
-              <input placeholder="Campaign Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input placeholder="Budget (AED)" type="number" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input placeholder="Start Date" type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input placeholder="End Date" type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="Campaign Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="Budget (AED)" type="number" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="Start Date" type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="End Date" type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
             </div>
             <div className="mt-3">
-              <p className="text-xs text-gray-500 mb-2">Platforms</p>
+              <p className="text-xs text-[var(--text-secondary)] mb-2">Platforms</p>
               <div className="flex gap-2 flex-wrap">
                 {PLATFORM_OPTIONS.map((p) => (
                   <button
@@ -145,7 +145,7 @@ export default function CampaignsPage() {
                     onClick={() => togglePlatform(p)}
                     className={cn(
                       "px-3 py-1 rounded-full text-xs font-medium border transition-colors",
-                      form.platforms.includes(p) ? "bg-indigo-100 text-indigo-700 border-indigo-300" : "bg-white text-gray-500 border-gray-300"
+                      form.platforms.includes(p) ? "bg-[var(--accent-subtle)] text-[var(--accent)] border-indigo-300" : "bg-[var(--bg-base)] text-[var(--text-secondary)] border-[var(--border-strong)]"
                     )}
                   >
                     {p}
@@ -159,11 +159,11 @@ export default function CampaignsPage() {
                 value={form.objectives}
                 onChange={(e) => setForm({ ...form, objectives: e.target.value })}
                 rows={3}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm"
               />
             </div>
             <div className="mt-3 flex justify-end">
-              <button onClick={handleSubmit} disabled={saving || !form.name} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">
+              <button onClick={handleSubmit} disabled={saving || !form.name} className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent-hover)] disabled:opacity-50">
                 {saving ? "Saving..." : "Create Campaign"}
               </button>
             </div>
@@ -171,32 +171,32 @@ export default function CampaignsPage() {
         )}
 
         <div className="flex gap-2 mb-4">
-          <button onClick={() => setFilterStatus("")} className={cn("px-3 py-1.5 rounded-lg text-sm", !filterStatus ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-100")}>All</button>
+          <button onClick={() => setFilterStatus("")} className={cn("px-3 py-1.5 rounded-lg text-sm", !filterStatus ? "bg-[var(--accent-subtle)] text-[var(--accent)] font-medium" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]")}>All</button>
           {STATUSES.map((s) => (
-            <button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded-lg text-sm", filterStatus === s ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-100")}>
+            <button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded-lg text-sm", filterStatus === s ? "bg-[var(--accent-subtle)] text-[var(--accent)] font-medium" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]")}>
               {s.charAt(0) + s.slice(1).toLowerCase()}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <p className="text-sm text-gray-400 text-center py-8">Loading...</p>
+          <p className="text-sm text-[var(--text-tertiary)] text-center py-8">Loading...</p>
         ) : filtered.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-            <p className="text-sm text-gray-500">No campaigns found. Create your first campaign.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center">
+            <p className="text-sm text-[var(--text-secondary)]">No campaigns found. Create your first campaign.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[var(--bg-base)] border-b border-[var(--border)]">
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Platforms</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">Budget (AED)</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">Spent (AED)</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Dates</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">ROI %</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Name</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Status</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Platforms</th>
+                  <th className="text-right px-4 py-3 font-medium text-[var(--text-secondary)]">Budget (AED)</th>
+                  <th className="text-right px-4 py-3 font-medium text-[var(--text-secondary)]">Spent (AED)</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Dates</th>
+                  <th className="text-right px-4 py-3 font-medium text-[var(--text-secondary)]">ROI %</th>
                 </tr>
               </thead>
               <tbody>
@@ -204,32 +204,32 @@ export default function CampaignsPage() {
                   const v = c.value;
                   const utilization = v.budget > 0 ? Math.round((v.spent / v.budget) * 100) : 0;
                   return (
-                    <tr key={c.id} className="border-b border-gray-100 last:border-0">
+                    <tr key={c.id} className="border-b border-[var(--border)] last:border-0">
                       <td className="px-4 py-3">
-                        <p className="font-medium text-gray-900">{v.name}</p>
-                        <div className="mt-1 w-32 bg-gray-200 rounded-full h-1.5">
-                          <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: `${Math.min(utilization, 100)}%` }} />
+                        <p className="font-medium text-[var(--text-primary)]">{v.name}</p>
+                        <div className="mt-1 w-32 bg-[var(--bg-surface)] rounded-full h-1.5">
+                          <div className="bg-[var(--accent)] h-1.5 rounded-full" style={{ width: `${Math.min(utilization, 100)}%` }} />
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{utilization}% budget used</p>
+                        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">{utilization}% budget used</p>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={cn("px-2 py-1 rounded-full text-xs font-medium", statusColors[v.status] || "bg-gray-100 text-gray-600")}>
+                        <span className={cn("px-2 py-1 rounded-full text-xs font-medium", statusColors[v.status] || "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                           {v.status}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1 flex-wrap">
                           {(v.platforms || []).map((p: string) => (
-                            <span key={p} className="text-xs text-gray-500">{p}</span>
+                            <span key={p} className="text-xs text-[var(--text-secondary)]">{p}</span>
                           ))}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-900">{(v.budget || 0).toLocaleString()}</td>
-                      <td className="px-4 py-3 text-right text-gray-900">{(v.spent || 0).toLocaleString()}</td>
-                      <td className="px-4 py-3 text-xs text-gray-500">
+                      <td className="px-4 py-3 text-right text-[var(--text-primary)]">{(v.budget || 0).toLocaleString()}</td>
+                      <td className="px-4 py-3 text-right text-[var(--text-primary)]">{(v.spent || 0).toLocaleString()}</td>
+                      <td className="px-4 py-3 text-xs text-[var(--text-secondary)]">
                         {v.startDate || "TBD"} - {v.endDate || "TBD"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-900">{v.roi || 0}%</td>
+                      <td className="px-4 py-3 text-right text-[var(--text-primary)]">{v.roi || 0}%</td>
                     </tr>
                   );
                 })}

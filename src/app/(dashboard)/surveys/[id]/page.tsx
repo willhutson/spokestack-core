@@ -35,7 +35,7 @@ interface SurveyResponse {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-100 text-gray-600",
+  Draft: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   Active: "bg-green-100 text-green-700",
   Closed: "bg-red-100 text-red-600",
 };
@@ -255,21 +255,21 @@ export default function SurveyDetailPage() {
                       <tr className="bg-[var(--bg-base)]">
                         <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Respondent</th>
                         {survey.questions.slice(0, 4).map((q, i) => (
-                          <th key={i} className="text-left text-xs font-medium text-gray-500 px-4 py-3 truncate max-w-[150px]">{q.text}</th>
+                          <th key={i} className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3 truncate max-w-[150px]">{q.text}</th>
                         ))}
-                        <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Submitted</th>
+                        <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Submitted</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {responses.map((r, i) => (
-                        <tr key={i} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-900">{r.respondent ?? `Respondent ${i + 1}`}</td>
+                        <tr key={i} className="hover:bg-[var(--bg-hover)]">
+                          <td className="px-4 py-3 text-sm text-[var(--text-primary)]">{r.respondent ?? `Respondent ${i + 1}`}</td>
                           {survey.questions.slice(0, 4).map((q, j) => (
-                            <td key={j} className="px-4 py-3 text-sm text-gray-600 truncate max-w-[150px]">
+                            <td key={j} className="px-4 py-3 text-sm text-[var(--text-secondary)] truncate max-w-[150px]">
                               {String(r.answers[q.text] ?? "-")}
                             </td>
                           ))}
-                          <td className="px-4 py-3 text-xs text-gray-400">
+                          <td className="px-4 py-3 text-xs text-[var(--text-tertiary)]">
                             {r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : "-"}
                           </td>
                         </tr>

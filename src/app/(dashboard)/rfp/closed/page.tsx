@@ -88,7 +88,7 @@ export default function ClosedRfpPage() {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Review closed proposals and outcomes.
           </p>
         </div>
@@ -97,30 +97,30 @@ export default function ClosedRfpPage() {
 
         {/* Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1">
               Total Won Value
             </p>
             <p className="text-2xl font-bold text-emerald-600">
               {fmtCurrency(totalWonValue)}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-[var(--text-tertiary)] mt-1">
               {won.length} proposal{won.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1">
               Total Lost Value
             </p>
             <p className="text-2xl font-bold text-red-600">
               {fmtCurrency(totalLostValue)}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-[var(--text-tertiary)] mt-1">
               {lost.length} proposal{lost.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1">
               Net Difference
             </p>
             <p
@@ -149,8 +149,8 @@ export default function ClosedRfpPage() {
                     ? "bg-emerald-100 text-emerald-700"
                     : f === "lost"
                     ? "bg-red-100 text-red-700"
-                    : "bg-indigo-100 text-indigo-700"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    : "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
               )}
             >
               {f} ({f === "all" ? briefs.length : f === "won" ? won.length : lost.length})
@@ -164,15 +164,15 @@ export default function ClosedRfpPage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse"
               >
-                <div className="h-4 w-48 bg-gray-200 rounded mb-2" />
-                <div className="h-3 w-64 bg-gray-200 rounded" />
+                <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-2" />
+                <div className="h-3 w-64 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm bg-white border border-gray-200 rounded-xl">
+          <div className="text-center py-16 text-[var(--text-tertiary)] text-sm bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
             No closed RFPs found.
           </div>
         ) : (
@@ -190,7 +190,7 @@ export default function ClosedRfpPage() {
                 <div
                   key={rfp.id}
                   className={cn(
-                    "bg-white border rounded-xl p-4 transition-all",
+                    "bg-[var(--bg-base)] border rounded-xl p-4 transition-all",
                     isWon
                       ? "border-emerald-200 hover:border-emerald-300"
                       : "border-red-200 hover:border-red-300"
@@ -211,7 +211,7 @@ export default function ClosedRfpPage() {
                       <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                         {rfp.title}
                       </p>
-                      <p className="text-xs text-gray-500">{client}</p>
+                      <p className="text-xs text-[var(--text-secondary)]">{client}</p>
                     </div>
                     {value > 0 && (
                       <p

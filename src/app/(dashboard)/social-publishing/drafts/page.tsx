@@ -20,7 +20,7 @@ const PLAT_COLORS: Record<string, string> = {
   Facebook: "bg-blue-100 text-blue-700",
   LinkedIn: "bg-sky-100 text-sky-700",
   Instagram: "bg-pink-100 text-pink-700",
-  X: "bg-gray-200 text-gray-700",
+  X: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   TikTok: "bg-purple-100 text-purple-700",
 };
 

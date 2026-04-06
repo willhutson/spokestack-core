@@ -139,19 +139,19 @@ export default function CanvasRenderer({
       </div>
 
       {/* Zoom controls */}
-      <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-gray-900 rounded-lg border border-gray-800 p-1">
+      <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-[var(--bg-base)] rounded-lg border border-gray-800 p-1">
         <button
           onClick={() => setZoom((z) => Math.min(2, z + 0.15))}
-          className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white transition-colors text-sm"
+          className="w-7 h-7 flex items-center justify-center text-[var(--text-tertiary)] hover:text-white transition-colors text-sm"
         >
           +
         </button>
-        <span className="text-[10px] text-gray-500 px-1 min-w-[3rem] text-center">
+        <span className="text-[10px] text-[var(--text-secondary)] px-1 min-w-[3rem] text-center">
           {Math.round(zoom * 100)}%
         </span>
         <button
           onClick={() => setZoom((z) => Math.max(0.3, z - 0.15))}
-          className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white transition-colors text-sm"
+          className="w-7 h-7 flex items-center justify-center text-[var(--text-tertiary)] hover:text-white transition-colors text-sm"
         >
           -
         </button>

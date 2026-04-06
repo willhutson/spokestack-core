@@ -35,20 +35,20 @@ export function Step3Departments({ data, updateData }: StepProps) {
 
   return (
     <div>
-      <h2 className="mb-1 text-xl font-bold text-gray-900">Departments</h2>
-      <p className="mb-6 text-sm text-gray-500">
+      <h2 className="mb-1 text-xl font-bold text-[var(--text-primary)]">Departments</h2>
+      <p className="mb-6 text-sm text-[var(--text-secondary)]">
         Set up your departments. Click suggestions or add your own.
       </p>
 
       {/* Suggestions */}
       <div className="mb-6">
-        <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Suggestions</p>
+        <p className="mb-2 text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Suggestions</p>
         <div className="flex flex-wrap gap-2">
           {SUGGESTED.filter((s) => !departments.some((d) => d.name === s)).map((s) => (
             <button
               key={s}
               onClick={() => addDepartment(s)}
-              className="rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-700 transition-colors hover:border-indigo-400 hover:bg-indigo-50"
+              className="rounded-full border border-[var(--border-strong)] px-3 py-1 text-sm text-[var(--text-secondary)] transition-colors hover:border-indigo-400 hover:bg-[var(--accent-subtle)]"
             >
               + {s}
             </button>
@@ -64,12 +64,12 @@ export function Step3Departments({ data, updateData }: StepProps) {
           onChange={(e) => setNewName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addDepartment(newName)}
           placeholder="Add a department..."
-          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-indigo-500"
+          className="flex-1 rounded-lg border border-[var(--border-strong)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
         />
         <button
           onClick={() => addDepartment(newName)}
           disabled={!newName.trim()}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+          className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] hover:bg-[var(--accent)] disabled:opacity-40"
         >
           Add
         </button>
@@ -78,15 +78,15 @@ export function Step3Departments({ data, updateData }: StepProps) {
       {/* Department list */}
       <div className="space-y-3">
         {departments.map((dept, i) => (
-          <div key={i} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+          <div key={i} className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg-base)] px-4 py-3">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">{dept.name}</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">{dept.name}</p>
               <input
                 type="text"
                 value={dept.lead ?? ""}
                 onChange={(e) => updateLead(i, e.target.value)}
                 placeholder="Department lead (optional)"
-                className="mt-1 w-full bg-transparent text-xs text-gray-600 placeholder:text-gray-400 outline-none"
+                className="mt-1 w-full bg-transparent text-xs text-[var(--text-secondary)] placeholder:text-[var(--text-tertiary)] outline-none"
               />
             </div>
             <button

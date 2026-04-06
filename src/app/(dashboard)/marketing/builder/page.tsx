@@ -143,8 +143,8 @@ export default function BuilderPage() {
       <div className="p-6">
         <MarketingNav />
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-gray-900">Content Builder</h1>
-          <p className="text-sm text-gray-500">Create marketing content from templates.</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Content Builder</h1>
+          <p className="text-sm text-[var(--text-secondary)]">Create marketing content from templates.</p>
         </div>
 
         <div className="grid grid-cols-4 gap-3 mb-6">
@@ -153,26 +153,26 @@ export default function BuilderPage() {
               key={t.type}
               onClick={() => setSelectedTemplate(t.type)}
               className={cn(
-                "bg-white border rounded-xl p-4 text-left transition-all",
-                selectedTemplate === t.type ? "border-indigo-400 ring-2 ring-indigo-100" : "border-gray-200 hover:border-gray-300"
+                "bg-[var(--bg-base)] border rounded-xl p-4 text-left transition-all",
+                selectedTemplate === t.type ? "border-indigo-400 ring-2 ring-indigo-100" : "border-[var(--border)] hover:border-[var(--border-strong)]"
               )}
             >
-              <h3 className="text-sm font-medium text-gray-900">{t.label}</h3>
-              <p className="text-xs text-gray-500 mt-1">{t.description}</p>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{t.label}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t.description}</p>
             </button>
           ))}
         </div>
 
         {selectedTemplate && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-            <h2 className="text-sm font-medium text-gray-900 mb-4">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
+            <h2 className="text-sm font-medium text-[var(--text-primary)] mb-4">
               {TEMPLATES.find((t) => t.type === selectedTemplate)?.label} Editor
             </h2>
 
             {selectedTemplate === "social" && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Platform</label>
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Platform</label>
                   <div className="flex gap-2">
                     {Object.keys(CHAR_LIMITS).map((p) => (
                       <button
@@ -180,7 +180,7 @@ export default function BuilderPage() {
                         onClick={() => setSocialPlatform(p)}
                         className={cn(
                           "px-3 py-1.5 rounded-lg text-sm border",
-                          socialPlatform === p ? "bg-indigo-50 text-indigo-700 border-indigo-300" : "text-gray-600 border-gray-300"
+                          socialPlatform === p ? "bg-[var(--accent-subtle)] text-[var(--accent)] border-indigo-300" : "text-[var(--text-secondary)] border-[var(--border-strong)]"
                         )}
                       >
                         {p}
@@ -189,14 +189,14 @@ export default function BuilderPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">
                     Caption ({socialCaption.length}/{charLimit})
                   </label>
                   <textarea
                     value={socialCaption}
                     onChange={(e) => setSocialCaption(e.target.value.slice(0, charLimit))}
                     rows={5}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm"
                     placeholder="Write your caption..."
                   />
                   {socialCaption.length > charLimit * 0.9 && (
@@ -204,12 +204,12 @@ export default function BuilderPage() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Hashtag Suggestions</label>
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Hashtag Suggestions</label>
                   <input
                     value={socialHashtags}
                     onChange={(e) => setSocialHashtags(e.target.value)}
                     placeholder="#marketing #brand #growth"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm"
                   />
                 </div>
               </div>
@@ -218,20 +218,20 @@ export default function BuilderPage() {
             {selectedTemplate === "email" && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Subject Line</label>
-                  <input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder="Email subject..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Subject Line</label>
+                  <input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder="Email subject..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Preview Text</label>
-                  <input value={emailPreview} onChange={(e) => setEmailPreview(e.target.value)} placeholder="Preview text shown in inbox..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Preview Text</label>
+                  <input value={emailPreview} onChange={(e) => setEmailPreview(e.target.value)} placeholder="Preview text shown in inbox..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Body</label>
-                  <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={8} placeholder="Email body content..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Body</label>
+                  <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={8} placeholder="Email body content..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">CTA Button Text</label>
-                  <input value={emailCta} onChange={(e) => setEmailCta(e.target.value)} placeholder="Shop Now" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">CTA Button Text</label>
+                  <input value={emailCta} onChange={(e) => setEmailCta(e.target.value)} placeholder="Shop Now" className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
               </div>
             )}
@@ -239,20 +239,20 @@ export default function BuilderPage() {
             {selectedTemplate === "ad" && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Headline ({adHeadline.length}/30)</label>
-                  <input value={adHeadline} onChange={(e) => setAdHeadline(e.target.value.slice(0, 30))} placeholder="Ad headline..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Headline ({adHeadline.length}/30)</label>
+                  <input value={adHeadline} onChange={(e) => setAdHeadline(e.target.value.slice(0, 30))} placeholder="Ad headline..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Description ({adDescription.length}/90)</label>
-                  <textarea value={adDescription} onChange={(e) => setAdDescription(e.target.value.slice(0, 90))} rows={3} placeholder="Ad description..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Description ({adDescription.length}/90)</label>
+                  <textarea value={adDescription} onChange={(e) => setAdDescription(e.target.value.slice(0, 90))} rows={3} placeholder="Ad description..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">CTA</label>
-                  <input value={adCta} onChange={(e) => setAdCta(e.target.value)} placeholder="Learn More" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">CTA</label>
+                  <input value={adCta} onChange={(e) => setAdCta(e.target.value)} placeholder="Learn More" className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Display URL</label>
-                  <input value={adUrl} onChange={(e) => setAdUrl(e.target.value)} placeholder="www.example.com" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Display URL</label>
+                  <input value={adUrl} onChange={(e) => setAdUrl(e.target.value)} placeholder="www.example.com" className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
               </div>
             )}
@@ -260,29 +260,29 @@ export default function BuilderPage() {
             {selectedTemplate === "landing" && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Headline</label>
-                  <input value={landingHeadline} onChange={(e) => setLandingHeadline(e.target.value)} placeholder="Landing page headline..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Headline</label>
+                  <input value={landingHeadline} onChange={(e) => setLandingHeadline(e.target.value)} placeholder="Landing page headline..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Subheading</label>
-                  <input value={landingSubheading} onChange={(e) => setLandingSubheading(e.target.value)} placeholder="Supporting subheading..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Subheading</label>
+                  <input value={landingSubheading} onChange={(e) => setLandingSubheading(e.target.value)} placeholder="Supporting subheading..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Body</label>
-                  <textarea value={landingBody} onChange={(e) => setLandingBody(e.target.value)} rows={6} placeholder="Main content..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Body</label>
+                  <textarea value={landingBody} onChange={(e) => setLandingBody(e.target.value)} rows={6} placeholder="Main content..." className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">CTA</label>
-                  <input value={landingCta} onChange={(e) => setLandingCta(e.target.value)} placeholder="Get Started" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">CTA</label>
+                  <input value={landingCta} onChange={(e) => setLandingCta(e.target.value)} placeholder="Get Started" className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Form Fields (comma-separated)</label>
-                  <input value={landingFormFields} onChange={(e) => setLandingFormFields(e.target.value)} placeholder="Name, Email, Phone" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1">Form Fields (comma-separated)</label>
+                  <input value={landingFormFields} onChange={(e) => setLandingFormFields(e.target.value)} placeholder="Name, Email, Phone" className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
                 </div>
               </div>
             )}
 
-            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-100">
+            <div className="flex gap-3 mt-6 pt-4 border-t border-[var(--border)]">
               <button
                 onClick={handleGenerateAI}
                 className="px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100"
@@ -292,14 +292,14 @@ export default function BuilderPage() {
               <button
                 onClick={() => handleSave("DRAFT")}
                 disabled={saving}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+                className="px-4 py-2 bg-[var(--bg-base)] border border-[var(--border-strong)] text-[var(--text-secondary)] rounded-lg text-sm font-medium hover:bg-[var(--bg-hover)] disabled:opacity-50"
               >
                 {saving ? "Saving..." : "Save as Draft"}
               </button>
               <button
                 onClick={() => handleSave("SCHEDULED")}
                 disabled={saving}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent-hover)] disabled:opacity-50"
               >
                 Schedule
               </button>
@@ -307,21 +307,21 @@ export default function BuilderPage() {
           </div>
         )}
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="text-sm font-medium text-gray-900 mb-4">Recent Drafts</h2>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-sm font-medium text-[var(--text-primary)] mb-4">Recent Drafts</h2>
           {loading ? (
-            <p className="text-sm text-gray-400 text-center py-4">Loading...</p>
+            <p className="text-sm text-[var(--text-tertiary)] text-center py-4">Loading...</p>
           ) : drafts.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">No drafts yet. Select a template above to start creating.</p>
+            <p className="text-sm text-[var(--text-tertiary)] text-center py-4">No drafts yet. Select a template above to start creating.</p>
           ) : (
             <div className="space-y-2">
               {drafts.map((draft) => (
-                <div key={draft.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                <div key={draft.id} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{draft.key}</p>
-                    <p className="text-xs text-gray-500 capitalize">{draft.value?.templateType} - {draft.value?.status}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{draft.key}</p>
+                    <p className="text-xs text-[var(--text-secondary)] capitalize">{draft.value?.templateType} - {draft.value?.status}</p>
                   </div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-[var(--text-tertiary)]">
                     {draft.value?.createdAt ? new Date(draft.value.createdAt).toLocaleDateString() : ""}
                   </p>
                 </div>

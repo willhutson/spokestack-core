@@ -72,7 +72,7 @@ function formatPrice(pricing: ModulePricing): string {
 
 function pricingBadgeClasses(type: string): string {
   if (type === "free") return "bg-green-50 text-green-700";
-  if (type === "subscription") return "bg-indigo-50 text-indigo-700";
+  if (type === "subscription") return "bg-[var(--accent-subtle)] text-[var(--accent)]";
   return "bg-amber-50 text-amber-700";
 }
 
@@ -154,8 +154,8 @@ export default function BrowseModulesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">Browse Modules</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-lg font-semibold text-[var(--text-primary)]">Browse Modules</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Discover and install published modules from the community
           </p>
         </div>
@@ -165,11 +165,11 @@ export default function BrowseModulesPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search modules..."
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
           />
           <button
             type="submit"
-            className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="bg-[var(--accent)] text-[var(--primary-foreground)] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[var(--accent)] transition-colors"
           >
             Search
           </button>
@@ -184,8 +184,8 @@ export default function BrowseModulesPage() {
             onClick={() => handleCategoryChange(cat.key)}
             className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
               category === cat.key
-                ? "bg-indigo-100 text-indigo-700"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]"
             }`}
           >
             {cat.label}
@@ -194,15 +194,15 @@ export default function BrowseModulesPage() {
       </div>
 
       {/* Sort tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {SORT_TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => handleSortChange(tab.key)}
             className={`text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
               sort === tab.key
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-[var(--accent)] text-[var(--accent)]"
+                : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
             }`}
           >
             {tab.label}
@@ -221,15 +221,15 @@ export default function BrowseModulesPage() {
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-xl p-5 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
-              <div className="h-3 bg-gray-100 rounded w-full mb-2" />
-              <div className="h-3 bg-gray-100 rounded w-4/5 mb-4" />
+            <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 animate-pulse">
+              <div className="h-4 bg-[var(--bg-surface)] rounded w-2/3 mb-3" />
+              <div className="h-3 bg-[var(--bg-surface)] rounded w-full mb-2" />
+              <div className="h-3 bg-[var(--bg-surface)] rounded w-4/5 mb-4" />
               <div className="flex gap-2 mb-3">
-                <div className="h-5 bg-gray-100 rounded-full w-16" />
-                <div className="h-5 bg-gray-100 rounded-full w-12" />
+                <div className="h-5 bg-[var(--bg-surface)] rounded-full w-16" />
+                <div className="h-5 bg-[var(--bg-surface)] rounded-full w-12" />
               </div>
-              <div className="h-3 bg-gray-100 rounded w-1/2" />
+              <div className="h-3 bg-[var(--bg-surface)] rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -242,20 +242,20 @@ export default function BrowseModulesPage() {
             <div
               key={m.id}
               onClick={() => router.push(`/marketplace/${m.slug}`)}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full min-h-[180px]"
+              className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:shadow-md hover:border-[var(--accent)] transition-all cursor-pointer flex flex-col h-full min-h-[180px]"
             >
               {/* Header */}
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-sm font-semibold text-gray-900 leading-tight truncate">{m.name}</h3>
-                <span className="text-[10px] text-gray-400 font-mono shrink-0">v{m.version}</span>
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] leading-tight truncate">{m.name}</h3>
+                <span className="text-[10px] text-[var(--text-tertiary)] font-mono shrink-0">v{m.version}</span>
               </div>
 
               {/* Description — clamped */}
-              <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mb-3">{m.shortDescription}</p>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2 mb-3">{m.shortDescription}</p>
 
               {/* Tags — fixed row, no wrap overflow */}
               <div className="flex items-center gap-1.5 mb-auto">
-                <span className="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full capitalize shrink-0">
+                <span className="text-[10px] font-medium bg-[var(--bg-surface)] text-[var(--text-secondary)] px-2 py-0.5 rounded-full capitalize shrink-0">
                   {m.category}
                 </span>
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ${pricingBadgeClasses(m.pricing.type)}`}>
@@ -264,7 +264,7 @@ export default function BrowseModulesPage() {
               </div>
 
               {/* Footer — pinned bottom */}
-              <div className="flex items-center justify-between text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] mt-3 pt-3 border-t border-[var(--border)]">
                 <div className="flex items-center gap-1">
                   <div className="flex">{renderStars(m.avgRating)}</div>
                   <span>({m.reviewCount})</span>
@@ -284,7 +284,7 @@ export default function BrowseModulesPage() {
       {/* Empty state */}
       {!loading && !error && modules.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-sm text-gray-400">No modules match your search.</p>
+          <p className="text-sm text-[var(--text-tertiary)]">No modules match your search.</p>
         </div>
       )}
 
@@ -294,17 +294,17 @@ export default function BrowseModulesPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-base)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Previous
           </button>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-[var(--text-secondary)]">
             Page {pagination.page} of {pagination.pages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
             disabled={page >= pagination.pages}
-            className="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-base)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Next
           </button>

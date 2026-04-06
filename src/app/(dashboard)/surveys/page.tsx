@@ -46,7 +46,7 @@ const TEMPLATES: { name: string; questions: Question[] }[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-100 text-gray-600",
+  Draft: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   Active: "bg-green-100 text-green-700",
   Closed: "bg-red-100 text-red-600",
 };

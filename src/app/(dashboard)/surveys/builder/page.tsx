@@ -380,7 +380,7 @@ export default function SurveyBuilderPage() {
                       className={cn("w-9 h-5 rounded-full transition-colors relative",
                         selected.required ? "bg-[var(--accent)]" : "bg-[var(--border-strong)]"
                       )}>
-                      <span className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform shadow-sm",
+                      <span className={cn("absolute top-0.5 w-4 h-4 bg-[var(--bg-base)] rounded-full transition-transform shadow-sm",
                         selected.required ? "left-[18px]" : "left-0.5"
                       )} />
                     </button>

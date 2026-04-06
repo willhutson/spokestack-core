@@ -28,7 +28,7 @@ function roleBadge(role: string) {
     MEMBER: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
     VIEWER: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   };
-  return colors[role] ?? "bg-gray-100 text-[var(--text-secondary)]";
+  return colors[role] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]";
 }
 
 function getInitials(name?: string, email?: string): string {

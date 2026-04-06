@@ -13,13 +13,13 @@ interface SocialPost { key: string; content: string; platforms: string[]; schedu
 const PLATFORMS = ["Facebook", "LinkedIn", "Instagram", "X", "TikTok"];
 const PLAT_COLORS: Record<string, string> = {
   Facebook: "bg-blue-100 text-blue-700", LinkedIn: "bg-sky-100 text-sky-700",
-  Instagram: "bg-pink-100 text-pink-700", X: "bg-gray-200 text-gray-700", TikTok: "bg-purple-100 text-purple-700",
+  Instagram: "bg-pink-100 text-pink-700", X: "bg-[var(--bg-surface)] text-[var(--text-secondary)]", TikTok: "bg-purple-100 text-purple-700",
 };
 const PLAT_CAL_COLORS: Record<string, string> = {
   Facebook: "#3b82f6", LinkedIn: "#0ea5e9", Instagram: "#ec4899", X: "#6b7280", TikTok: "#a855f7",
 };
 const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-100 text-gray-600", Scheduled: "bg-blue-100 text-blue-700", Published: "bg-green-100 text-green-700",
+  Draft: "bg-[var(--bg-surface)] text-[var(--text-secondary)]", Scheduled: "bg-blue-100 text-blue-700", Published: "bg-green-100 text-green-700",
 };
 
 function parsePost(e: ContextEntry): SocialPost {
@@ -263,9 +263,9 @@ export default function SocialPublishingPage() {
       {/* Analytics Tab */}
       {!loading && tab === "analytics" && (
         <div>
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center mb-6">
+          <div className="bg-[var(--accent-subtle)] border border-[var(--accent)] rounded-xl p-6 text-center mb-6">
             <p className="text-sm text-indigo-800 font-medium mb-1">Coming soon</p>
-            <p className="text-xs text-indigo-600">Connect your social accounts to see engagement metrics.</p>
+            <p className="text-xs text-[var(--accent)]">Connect your social accounts to see engagement metrics.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[{ label: "Impressions", value: "--", desc: "Total reach across platforms" },

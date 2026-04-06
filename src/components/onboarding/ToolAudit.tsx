@@ -131,10 +131,10 @@ export default function ToolAudit({
   return (
     <div className="w-full space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)]">
           Quick Tool Audit
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           Tell us what you currently use. We&apos;ll map everything to SpokeStack
           for you.
         </p>
@@ -146,11 +146,11 @@ export default function ToolAudit({
           return (
             <div
               key={cat.id}
-              className="rounded-xl border border-gray-200 bg-white p-4 space-y-3"
+              className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)] p-4 space-y-3"
             >
               <div className="flex items-center gap-2">
                 <svg
-                  className="w-4 h-4 text-gray-400 shrink-0"
+                  className="w-4 h-4 text-[var(--text-tertiary)] shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -162,7 +162,7 @@ export default function ToolAudit({
                     d={cat.icon}
                   />
                 </svg>
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-[var(--text-primary)]">
                   {cat.label}
                 </span>
               </div>
@@ -175,7 +175,7 @@ export default function ToolAudit({
                   onChange={(e) =>
                     update(cat.id, "currentTool", e.target.value)
                   }
-                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="flex-1 rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 />
                 {(() => {
                   const mapping = entry.currentTool.trim()
@@ -187,7 +187,7 @@ export default function ToolAudit({
                       type="button"
                       disabled={connectingProvider === mapping.nangoProvider}
                       onClick={() => handleConnect(mapping.nangoProvider!)}
-                      className="shrink-0 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                      className="shrink-0 px-3 py-2 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] text-xs font-medium hover:bg-[var(--accent-subtle)] transition-colors disabled:opacity-50"
                     >
                       {connectingProvider === mapping.nangoProvider ? "Connecting..." : "Connect"}
                     </button>
@@ -202,7 +202,7 @@ export default function ToolAudit({
                     onChange={(e) =>
                       update(cat.id, "dataVolume", e.target.value)
                     }
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                   >
                     <option value="">How much data?</option>
                     {DATA_VOLUME_OPTIONS.map((o) => (
@@ -219,7 +219,7 @@ export default function ToolAudit({
                       update(cat.id, "painPoints", e.target.value)
                     }
                     rows={2}
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                    className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
                   />
                 </>
               )}
@@ -231,7 +231,7 @@ export default function ToolAudit({
       <button
         onClick={handleSubmit}
         disabled={isSubmitting || filledCount === 0}
-        className="w-full rounded-xl bg-indigo-600 text-white font-medium py-3 text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50"
+        className="w-full rounded-xl bg-[var(--accent)] text-[var(--primary-foreground)] font-medium py-3 text-sm hover:bg-[var(--accent)] transition-colors disabled:opacity-50"
       >
         {isSubmitting
           ? "Saving..."

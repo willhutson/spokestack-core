@@ -100,9 +100,9 @@ function OnboardingWizardInner() {
   const stepProps = { data, updateData };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* Step indicator */}
-      <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
+      <div className="border-b border-[var(--border)] bg-[var(--bg-base)] px-6 py-4">
         <div className="mx-auto flex max-w-4xl items-center gap-2">
           {STEPS.map((s, i) => (
             <div key={s.key} className="flex items-center gap-2">
@@ -111,10 +111,10 @@ function OnboardingWizardInner() {
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                   i === step
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
                     : i < step
-                      ? "bg-indigo-100 text-indigo-700"
-                      : "bg-gray-200 text-gray-500",
+                      ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                      : "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
                 )}
               >
                 {i + 1}
@@ -122,13 +122,13 @@ function OnboardingWizardInner() {
               <span
                 className={cn(
                   "hidden text-sm sm:block",
-                  i === step ? "font-semibold text-gray-900" : "text-gray-500",
+                  i === step ? "font-semibold text-[var(--text-primary)]" : "text-[var(--text-secondary)]",
                 )}
               >
                 {s.label}
               </span>
               {i < STEPS.length - 1 && (
-                <div className={cn("h-px w-6", i < step ? "bg-indigo-300" : "bg-gray-300")} />
+                <div className={cn("h-px w-6", i < step ? "bg-indigo-300" : "bg-[var(--bg-hover)]")} />
               )}
             </div>
           ))}
@@ -147,22 +147,22 @@ function OnboardingWizardInner() {
       </div>
 
       {/* Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-6 py-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg-base)] px-6 py-4">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <button
             onClick={prev}
             disabled={step === 0}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="rounded-lg border border-[var(--border-strong)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-base)] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Back
           </button>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-[var(--text-secondary)]">
             Step {step + 1} of {STEPS.length}
           </span>
           {step < STEPS.length - 1 ? (
             <button
               onClick={next}
-              className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+              className="rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--primary-foreground)] transition-colors hover:bg-[var(--accent)]"
             >
               Continue
             </button>

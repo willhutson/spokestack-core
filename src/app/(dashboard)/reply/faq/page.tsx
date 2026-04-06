@@ -22,7 +22,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Product: "bg-blue-100 text-blue-700",
   Pricing: "bg-emerald-100 text-emerald-700",
   Support: "bg-amber-100 text-amber-700",
-  General: "bg-gray-100 text-gray-600",
+  General: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
 };
 
 /* ------------------------------------------------------------------ */
@@ -94,7 +94,7 @@ export default function FaqPage() {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             FAQ library for quick, approved responses.
           </p>
         </div>
@@ -107,11 +107,11 @@ export default function FaqPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search FAQs..."
-            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shrink-0"
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] transition-colors shrink-0"
           >
             {showForm ? "Cancel" : "New FAQ"}
           </button>
@@ -119,20 +119,20 @@ export default function FaqPage() {
 
         {/* New FAQ Form */}
         {showForm && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-4">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 mb-6 space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                 Question
               </label>
               <input
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder="What is your return policy?"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                 Approved Answer
               </label>
               <textarea
@@ -140,18 +140,18 @@ export default function FaqPage() {
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Write the approved response..."
                 rows={3}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
               />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Category
                 </label>
                 <select
                   value={faqCategory}
                   onChange={(e) => setFaqCategory(e.target.value)}
-                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   {FAQ_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -163,7 +163,7 @@ export default function FaqPage() {
               <button
                 onClick={handleCreate}
                 disabled={!question.trim() || !answer.trim()}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
               >
                 Save FAQ
               </button>
@@ -177,15 +177,15 @@ export default function FaqPage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse"
               >
-                <div className="h-4 w-48 bg-gray-200 rounded mb-2" />
-                <div className="h-3 w-72 bg-gray-200 rounded" />
+                <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-2" />
+                <div className="h-3 w-72 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm">
+          <div className="text-center py-16 text-[var(--text-tertiary)] text-sm">
             {search ? "No FAQs match your search." : "No FAQs added yet."}
           </div>
         ) : (
@@ -195,7 +195,7 @@ export default function FaqPage() {
               return (
                 <div
                   key={faq.id}
-                  className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-all"
+                  className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border-strong)] transition-all"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
@@ -212,11 +212,11 @@ export default function FaqPage() {
                           {cat}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 line-clamp-2">
+                      <p className="text-sm text-[var(--text-secondary)] line-clamp-2">
                         {(faq.value.answer as string) || ""}
                       </p>
                     </div>
-                    <span className="text-xs text-gray-400 shrink-0">
+                    <span className="text-xs text-[var(--text-tertiary)] shrink-0">
                       Used {(faq.value.usageCount as number) ?? 0}x
                     </span>
                   </div>

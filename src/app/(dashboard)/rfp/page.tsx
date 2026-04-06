@@ -42,14 +42,14 @@ function StatCard({
   color?: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+      <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1">
         {label}
       </p>
       <p className={cn("text-2xl font-bold", color || "text-[var(--text-primary)]")}>
         {value}
       </p>
-      {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-[var(--text-tertiary)] mt-1">{sub}</p>}
     </div>
   );
 }
@@ -105,13 +105,13 @@ export default function RfpOverviewPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Request for Proposal tracking and management.
             </p>
           </div>
           <Link
             href="/briefs/new/rfp"
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] transition-colors"
           >
             New RFP
           </Link>
@@ -124,10 +124,10 @@ export default function RfpOverviewPage() {
             {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-5 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 animate-pulse"
               >
-                <div className="h-3 w-20 bg-gray-200 rounded mb-3" />
-                <div className="h-7 w-16 bg-gray-200 rounded" />
+                <div className="h-3 w-20 bg-[var(--bg-surface)] rounded mb-3" />
+                <div className="h-7 w-16 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
@@ -163,23 +163,23 @@ export default function RfpOverviewPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
               <Link
                 href="/rfp/active"
-                className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] hover:shadow-sm transition-all group"
               >
-                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                   Active RFPs
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[var(--text-secondary)] mt-1">
                   View and manage currently active proposals.
                 </p>
               </Link>
               <Link
                 href="/rfp/closed"
-                className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] hover:shadow-sm transition-all group"
               >
-                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                   Closed RFPs
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[var(--text-secondary)] mt-1">
                   Review won and lost proposals.
                 </p>
               </Link>
@@ -189,13 +189,13 @@ export default function RfpOverviewPage() {
             <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
               Recent RFPs
             </h2>
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
               {recent.length === 0 ? (
-                <div className="px-5 py-8 text-center text-xs text-gray-400">
+                <div className="px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                   No RFPs yet. Create one to get started.
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-[var(--border)]">
                   {recent.map((rfp) => {
                     const client =
                       rfp.clientName ||
@@ -205,13 +205,13 @@ export default function RfpOverviewPage() {
                     return (
                       <div
                         key={rfp.id}
-                        className="px-5 py-3 flex items-center gap-3 hover:bg-gray-50"
+                        className="px-5 py-3 flex items-center gap-3 hover:bg-[var(--bg-hover)]"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-[var(--text-primary)] truncate">
                             {rfp.title}
                           </p>
-                          <p className="text-xs text-gray-500">{client}</p>
+                          <p className="text-xs text-[var(--text-secondary)]">{client}</p>
                         </div>
                         {value > 0 && (
                           <p className="text-sm font-semibold text-[var(--text-primary)]">
@@ -227,7 +227,7 @@ export default function RfpOverviewPage() {
                               ? "bg-red-50 text-red-600"
                               : rfp.status === "SUBMITTED"
                               ? "bg-blue-50 text-blue-600"
-                              : "bg-gray-100 text-gray-600"
+                              : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                           )}
                         >
                           {rfp.status || "DRAFT"}

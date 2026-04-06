@@ -24,7 +24,7 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: string; bgColor: s
   instagram: { label: "Instagram", color: "text-pink-600", bgColor: "bg-pink-100", abbr: "IG" },
   tiktok: { label: "TikTok", color: "text-[var(--text-primary)]", bgColor: "bg-[var(--bg-surface)]", abbr: "TT" },
   linkedin: { label: "LinkedIn", color: "text-blue-700", bgColor: "bg-blue-100", abbr: "LI" },
-  twitter: { label: "Twitter/X", color: "text-gray-800", bgColor: "bg-[var(--bg-surface)]", abbr: "X" },
+  twitter: { label: "Twitter/X", color: "text-[var(--text-primary)]", bgColor: "bg-[var(--bg-surface)]", abbr: "X" },
   facebook: { label: "Facebook", color: "text-blue-600", bgColor: "bg-blue-100", abbr: "FB" },
 };
 

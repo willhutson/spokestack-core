@@ -79,7 +79,7 @@ export default function SurveyTemplatesPage() {
               <div key={t.id} className="border border-[var(--border)] rounded-xl p-5 hover:border-[var(--accent)] transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t.name}</h3>
-                  <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", CATEGORY_COLORS[t.category] ?? "bg-gray-100 text-gray-600")}>
+                  <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", CATEGORY_COLORS[t.category] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                     {t.category}
                   </span>
                 </div>

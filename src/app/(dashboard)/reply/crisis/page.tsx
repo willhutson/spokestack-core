@@ -108,7 +108,7 @@ export default function CrisisPage() {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Crisis management and escalation controls.
           </p>
         </div>
@@ -156,15 +156,15 @@ export default function CrisisPage() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse"
+                    className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse"
                   >
-                    <div className="h-4 w-48 bg-gray-200 rounded mb-2" />
-                    <div className="h-3 w-72 bg-gray-200 rounded" />
+                    <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-2" />
+                    <div className="h-3 w-72 bg-[var(--bg-surface)] rounded" />
                   </div>
                 ))}
               </div>
             ) : items.length === 0 ? (
-              <div className="text-center py-12 text-gray-400 text-sm bg-white border border-gray-200 rounded-xl">
+              <div className="text-center py-12 text-[var(--text-tertiary)] text-sm bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
                 No high-urgency items in queue.
               </div>
             ) : (
@@ -172,7 +172,7 @@ export default function CrisisPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white border border-red-200 rounded-xl p-4"
+                    className="bg-[var(--bg-base)] border border-red-200 rounded-xl p-4"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-2 h-2 rounded-full bg-red-500 mt-2 shrink-0" />
@@ -184,11 +184,11 @@ export default function CrisisPage() {
                           <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
                             HIGH
                           </span>
-                          <span className="text-xs text-gray-400 ml-auto">
+                          <span className="text-xs text-[var(--text-tertiary)] ml-auto">
                             {timeAgo(item.createdAt)}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">{item.key}</p>
+                        <p className="text-sm text-[var(--text-secondary)]">{item.key}</p>
                         <button
                           onClick={() => handleEscalate(item)}
                           className="mt-2 px-3 py-1 text-xs font-medium rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
@@ -210,15 +210,15 @@ export default function CrisisPage() {
               {PRE_APPROVED_TEMPLATES.map((tpl) => (
                 <div
                   key={tpl.name}
-                  className="bg-white border border-gray-200 rounded-xl p-4"
+                  className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4"
                 >
                   <h4 className="text-sm font-medium text-[var(--text-primary)] mb-1">
                     {tpl.name}
                   </h4>
-                  <p className="text-xs text-gray-500 line-clamp-2">
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2">
                     {tpl.text}
                   </p>
-                  <button className="mt-2 px-3 py-1 text-xs font-medium rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">
+                  <button className="mt-2 px-3 py-1 text-xs font-medium rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent-subtle)] transition-colors">
                     Use Template
                   </button>
                 </div>
@@ -231,19 +231,19 @@ export default function CrisisPage() {
             <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">
               Escalation Log
             </h3>
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
               {escalationLog.length === 0 ? (
-                <div className="px-5 py-8 text-center text-xs text-gray-400">
+                <div className="px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                   No escalations recorded.
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                <div className="divide-y divide-[var(--border)] max-h-96 overflow-y-auto">
                   {escalationLog.map((log, i) => (
                     <div key={i} className="px-4 py-3">
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-[var(--text-tertiary)]">
                         {new Date(log.time).toLocaleTimeString()}
                       </p>
-                      <p className="text-sm text-gray-700">{log.action}</p>
+                      <p className="text-sm text-[var(--text-secondary)]">{log.action}</p>
                     </div>
                   ))}
                 </div>

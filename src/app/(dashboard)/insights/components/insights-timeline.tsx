@@ -28,7 +28,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   projects: "text-purple-600 bg-purple-100",
   briefs: "text-amber-600 bg-amber-100",
   orders: "text-green-600 bg-green-100",
-  "cross-functional": "text-indigo-600 bg-indigo-100",
+  "cross-functional": "text-[var(--accent)] bg-[var(--accent-subtle)]",
 };
 
 export default function InsightsTimeline({
@@ -68,9 +68,9 @@ export default function InsightsTimeline({
   if (insights.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center mx-auto mb-4">
           <svg
-            className="w-8 h-8 text-indigo-400"
+            className="w-8 h-8 text-[var(--accent)]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -83,18 +83,18 @@ export default function InsightsTimeline({
             />
           </svg>
         </div>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-[var(--text-secondary)] mb-4">
           No insights yet. Run synthesis to generate your first weekly report.
         </p>
         <button
           onClick={triggerSynthesis}
           disabled={synthesizing}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
         >
           {synthesizing ? "Generating..." : "Generate Insights Now"}
         </button>
         {message && (
-          <p className="mt-3 text-sm text-gray-600">{message}</p>
+          <p className="mt-3 text-sm text-[var(--text-secondary)]">{message}</p>
         )}
       </div>
     );
@@ -104,52 +104,52 @@ export default function InsightsTimeline({
     <div>
       <div className="flex justify-end mb-4 gap-3 items-center">
         {message && (
-          <p className="text-sm text-indigo-600">{message}</p>
+          <p className="text-sm text-[var(--accent)]">{message}</p>
         )}
         <button
           onClick={triggerSynthesis}
           disabled={synthesizing}
-          className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 bg-[var(--accent-subtle)] text-[var(--accent)] rounded-lg text-sm font-medium hover:bg-[var(--bg-hover)] disabled:opacity-50 transition-colors"
         >
           {synthesizing ? "Generating..." : "Refresh Insights"}
         </button>
       </div>
 
-      <ol className="relative border-l border-gray-200 space-y-6 ml-3">
+      <ol className="relative border-l border-[var(--border)] space-y-6 ml-3">
         {insights.map((entry) => {
           const val = entry.value;
           const colorClass =
             CATEGORY_COLORS[val.sourceCategory] ??
-            "text-gray-600 bg-gray-100";
+            "text-[var(--text-secondary)] bg-[var(--bg-surface)]";
           return (
             <li key={entry.id} className="ml-6">
-              <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 ring-8 ring-white">
+              <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent-subtle)] ring-8 ring-[var(--bg-base)]">
                 <svg
-                  className="h-3 w-3 text-indigo-600"
+                  className="h-3 w-3 text-[var(--accent)]"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                 </svg>
               </span>
-              <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)] p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-1.5">
                   <span
                     className={`text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full ${colorClass}`}
                   >
                     {val.sourceCategory}
                   </span>
-                  <time className="text-xs text-gray-400">
+                  <time className="text-xs text-[var(--text-tertiary)]">
                     {new Date(val.generatedAt).toLocaleDateString()}
                   </time>
                 </div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">
                   {val.title}
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                   {val.body}
                 </p>
-                <p className="mt-2 text-xs text-gray-400">
+                <p className="mt-2 text-xs text-[var(--text-tertiary)]">
                   Based on {val.sourceEntryCount} activity entries
                   &middot; Confidence{" "}
                   {Math.round((entry.confidence ?? 0.7) * 100)}%

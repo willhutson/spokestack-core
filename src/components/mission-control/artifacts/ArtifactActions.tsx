@@ -71,7 +71,7 @@ function ActionButton({
     <button
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900",
+        "inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] px-2.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]",
         className,
       )}
     >
@@ -121,7 +121,7 @@ export function ArtifactActions({ artifact, onClose }: ArtifactActionsProps) {
   }, [artifact]);
 
   return (
-    <div className="flex items-center gap-2 border-b border-gray-200 px-4 py-3">
+    <div className="flex items-center gap-2 border-b border-[var(--border)] px-4 py-3">
       <div className="flex flex-1 flex-wrap items-center gap-2">
         <ActionButton icon="📥" label="JSON" onClick={handleDownloadJson} />
         <ActionButton icon="📄" label="Text" onClick={handleDownloadText} />
@@ -135,7 +135,7 @@ export function ArtifactActions({ artifact, onClose }: ArtifactActionsProps) {
       </div>
       <button
         onClick={onClose}
-        className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+        className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--text-tertiary)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-secondary)]"
         aria-label="Close artifact panel"
       >
         <svg

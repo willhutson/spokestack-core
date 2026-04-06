@@ -39,8 +39,8 @@ export function Step5Team({ data, updateData }: StepProps) {
 
   return (
     <div>
-      <h2 className="mb-1 text-xl font-bold text-gray-900">Team Members</h2>
-      <p className="mb-6 text-sm text-gray-500">
+      <h2 className="mb-1 text-xl font-bold text-[var(--text-primary)]">Team Members</h2>
+      <p className="mb-6 text-sm text-[var(--text-secondary)]">
         Add team members to invite. They will receive an email invitation.
       </p>
 
@@ -51,7 +51,7 @@ export function Step5Team({ data, updateData }: StepProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Full name"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-indigo-500"
+          className="rounded-lg border border-[var(--border-strong)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
         />
         <input
           type="email"
@@ -59,13 +59,13 @@ export function Step5Team({ data, updateData }: StepProps) {
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addMember()}
           placeholder="Email address"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-indigo-500"
+          className="rounded-lg border border-[var(--border-strong)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
         />
         {roles.length > 0 && (
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-indigo-500"
+            className="rounded-lg border border-[var(--border-strong)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
           >
             <option value="">Role</option>
             {roles.map((r) => (
@@ -76,7 +76,7 @@ export function Step5Team({ data, updateData }: StepProps) {
         <button
           onClick={addMember}
           disabled={!name.trim() || !email.trim()}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+          className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] hover:bg-[var(--accent)] disabled:opacity-40"
         >
           Add
         </button>
@@ -84,20 +84,20 @@ export function Step5Team({ data, updateData }: StepProps) {
 
       {/* Team list */}
       {team.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 py-8 text-center">
-          <p className="text-sm text-gray-500">No team members added yet.</p>
-          <p className="text-xs text-gray-400 mt-1">You can always invite people later.</p>
+        <div className="rounded-lg border border-dashed border-[var(--border-strong)] py-8 text-center">
+          <p className="text-sm text-[var(--text-secondary)]">No team members added yet.</p>
+          <p className="text-xs text-[var(--text-tertiary)] mt-1">You can always invite people later.</p>
         </div>
       ) : (
         <div className="space-y-2">
           {team.map((member, i) => (
-            <div key={i} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-medium text-indigo-700">
+            <div key={i} className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg-base)] px-4 py-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--accent-subtle)] text-sm font-medium text-[var(--accent)]">
                 {member.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{member.name}</p>
-                <p className="text-xs text-gray-500 truncate">{member.email}{member.role ? ` · ${member.role}` : ""}</p>
+                <p className="text-sm font-medium text-[var(--text-primary)] truncate">{member.name}</p>
+                <p className="text-xs text-[var(--text-secondary)] truncate">{member.email}{member.role ? ` · ${member.role}` : ""}</p>
               </div>
               <button
                 onClick={() => removeMember(i)}
@@ -109,7 +109,7 @@ export function Step5Team({ data, updateData }: StepProps) {
               </button>
             </div>
           ))}
-          <p className="text-xs text-gray-400 mt-2">{team.length} member{team.length !== 1 ? "s" : ""} added</p>
+          <p className="text-xs text-[var(--text-tertiary)] mt-2">{team.length} member{team.length !== 1 ? "s" : ""} added</p>
         </div>
       )}
     </div>

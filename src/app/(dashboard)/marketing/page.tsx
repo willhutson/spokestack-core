@@ -90,14 +90,14 @@ export default function MarketingOverviewPage() {
       <div className="p-6">
         <MarketingNav />
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-gray-900">Marketing Overview</h1>
-          <p className="text-sm text-gray-500">Your marketing command center.</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Marketing Overview</h1>
+          <p className="text-sm text-[var(--text-secondary)]">Your marketing command center.</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-6">
           {summaryCards.map((card) => (
-            <div key={card.label} className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-sm text-gray-500">{card.label}</p>
+            <div key={card.label} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+              <p className="text-sm text-[var(--text-secondary)]">{card.label}</p>
               <p className={cn("text-2xl font-bold mt-1", card.color)}>{card.value}</p>
             </div>
           ))}
@@ -108,20 +108,20 @@ export default function MarketingOverviewPage() {
             <a
               key={link.href}
               href={link.href}
-              className="bg-white border border-gray-200 rounded-xl p-4 hover:border-indigo-300 hover:shadow-sm transition-all"
+              className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 hover:border-indigo-300 hover:shadow-sm transition-all"
             >
-              <h3 className="text-sm font-medium text-gray-900">{link.label}</h3>
-              <p className="text-xs text-gray-500 mt-1">{link.description}</p>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{link.label}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{link.description}</p>
             </a>
           ))}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="text-sm font-medium text-gray-900 mb-4">Recent Activity</h2>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-sm font-medium text-[var(--text-primary)] mb-4">Recent Activity</h2>
           {loading ? (
-            <p className="text-sm text-gray-400 py-4 text-center">Loading...</p>
+            <p className="text-sm text-[var(--text-tertiary)] py-4 text-center">Loading...</p>
           ) : recentActivity.length === 0 ? (
-            <p className="text-sm text-gray-400 py-4 text-center">
+            <p className="text-sm text-[var(--text-tertiary)] py-4 text-center">
               No recent activity. Start by adding creators or creating campaigns.
             </p>
           ) : (
@@ -129,13 +129,13 @@ export default function MarketingOverviewPage() {
               {recentActivity.map((entry) => (
                 <div
                   key={entry.id}
-                  className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{entry.key}</p>
-                    <p className="text-xs text-gray-500 capitalize">{entry.category}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{entry.key}</p>
+                    <p className="text-xs text-[var(--text-secondary)] capitalize">{entry.category}</p>
                   </div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-[var(--text-tertiary)]">
                     {new Date(entry.updatedAt).toLocaleDateString()}
                   </p>
                 </div>

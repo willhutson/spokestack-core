@@ -101,7 +101,7 @@ function NewLibraryForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name *</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Library name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Library name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
           </div>
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Type</label>

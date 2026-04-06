@@ -74,7 +74,7 @@ export function MessageList({ messages, streamingContent, streamingAgentType, me
               <div
                 className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm",
-                  agent ? `bg-gradient-to-br ${agent.color} text-white` : "bg-gray-700 text-gray-300",
+                  agent ? `bg-gradient-to-br ${agent.color} text-white` : "bg-gray-700 text-[var(--text-tertiary)]",
                 )}
               >
                 {agent?.icon ?? "🤖"}
@@ -85,16 +85,16 @@ export function MessageList({ messages, streamingContent, streamingAgentType, me
                 className={cn(
                   "rounded-2xl px-4 py-3 text-sm leading-relaxed",
                   isUser
-                    ? "bg-indigo-600 text-white rounded-br-md"
-                    : "bg-gray-800 text-gray-100 rounded-bl-md",
+                    ? "bg-[var(--accent)] text-[var(--primary-foreground)] rounded-br-md"
+                    : "bg-[var(--bg-surface)] text-gray-100 rounded-bl-md",
                 )}
               >
                 {msg.role === "system" ? (
-                  <p className="text-xs text-gray-400 italic">{displayContent}</p>
+                  <p className="text-xs text-[var(--text-tertiary)] italic">{displayContent}</p>
                 ) : (
                   <div className="whitespace-pre-wrap">{displayContent}</div>
                 )}
-                <p className={cn("mt-1 text-[10px]", isUser ? "text-indigo-300" : "text-gray-500")}>
+                <p className={cn("mt-1 text-[10px]", isUser ? "text-indigo-300" : "text-[var(--text-secondary)]")}>
                   {formatTime(msg.createdAt)}
                 </p>
               </div>
@@ -121,12 +121,12 @@ export function MessageList({ messages, streamingContent, streamingAgentType, me
               "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm",
               streamingAgentType && AGENTS[streamingAgentType]
                 ? `bg-gradient-to-br ${AGENTS[streamingAgentType].color} text-white`
-                : "bg-gray-700 text-gray-300",
+                : "bg-gray-700 text-[var(--text-tertiary)]",
             )}
           >
             {(streamingAgentType && AGENTS[streamingAgentType]?.icon) ?? "🤖"}
           </div>
-          <div className="max-w-[70%] rounded-2xl rounded-bl-md bg-gray-800 px-4 py-3 text-sm leading-relaxed text-gray-100">
+          <div className="max-w-[70%] rounded-2xl rounded-bl-md bg-[var(--bg-surface)] px-4 py-3 text-sm leading-relaxed text-gray-100">
             {streamingContent ? (
               <div className="whitespace-pre-wrap">{streamingContent}</div>
             ) : (

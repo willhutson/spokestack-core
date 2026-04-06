@@ -63,25 +63,25 @@ function AddJournalistForm({ onCreated, onCancel }: { onCreated: () => void; onC
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-[var(--text-primary)]">Add Journalist</h2>
-        <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+        <button onClick={onCancel} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Journalist name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Outlet</label>
-            <input value={outlet} onChange={e => setOutlet(e.target.value)} placeholder="e.g. Gulf News" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Beat</label>
-            <input value={beat} onChange={e => setBeat(e.target.value)} placeholder="e.g. Technology" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@outlet.com" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name *</label>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Journalist name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Outlet</label>
+            <input value={outlet} onChange={e => setOutlet(e.target.value)} placeholder="e.g. Gulf News" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Beat</label>
+            <input value={beat} onChange={e => setBeat(e.target.value)} placeholder="e.g. Technology" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@outlet.com" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
-          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
             {submitting ? "Adding..." : "Add Journalist"}
           </button>
         </div>
@@ -130,11 +130,11 @@ export default function MediaRelationsPage() {
   }, 0), [coverage]);
 
   const Skeleton = () => (
-    <div className="animate-pulse bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
       {[1, 2, 3].map(i => (
-        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-gray-100 last:border-b-0">
-          <div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-4 w-40 bg-gray-200 rounded" />
-          <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-[var(--border)] last:border-b-0">
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded" /><div className="h-4 w-40 bg-[var(--bg-surface)] rounded" />
+          <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full ml-auto" />
         </div>
       ))}
     </div>
@@ -151,40 +151,40 @@ export default function MediaRelationsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Media Relations</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage journalist contacts, pitches, and coverage tracking.</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Manage journalist contacts, pitches, and coverage tracking.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me with media relations strategy and journalist outreach.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Ask Agent</button>
+          <button onClick={() => openChatWithContext("Help me with media relations strategy and journalist outreach.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Ask Agent</button>
           {tab === "journalists" && !showForm && (
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Add Journalist</button>
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">Add Journalist</button>
           )}
         </div>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Journalists</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Journalists</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{journalists.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Media Lists</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Media Lists</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{mediaLists.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Active Pitches</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Active Pitches</p>
           <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{pitches.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Total AVE</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Total AVE</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{fmtAED(totalAVE)}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {TAB_LABELS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>
             {t.label}
           </button>
         ))}
@@ -197,29 +197,29 @@ export default function MediaRelationsPage() {
           {/* Journalists */}
           {tab === "journalists" && (
             journalists.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No journalists yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Add journalist contacts to build your media database.</p>
-                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Journalist</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Add journalist contacts to build your media database.</p>
+                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add Journalist</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
-                  <thead><tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Name</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Outlet</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Beat</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Email</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Added</th>
+                  <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Name</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Outlet</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Beat</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Email</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Added</th>
                   </tr></thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {journalists.map(j => { const d = parseVal(j.value); return (
-                      <tr key={j.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={j.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                         <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{j.key}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.outlet as string) || "-"}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.beat as string) || "-"}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.email as string) || "-"}</td>
-                        <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(j.createdAt)}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.outlet as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.beat as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.email as string) || "-"}</td>
+                        <td className="px-5 py-4 text-right text-xs text-[var(--text-secondary)]">{fmtDate(j.createdAt)}</td>
                       </tr>
                     ); })}
                   </tbody>
@@ -231,18 +231,18 @@ export default function MediaRelationsPage() {
           {/* Media Lists */}
           {tab === "media_lists" && (
             mediaLists.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No media lists yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Create curated lists of media contacts for targeted outreach.</p>
-                <button onClick={() => openChatWithContext("Create a new media list for targeted journalist outreach.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Media List</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create curated lists of media contacts for targeted outreach.</p>
+                <button onClick={() => openChatWithContext("Create a new media list for targeted journalist outreach.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Create Media List</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mediaLists.map(ml => { const d = parseVal(ml.value); return (
-                  <div key={ml.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+                  <div key={ml.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                     <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{ml.key}</h3>
-                    <p className="text-xs text-gray-500 mb-3">{(d.description as string) || "No description"}</p>
-                    <div className="flex items-center justify-between text-xs text-gray-400">
+                    <p className="text-xs text-[var(--text-secondary)] mb-3">{(d.description as string) || "No description"}</p>
+                    <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
                       <span>{(d.count as number) || 0} contacts</span>
                       <span>{fmtDate(ml.createdAt)}</span>
                     </div>
@@ -255,25 +255,25 @@ export default function MediaRelationsPage() {
           {/* Pitches */}
           {tab === "pitches" && (
             pitches.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No pitches yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Draft media pitches to send to journalists.</p>
-                <button onClick={() => openChatWithContext("Help me draft a media pitch for journalist outreach.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Draft Pitch</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Draft media pitches to send to journalists.</p>
+                <button onClick={() => openChatWithContext("Help me draft a media pitch for journalist outreach.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Draft Pitch</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
-                  <thead><tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Title</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Status</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Created</th>
+                  <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Title</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Status</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Created</th>
                   </tr></thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {pitches.map(p => (
-                      <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={p.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                         <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{p.title}</td>
                         <td className="px-5 py-4"><StatusBadge status={p.status} /></td>
-                        <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(p.createdAt)}</td>
+                        <td className="px-5 py-4 text-right text-xs text-[var(--text-secondary)]">{fmtDate(p.createdAt)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -285,29 +285,29 @@ export default function MediaRelationsPage() {
           {/* Coverage */}
           {tab === "coverage" && (
             coverage.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No coverage tracked yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Track media mentions and calculate advertising value equivalent.</p>
-                <button onClick={() => openChatWithContext("Help me log a media coverage hit and calculate its AVE.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Log Coverage</button>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Track media mentions and calculate advertising value equivalent.</p>
+                <button onClick={() => openChatWithContext("Help me log a media coverage hit and calculate its AVE.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Log Coverage</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
-                  <thead><tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Headline</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Outlet</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Type</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">AVE (AED)</th>
-                    <th className="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Date</th>
+                  <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Headline</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Outlet</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Type</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">AVE (AED)</th>
+                    <th className="text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Date</th>
                   </tr></thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {coverage.map(c => { const d = parseVal(c.value); return (
-                      <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={c.id} className="hover:bg-[var(--bg-hover)] transition-colors">
                         <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{c.key}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.outlet as string) || "-"}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.type as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.outlet as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.type as string) || "-"}</td>
                         <td className="px-5 py-4 text-right text-sm font-medium text-emerald-600">{fmtAED(Number(d.ave) || 0)}</td>
-                        <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(c.createdAt)}</td>
+                        <td className="px-5 py-4 text-right text-xs text-[var(--text-secondary)]">{fmtDate(c.createdAt)}</td>
                       </tr>
                     ); })}
                   </tbody>

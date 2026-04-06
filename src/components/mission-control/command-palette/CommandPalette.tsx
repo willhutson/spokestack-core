@@ -67,12 +67,12 @@ export function CommandPalette({ open, query, items, onQueryChange, onSelect, on
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-lg rounded-xl border border-gray-700 bg-gray-900 shadow-2xl"
+        className="w-full max-w-lg rounded-xl border border-gray-700 bg-[var(--bg-base)] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search */}
         <div className="flex items-center gap-3 border-b border-gray-800 px-4 py-3">
-          <svg className="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-4 w-4 text-[var(--text-secondary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
@@ -82,9 +82,9 @@ export function CommandPalette({ open, query, items, onQueryChange, onSelect, on
             onChange={(e) => onQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search chats, agents, actions..."
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-500 outline-none"
+            className="flex-1 bg-transparent text-sm text-white placeholder:text-[var(--text-secondary)] outline-none"
           />
-          <kbd className="rounded border border-gray-700 bg-gray-800 px-1.5 py-0.5 text-[10px] text-gray-500">
+          <kbd className="rounded border border-gray-700 bg-[var(--bg-surface)] px-1.5 py-0.5 text-[10px] text-[var(--text-secondary)]">
             ESC
           </kbd>
         </div>
@@ -92,11 +92,11 @@ export function CommandPalette({ open, query, items, onQueryChange, onSelect, on
         {/* Results */}
         <div className="max-h-80 overflow-y-auto py-2">
           {items.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-gray-500">No results found</p>
+            <p className="px-4 py-6 text-center text-sm text-[var(--text-secondary)]">No results found</p>
           ) : (
             Object.entries(grouped).map(([type, groupItems]) => (
               <div key={type}>
-                <p className="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                <p className="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                   {TYPE_LABELS[type] ?? type}
                 </p>
                 {groupItems.map((item) => {
@@ -108,18 +108,18 @@ export function CommandPalette({ open, query, items, onQueryChange, onSelect, on
                       onClick={() => onSelect(item)}
                       className={cn(
                         "flex w-full items-center gap-3 px-4 py-2 text-left transition-colors",
-                        idx === selectedIndex ? "bg-gray-800" : "hover:bg-gray-800/50",
+                        idx === selectedIndex ? "bg-[var(--bg-surface)]" : "hover:bg-[var(--bg-surface)]/50",
                       )}
                     >
                       {item.icon && <span className="text-base">{item.icon}</span>}
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm text-gray-200">{item.title}</p>
                         {item.subtitle && (
-                          <p className="truncate text-xs text-gray-500">{item.subtitle}</p>
+                          <p className="truncate text-xs text-[var(--text-secondary)]">{item.subtitle}</p>
                         )}
                       </div>
                       {item.shortcut && (
-                        <kbd className="rounded border border-gray-700 bg-gray-800 px-1.5 py-0.5 text-[10px] text-gray-500">
+                        <kbd className="rounded border border-gray-700 bg-[var(--bg-surface)] px-1.5 py-0.5 text-[10px] text-[var(--text-secondary)]">
                           {item.shortcut}
                         </kbd>
                       )}

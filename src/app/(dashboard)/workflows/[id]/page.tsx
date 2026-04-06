@@ -109,16 +109,16 @@ export default function WorkflowDetailPage() {
 
   return (
     <ModuleLayoutShell moduleType="WORKFLOWS">
-      <div className="p-6 h-full flex flex-col bg-white">
+      <div className="p-6 h-full flex flex-col bg-[var(--bg-base)]">
         <WorkflowsNav />
 
         {loading && (
           <div className="space-y-4 animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3" />
-            <div className="h-4 bg-gray-200 rounded w-2/3" />
+            <div className="h-8 bg-[var(--bg-surface)] rounded w-1/3" />
+            <div className="h-4 bg-[var(--bg-surface)] rounded w-2/3" />
             <div className="grid grid-cols-3 gap-4 mt-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-24 bg-gray-100 rounded-xl" />
+                <div key={i} className="h-24 bg-[var(--bg-surface)] rounded-xl" />
               ))}
             </div>
           </div>
@@ -127,8 +127,8 @@ export default function WorkflowDetailPage() {
         {error && (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">{error}</h2>
-              <Link href="/workflows" className="text-sm text-indigo-600 hover:underline">
+              <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">{error}</h2>
+              <Link href="/workflows" className="text-sm text-[var(--accent)] hover:underline">
                 Back to workflows
               </Link>
             </div>
@@ -141,15 +141,15 @@ export default function WorkflowDetailPage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <h1 className="text-2xl font-bold text-gray-900">{canvas.name}</h1>
+                  <h1 className="text-2xl font-bold text-[var(--text-primary)]">{canvas.name}</h1>
                   <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700">
                     Active
                   </span>
                 </div>
                 {canvas.description && (
-                  <p className="text-sm text-gray-500">{canvas.description}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">{canvas.description}</p>
                 )}
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-[var(--text-tertiary)] mt-1">
                   Created {new Date(canvas.createdAt).toLocaleDateString()} ·
                   Updated {new Date(canvas.updatedAt).toLocaleDateString()}
                 </p>
@@ -161,13 +161,13 @@ export default function WorkflowDetailPage() {
                     await fetch(`/api/v1/canvas/${id}/run`, { method: "POST", headers: { ...h, "Content-Type": "application/json" } });
                     window.location.reload();
                   }}
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent)] transition-colors"
                 >
                   Run Now
                 </button>
                 <button
                   onClick={() => router.push(`/workflows?edit=${id}`)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] border border-[var(--border-strong)] rounded-lg hover:bg-[var(--bg-base)] transition-colors"
                 >
                   Edit
                 </button>
@@ -183,21 +183,21 @@ export default function WorkflowDetailPage() {
 
             {/* Stats cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Nodes</p>
-                <p className="text-2xl font-bold text-gray-900">{canvas.nodes.length}</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Nodes</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{canvas.nodes.length}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Edges</p>
-                <p className="text-2xl font-bold text-gray-900">{canvas.edges.length}</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Edges</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{canvas.edges.length}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Total Runs</p>
-                <p className="text-2xl font-bold text-gray-900">0</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Total Runs</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">0</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Success Rate</p>
-                <p className="text-2xl font-bold text-gray-900">&mdash;</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Success Rate</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">&mdash;</p>
               </div>
             </div>
 
@@ -205,7 +205,7 @@ export default function WorkflowDetailPage() {
             <div className="mb-6">
               <Link
                 href={`/workflows/runs?workflowId=${canvas.id}`}
-                className="text-sm text-indigo-600 hover:underline font-medium"
+                className="text-sm text-[var(--accent)] hover:underline font-medium"
               >
                 View run history for this workflow &rarr;
               </Link>
@@ -213,7 +213,7 @@ export default function WorkflowDetailPage() {
 
             {/* Node list */}
             <div>
-              <h2 className="text-sm font-semibold text-gray-900 mb-3">
+              <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
                 Nodes ({canvas.nodes.length})
               </h2>
               <div className="space-y-2">
@@ -222,27 +222,27 @@ export default function WorkflowDetailPage() {
                   .map((node, idx) => (
                     <div
                       key={node.id}
-                      className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors"
+                      className="flex items-center gap-3 bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 hover:border-[var(--border-strong)] transition-colors"
                     >
-                      <span className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-base">
+                      <span className="flex-shrink-0 w-8 h-8 bg-[var(--bg-surface)] rounded-lg flex items-center justify-center text-base">
                         {NODE_ICONS[node.type] || "\u2B24"}
                       </span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <span className="text-xs text-gray-400 font-mono">#{idx + 1}</span>
-                          <span className="text-sm font-medium text-gray-900">{node.label}</span>
-                          <span className="px-1.5 py-0.5 text-xs rounded bg-gray-100 text-gray-600">
+                          <span className="text-xs text-[var(--text-tertiary)] font-mono">#{idx + 1}</span>
+                          <span className="text-sm font-medium text-[var(--text-primary)]">{node.label}</span>
+                          <span className="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-surface)] text-[var(--text-secondary)]">
                             {node.type}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className="text-xs text-[var(--text-secondary)] truncate">
                           {configSummary(node.config)}
                         </p>
                       </div>
                     </div>
                   ))}
                 {canvas.nodes.length === 0 && (
-                  <p className="text-sm text-gray-400 py-4 text-center">No nodes in this workflow</p>
+                  <p className="text-sm text-[var(--text-tertiary)] py-4 text-center">No nodes in this workflow</p>
                 )}
               </div>
             </div>

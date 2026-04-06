@@ -160,7 +160,7 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
               className={cn(
                 "w-full text-left p-3 rounded-lg border transition-colors",
                 i === currentSlide
-                  ? "border-indigo-500 bg-[var(--accent-subtle)]"
+                  ? "border-[var(--accent)] bg-[var(--accent-subtle)]"
                   : "border-[var(--border)] bg-[var(--bg-base)] hover:border-[var(--border-strong)]"
               )}
             >
