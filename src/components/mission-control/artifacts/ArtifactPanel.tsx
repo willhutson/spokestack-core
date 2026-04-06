@@ -19,7 +19,7 @@ export function ArtifactPanel({ artifact, onClose }: ArtifactPanelProps) {
   return (
     <div
       className={cn(
-        "relative flex h-full shrink-0 flex-col overflow-hidden border-l border-gray-200 bg-white transition-all duration-300",
+        "relative flex h-full shrink-0 flex-col overflow-hidden border-l border-[var(--border)] bg-[var(--bg-base)] transition-all duration-300",
         artifact ? "w-[480px]" : "w-0 border-l-0",
       )}
     >

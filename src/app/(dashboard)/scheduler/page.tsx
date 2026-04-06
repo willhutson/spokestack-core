@@ -164,14 +164,14 @@ export default function SchedulerCalendarPage() {
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Scheduler</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Scheduler</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Manage appointments and schedule.
             </p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] transition-colors"
           >
             {showForm ? "Cancel" : "New Appointment"}
           </button>
@@ -181,49 +181,49 @@ export default function SchedulerCalendarPage() {
 
         {/* New Appointment Form */}
         {showForm && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-4">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 mb-6 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Title
                 </label>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Meeting with client"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Date
                 </label>
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Time
                 </label>
                 <input
                   type="time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Duration
                 </label>
                 <select
                   value={duration}
                   onChange={(e) => setDuration(Number(e.target.value))}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   <option value={15}>15 min</option>
                   <option value={30}>30 min</option>
@@ -236,7 +236,7 @@ export default function SchedulerCalendarPage() {
               <button
                 onClick={handleCreate}
                 disabled={!title.trim() || !date}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
               >
                 Save Appointment
               </button>
@@ -249,24 +249,24 @@ export default function SchedulerCalendarPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={prevMonth}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors"
             >
               Prev
             </button>
             <button
               onClick={goToday}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors"
             >
               Today
             </button>
             <button
               onClick={nextMonth}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors"
             >
               Next
             </button>
           </div>
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             {MONTH_NAMES[month]} {year}
           </h2>
         </div>
@@ -275,17 +275,17 @@ export default function SchedulerCalendarPage() {
           {/* Calendar Grid */}
           <div className="lg:col-span-3">
             {loading ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-8 animate-pulse">
-                <div className="h-64 bg-gray-100 rounded" />
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 animate-pulse">
+                <div className="h-64 bg-[var(--bg-surface)] rounded" />
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 {/* Day Headers */}
-                <div className="grid grid-cols-7 border-b border-gray-100">
+                <div className="grid grid-cols-7 border-b border-[var(--border)]">
                   {DAY_HEADERS.map((d) => (
                     <div
                       key={d}
-                      className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase"
+                      className="px-2 py-2 text-center text-xs font-medium text-[var(--text-secondary)] uppercase"
                     >
                       {d}
                     </div>
@@ -301,10 +301,10 @@ export default function SchedulerCalendarPage() {
                         onClick={() => day && setSelectedDay(day)}
                         disabled={!day}
                         className={cn(
-                          "min-h-[80px] p-1 border-b border-r border-gray-100 text-left transition-colors",
-                          day ? "hover:bg-indigo-50" : "",
+                          "min-h-[80px] p-1 border-b border-r border-[var(--border)] text-left transition-colors",
+                          day ? "hover:bg-[var(--accent-subtle)]" : "",
                           selectedDay === day && day
-                            ? "bg-indigo-50"
+                            ? "bg-[var(--accent-subtle)]"
                             : ""
                         )}
                       >
@@ -314,8 +314,8 @@ export default function SchedulerCalendarPage() {
                               className={cn(
                                 "inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium",
                                 isToday(day)
-                                  ? "bg-indigo-600 text-white"
-                                  : "text-gray-700"
+                                  ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
+                                  : "text-[var(--text-secondary)]"
                               )}
                             >
                               {day}
@@ -325,13 +325,13 @@ export default function SchedulerCalendarPage() {
                                 {dayAppts.slice(0, 2).map((a) => (
                                   <div
                                     key={a.id}
-                                    className="px-1 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 truncate"
+                                    className="px-1 py-0.5 rounded text-xs font-medium bg-[var(--accent-subtle)] text-[var(--accent)] truncate"
                                   >
                                     {a.key}
                                   </div>
                                 ))}
                                 {dayAppts.length > 2 && (
-                                  <span className="text-xs text-gray-400 px-1">
+                                  <span className="text-xs text-[var(--text-tertiary)] px-1">
                                     +{dayAppts.length - 2} more
                                   </span>
                                 )}
@@ -349,14 +349,14 @@ export default function SchedulerCalendarPage() {
 
           {/* Day Detail Panel */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
               {selectedDay
                 ? `${MONTH_NAMES[month]} ${selectedDay}`
                 : "Select a day"}
             </h3>
             {selectedDay ? (
               selectedAppointments.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-xl px-5 py-8 text-center text-xs text-gray-400">
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                   No appointments.
                 </div>
               ) : (
@@ -364,17 +364,17 @@ export default function SchedulerCalendarPage() {
                   {selectedAppointments.map((a) => (
                     <div
                       key={a.id}
-                      className="bg-white border border-gray-200 rounded-xl p-3"
+                      className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-3"
                     >
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-[var(--text-primary)]">
                         {a.key}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">
                         {(a.value.time as string) || "09:00"} --{" "}
                         {(a.value.duration as number) || 60} min
                       </p>
                       {(a.value.location as string) && (
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
                           {a.value.location as string}
                         </p>
                       )}
@@ -383,7 +383,7 @@ export default function SchedulerCalendarPage() {
                 </div>
               )
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl px-5 py-8 text-center text-xs text-gray-400">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                 Click a day to view appointments.
               </div>
             )}

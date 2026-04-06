@@ -42,7 +42,7 @@ const STAGES = [
 ] as const;
 
 const STAGE_COLORS: Record<string, string> = {
-  LEAD: "bg-gray-100 border-gray-300 text-gray-700",
+  LEAD: "bg-[var(--bg-surface)] border-[var(--border-strong)] text-[var(--text-secondary)]",
   QUALIFIED: "bg-blue-50 border-blue-300 text-blue-700",
   PROPOSAL: "bg-purple-50 border-purple-300 text-purple-700",
   NEGOTIATION: "bg-yellow-50 border-yellow-300 text-yellow-700",
@@ -51,7 +51,7 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const STAGE_COLUMN_BG: Record<string, string> = {
-  LEAD: "bg-gray-50 border-gray-200",
+  LEAD: "bg-[var(--bg-base)] border-[var(--border)]",
   QUALIFIED: "bg-blue-50/50 border-blue-200",
   PROPOSAL: "bg-purple-50/50 border-purple-200",
   NEGOTIATION: "bg-yellow-50/50 border-yellow-200",
@@ -128,12 +128,12 @@ function AddDealForm({
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">New Deal</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Deal</h2>
         <button
           onClick={onCancel}
-          className="text-xs text-gray-400 hover:text-gray-600"
+          className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
         >
           Cancel
         </button>
@@ -141,7 +141,7 @@ function AddDealForm({
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Deal Name *
             </label>
             <Input
@@ -151,7 +151,7 @@ function AddDealForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Company
             </label>
             <Input
@@ -161,7 +161,7 @@ function AddDealForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Value (AED)
             </label>
             <Input
@@ -174,7 +174,7 @@ function AddDealForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Stage
             </label>
             <select
@@ -190,7 +190,7 @@ function AddDealForm({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Assigned To
             </label>
             <Input
@@ -200,7 +200,7 @@ function AddDealForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Close Date
             </label>
             <Input
@@ -210,7 +210,7 @@ function AddDealForm({
             />
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
           <Button type="submit" disabled={submitting}>
             {submitting ? "Creating..." : "Create Deal"}
@@ -226,18 +226,18 @@ function AddDealForm({
 /* ------------------------------------------------------------------ */
 function DealCard({ deal }: { deal: DealEntry }) {
   return (
-    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <div className="bg-[var(--bg-base)] rounded-lg p-3 shadow-sm border border-[var(--border)] hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-1">
-        <h4 className="text-xs font-semibold text-gray-900 truncate flex-1">
+        <h4 className="text-xs font-semibold text-[var(--text-primary)] truncate flex-1">
           {deal.key}
         </h4>
       </div>
       {deal.value.company && (
-        <p className="text-xs text-gray-500 mb-2 truncate">
+        <p className="text-xs text-[var(--text-secondary)] mb-2 truncate">
           {deal.value.company}
         </p>
       )}
-      <p className="text-sm font-bold text-gray-900 mb-2">
+      <p className="text-sm font-bold text-[var(--text-primary)] mb-2">
         {fmtCurrency(deal.value.value || 0)}
       </p>
       <div className="flex items-center justify-between">
@@ -251,7 +251,7 @@ function DealCard({ deal }: { deal: DealEntry }) {
           {fmtStage(deal.value.stage || "LEAD")}
         </Badge>
         {deal.value.closeDate && (
-          <span className="text-[10px] text-gray-400">
+          <span className="text-[10px] text-[var(--text-tertiary)]">
             {new Date(deal.value.closeDate).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -344,10 +344,10 @@ export default function DealsPage() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Deals</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Deals</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Track your pipeline across stages.{" "}
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-[var(--text-secondary)]">
                 Pipeline: {fmtCurrency(totalPipeline)}
               </span>
             </p>
@@ -374,22 +374,22 @@ export default function DealsPage() {
             {STAGES.map((s) => (
               <div
                 key={s}
-                className="min-w-[220px] flex-1 rounded-xl border bg-gray-50 p-3 animate-pulse"
+                className="min-w-[220px] flex-1 rounded-xl border bg-[var(--bg-base)] p-3 animate-pulse"
               >
-                <div className="h-4 w-20 bg-gray-200 rounded mb-4" />
+                <div className="h-4 w-20 bg-[var(--bg-surface)] rounded mb-4" />
                 <div className="space-y-2">
-                  <div className="h-20 bg-gray-200 rounded-lg" />
-                  <div className="h-20 bg-gray-200 rounded-lg" />
+                  <div className="h-20 bg-[var(--bg-surface)] rounded-lg" />
+                  <div className="h-20 bg-[var(--bg-surface)] rounded-lg" />
                 </div>
               </div>
             ))}
           </div>
         ) : deals.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
               No deals yet
             </h3>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-[var(--text-secondary)] mb-4">
               Create your first deal to start tracking your pipeline.
             </p>
             <Button variant="outline" onClick={() => setShowForm(true)}>
@@ -409,14 +409,14 @@ export default function DealsPage() {
                 className={cn(
                   "min-w-[220px] flex-1 rounded-xl border p-3 transition-colors",
                   STAGE_COLUMN_BG[stage],
-                  snapshot.isDraggingOver && "ring-2 ring-indigo-400"
+                  snapshot.isDraggingOver && "ring-2 ring-[var(--accent)]"
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                     {fmtStage(stage)}
                   </h3>
-                  <span className="text-xs text-gray-500 font-medium bg-white rounded-full px-2 py-0.5">
+                  <span className="text-xs text-[var(--text-secondary)] font-medium bg-[var(--bg-base)] rounded-full px-2 py-0.5">
                     {pipeline[stage]?.length ?? 0}
                   </span>
                 </div>
@@ -428,7 +428,7 @@ export default function DealsPage() {
                           ref={dragProvided.innerRef}
                           {...dragProvided.draggableProps}
                           {...dragProvided.dragHandleProps}
-                          className={dragSnapshot.isDragging ? "shadow-lg ring-2 ring-indigo-300 rounded-lg" : ""}
+                          className={dragSnapshot.isDragging ? "shadow-lg ring-2 ring-[var(--accent)] rounded-lg" : ""}
                         >
                           <DealCard deal={deal} />
                         </div>
@@ -437,7 +437,7 @@ export default function DealsPage() {
                   ))}
                   {provided.placeholder}
                   {(pipeline[stage] ?? []).length === 0 && (
-                    <p className="text-xs text-gray-400 text-center py-4">
+                    <p className="text-xs text-[var(--text-tertiary)] text-center py-4">
                       No deals
                     </p>
                   )}

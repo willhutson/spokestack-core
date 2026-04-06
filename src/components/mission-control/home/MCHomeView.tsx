@@ -44,13 +44,13 @@ export function MCHomeView({ onCreateChat }: MCHomeViewProps) {
         <h1 className="mb-2 text-3xl font-bold text-white">
           Mission Control
         </h1>
-        <p className="mb-6 text-gray-400">
+        <p className="mb-6 text-[var(--text-tertiary)]">
           Start a conversation with any agent or pick a quick action below.
         </p>
 
         {/* Onboarding nudge */}
         {onboardingComplete === false && (
-          <div className="mb-8 rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 text-left">
+          <div className="mb-8 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 p-5 text-left">
             <div className="flex items-start gap-3">
               <span className="text-2xl">🚀</span>
               <div className="flex-1">
@@ -65,13 +65,13 @@ export function MCHomeView({ onCreateChat }: MCHomeViewProps) {
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => onCreateChat?.("onboarding")}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition-colors"
+                    className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] hover:bg-[var(--accent)] transition-colors"
                   >
                     Talk to Onboarding Agent
                   </button>
                   <button
                     onClick={() => router.push("/admin/onboarding")}
-                    className="rounded-lg border border-indigo-500/30 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/10 transition-colors"
+                    className="rounded-lg border border-[var(--accent)]/30 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-[var(--accent)]/10 transition-colors"
                   >
                     Setup Wizard
                   </button>
@@ -87,10 +87,10 @@ export function MCHomeView({ onCreateChat }: MCHomeViewProps) {
             <button
               key={action.agentType}
               onClick={() => onCreateChat?.(action.agentType)}
-              className="flex flex-col items-center gap-2 rounded-xl border border-gray-800 bg-gray-900 px-4 py-5 transition-colors hover:border-indigo-500/50 hover:bg-gray-800"
+              className="flex flex-col items-center gap-2 rounded-xl border border-gray-800 bg-[var(--bg-base)] px-4 py-5 transition-colors hover:border-[var(--accent)]/50 hover:bg-[var(--bg-surface)]"
             >
               <span className="text-2xl">{action.icon}</span>
-              <span className="text-sm font-medium text-gray-300">
+              <span className="text-sm font-medium text-[var(--text-tertiary)]">
                 {action.label}
               </span>
             </button>
@@ -98,7 +98,7 @@ export function MCHomeView({ onCreateChat }: MCHomeViewProps) {
         </div>
 
         {/* Agent cards */}
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
+        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
           Available Agents
         </h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -108,14 +108,14 @@ export function MCHomeView({ onCreateChat }: MCHomeViewProps) {
               <button
                 key={agent.type}
                 onClick={() => onCreateChat?.(agent.type)}
-                className="flex items-center gap-3 rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-3 text-left transition-colors hover:border-gray-600 hover:bg-gray-800/50"
+                className="flex items-center gap-3 rounded-lg border border-gray-800 bg-[var(--bg-base)]/50 px-3 py-3 text-left transition-colors hover:border-gray-600 hover:bg-[var(--bg-surface)]/50"
               >
                 <span className="text-lg">{agent.icon}</span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-gray-200">
                     {agent.name}
                   </p>
-                  <p className="truncate text-[11px] text-gray-500">
+                  <p className="truncate text-[11px] text-[var(--text-secondary)]">
                     {agent.description}
                   </p>
                 </div>

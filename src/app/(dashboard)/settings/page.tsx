@@ -262,10 +262,10 @@ export default function SettingsPage() {
 
   return (
     <div className="p-6 max-w-3xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Settings</h1>
+      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Settings</h1>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-[var(--border)] mb-6">
         <nav className="flex gap-6">
           {TABS.map((tab) => (
             <button
@@ -273,8 +273,8 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.key)}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.key
-                  ? "border-indigo-600 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
+                  ? "border-[var(--accent)] text-[var(--accent)]"
+                  : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
               {tab.label}
@@ -287,7 +287,7 @@ export default function SettingsPage() {
       {activeTab === "general" && (
         <div className="space-y-6">
           {orgLoading ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-5">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 space-y-5">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-10 w-full max-w-md" />
               <Skeleton className="h-4 w-24" />
@@ -298,10 +298,10 @@ export default function SettingsPage() {
           ) : orgError && !org ? (
             <ErrorMsg message={orgError} />
           ) : org ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-5">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 space-y-5">
               {orgError && <ErrorMsg message={orgError} />}
               <div>
-                <label htmlFor="org-name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="org-name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Organization Name
                 </label>
                 <input
@@ -309,19 +309,19 @@ export default function SettingsPage() {
                   type="text"
                   value={org.name}
                   onChange={(e) => setOrg({ ...org, name: e.target.value })}
-                  className="w-full max-w-md border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full max-w-md border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label htmlFor="org-tz" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="org-tz" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Timezone
                 </label>
                 <select
                   id="org-tz"
                   value={org.timezone}
                   onChange={(e) => setOrg({ ...org, timezone: e.target.value })}
-                  className="w-full max-w-md border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full max-w-md border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 >
                   {TIMEZONES.map((tz) => (
                     <option key={tz} value={tz}>{tz}</option>
@@ -330,14 +330,14 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label htmlFor="org-lang" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="org-lang" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Language
                 </label>
                 <select
                   id="org-lang"
                   value={org.language}
                   onChange={(e) => setOrg({ ...org, language: e.target.value })}
-                  className="w-full max-w-md border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full max-w-md border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 >
                   {LANGUAGES.map((lang) => (
                     <option key={lang.code} value={lang.code}>{lang.label}</option>
@@ -349,7 +349,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSaveOrg}
                   disabled={saving}
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -366,7 +366,7 @@ export default function SettingsPage() {
       {activeTab === "billing" && (
         <div className="space-y-6">
           {billingLoading ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
               <Skeleton className="h-4 w-32 mb-3" />
               <Skeleton className="h-8 w-24 mb-2" />
               <Skeleton className="h-3 w-48" />
@@ -374,24 +374,24 @@ export default function SettingsPage() {
           ) : billingError ? (
             <ErrorMsg message={billingError} />
           ) : billing ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Current Plan</h3>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">Current Plan</h3>
+                  <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">
                     {billing.tier.charAt(0).toUpperCase() + billing.tier.slice(1).toLowerCase()}
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                     Status: <span className="capitalize">{billing.status}</span>
                   </p>
                 </div>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors">
+                <button className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-hover)] transition-colors">
                   Upgrade
                 </button>
               </div>
 
-              <div className="border-t border-gray-200 pt-4 space-y-3">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Available Plans</h4>
+              <div className="border-t border-[var(--border)] pt-4 space-y-3">
+                <h4 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Available Plans</h4>
                 {planCards.map((plan) => {
                   const planKey = plan.key ?? plan.name.toUpperCase();
                   const isCurrent = billing.tier.toUpperCase() === planKey.toUpperCase();
@@ -399,18 +399,18 @@ export default function SettingsPage() {
                     <div
                       key={plan.name}
                       className={`flex items-center justify-between py-2 px-3 rounded-lg ${
-                        isCurrent ? "bg-indigo-50 border border-indigo-200" : ""
+                        isCurrent ? "bg-[var(--accent-subtle)] border border-[var(--accent)]" : ""
                       }`}
                     >
                       <div>
-                        <span className="text-sm font-medium text-gray-900">{plan.name}</span>
-                        <span className="text-sm text-gray-500 ml-2">{plan.price}</span>
-                        <p className="text-xs text-gray-400">{plan.features}</p>
+                        <span className="text-sm font-medium text-[var(--text-primary)]">{plan.name}</span>
+                        <span className="text-sm text-[var(--text-secondary)] ml-2">{plan.price}</span>
+                        <p className="text-xs text-[var(--text-tertiary)]">{plan.features}</p>
                       </div>
                       {isCurrent ? (
-                        <span className="text-xs font-medium text-indigo-600">Current</span>
+                        <span className="text-xs font-medium text-[var(--accent)]">Current</span>
                       ) : (
-                        <button className="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+                        <button className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors">
                           Select
                         </button>
                       )}
@@ -429,7 +429,7 @@ export default function SettingsPage() {
           {teamLoading ? (
             <div className="space-y-4">
               <Skeleton className="h-4 w-40" />
-              <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 space-y-4">
                 <Skeleton className="h-12 w-full" />
                 <Skeleton className="h-12 w-full" />
               </div>
@@ -440,10 +440,10 @@ export default function SettingsPage() {
             <>
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Team Members</h3>
-                  <p className="text-xs text-gray-500">{teamMembers.length} member{teamMembers.length !== 1 ? "s" : ""}</p>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">Team Members</h3>
+                  <p className="text-xs text-[var(--text-secondary)]">{teamMembers.length} member{teamMembers.length !== 1 ? "s" : ""}</p>
                 </div>
-                <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
@@ -451,34 +451,34 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <div className="divide-y divide-gray-100">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
+                <div className="divide-y divide-[var(--border)]">
                   {teamMembers.map((member) => {
                     const isYou = member.email === currentUserEmail;
                     return (
                       <div key={member.id} className="px-5 py-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-medium text-indigo-600">
+                          <div className="w-9 h-9 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center text-sm font-medium text-[var(--accent)]">
                             {member.name ? member.name.charAt(0).toUpperCase() : member.email.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-[var(--text-primary)]">
                               {member.name || member.email}
                               {isYou && (
-                                <span className="ml-1.5 text-xs font-normal text-gray-400">(you)</span>
+                                <span className="ml-1.5 text-xs font-normal text-[var(--text-tertiary)]">(you)</span>
                               )}
                             </p>
-                            <p className="text-xs text-gray-500">{member.email}</p>
+                            <p className="text-xs text-[var(--text-secondary)]">{member.email}</p>
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full capitalize">
+                        <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] px-2.5 py-1 rounded-full capitalize">
                           {member.role}
                         </span>
                       </div>
                     );
                   })}
                   {teamMembers.length === 0 && (
-                    <div className="px-5 py-8 text-center text-sm text-gray-400">
+                    <div className="px-5 py-8 text-center text-sm text-[var(--text-tertiary)]">
                       No team members found.
                     </div>
                   )}
@@ -497,13 +497,13 @@ export default function SettingsPage() {
       {/* Integrations */}
       {activeTab === "integrations" && (
         <div className="space-y-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[var(--text-secondary)]">
             Connect your favorite tools. Integrations give your agents additional context.
           </p>
           {integrationsLoading ? (
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
+                <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
                   <Skeleton className="h-10 w-full mb-3" />
                   <Skeleton className="h-4 w-24" />
                 </div>
@@ -516,15 +516,15 @@ export default function SettingsPage() {
               {integrations.map((int) => (
                 <div
                   key={int.id}
-                  className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between"
+                  className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-600">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-surface)] flex items-center justify-center text-sm font-bold text-[var(--text-secondary)]">
                       {int.icon}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{int.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-[var(--text-primary)]">{int.name}</p>
+                      <p className="text-xs text-[var(--text-secondary)]">
                         {int.connected ? "Connected" : "Not connected"}
                       </p>
                     </div>
@@ -541,7 +541,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => handleConnect(int.id)}
                       disabled={connectingId === int.id}
-                      className="text-xs font-medium px-3 py-1.5 rounded-md transition-colors text-indigo-600 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50"
+                      className="text-xs font-medium px-3 py-1.5 rounded-md transition-colors text-[var(--accent)] bg-[var(--accent-subtle)] hover:bg-[var(--bg-hover)] disabled:opacity-50"
                     >
                       {connectingId === int.id ? "..." : "Connect"}
                     </button>
@@ -550,7 +550,7 @@ export default function SettingsPage() {
               ))}
               {integrations.length === 0 && (
                 <div className="col-span-2 space-y-4">
-                  <p className="text-center text-sm text-gray-400 py-4">
+                  <p className="text-center text-sm text-[var(--text-tertiary)] py-4">
                     No integrations connected yet. Connect tools to sync data with SpokeStack.
                   </p>
                   <div className="grid grid-cols-2 gap-2">
@@ -558,11 +558,11 @@ export default function SettingsPage() {
                       <button
                         key={name}
                         onClick={() => handleConnect(name.toLowerCase().replace(/\s+/g, "-"))}
-                        className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 rounded-lg border border-[var(--border)] p-3 text-sm hover:bg-[var(--bg-hover)] transition-colors"
                       >
-                        <span className="w-2 h-2 rounded-full bg-gray-300" />
-                        <span className="text-gray-700">{name}</span>
-                        <span className="ml-auto text-xs text-indigo-600">Connect</span>
+                        <span className="w-2 h-2 rounded-full bg-[var(--text-tertiary)]" />
+                        <span className="text-[var(--text-primary)]">{name}</span>
+                        <span className="ml-auto text-xs text-[var(--accent)]">Connect</span>
                       </button>
                     ))}
                   </div>

@@ -30,8 +30,8 @@ export function Step2Modules({ data, updateData }: StepProps) {
 
   return (
     <div>
-      <h2 className="mb-1 text-xl font-bold text-gray-900">Modules</h2>
-      <p className="mb-6 text-sm text-gray-500">
+      <h2 className="mb-1 text-xl font-bold text-[var(--text-primary)]">Modules</h2>
+      <p className="mb-6 text-sm text-[var(--text-secondary)]">
         Choose the modules you want to activate. You can always add more later.
       </p>
 
@@ -44,21 +44,21 @@ export function Step2Modules({ data, updateData }: StepProps) {
               onClick={() => toggle(mod.id)}
               className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-colors ${
                 active
-                  ? "border-indigo-500 bg-indigo-50"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                  ? "border-[var(--accent)] bg-[var(--accent-subtle)]"
+                  : "border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-base)]"
               }`}
             >
               <span className="text-2xl">{mod.icon}</span>
               <div>
-                <p className={`text-sm font-semibold ${active ? "text-indigo-700" : "text-gray-900"}`}>
+                <p className={`text-sm font-semibold ${active ? "text-[var(--accent)]" : "text-[var(--text-primary)]"}`}>
                   {mod.name}
                 </p>
-                <p className="text-xs text-gray-500">{mod.description}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{mod.description}</p>
               </div>
               <div className="ml-auto mt-0.5">
                 <div
                   className={`h-5 w-5 rounded-md border-2 flex items-center justify-center ${
-                    active ? "border-indigo-500 bg-indigo-500" : "border-gray-300"
+                    active ? "border-[var(--accent)] bg-[var(--accent)]" : "border-[var(--border-strong)]"
                   }`}
                 >
                   {active && (

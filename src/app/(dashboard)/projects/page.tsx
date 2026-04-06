@@ -108,29 +108,29 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Projects</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Manage workflows, timelines, and milestones
           </p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
         >
           {showForm ? "Cancel" : "+ New Project"}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreateProject} className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-3">
+        <form onSubmit={handleCreateProject} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 mb-6 space-y-3">
           {formError && <p className="text-sm text-red-600">{formError}</p>}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Project name *" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            <input type="text" value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Description (optional)" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            <input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            <input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Project name *" className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <input type="text" value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Description (optional)" className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
           </div>
-          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
             {submitting ? "Creating..." : "Create Project"}
           </button>
         </form>
@@ -138,13 +138,13 @@ export default function ProjectsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="text-sm text-gray-400">Loading projects...</div>
+          <div className="text-sm text-[var(--text-tertiary)]">Loading projects...</div>
         </div>
       ) : projects.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <div className="w-12 h-12 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-[var(--text-tertiary)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -157,10 +157,10 @@ export default function ProjectsPage() {
               />
             </svg>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 mb-1">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
             No projects yet
           </h3>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-[var(--text-secondary)] mb-4">
             Create your first project to start managing workflows and
             timelines.
           </p>
@@ -171,22 +171,22 @@ export default function ProjectsPage() {
             <div
               key={project.id}
               onClick={() => router.push(`/projects/${project.id}`)}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between gap-2 mb-3">
-                <h3 className="text-base font-bold text-gray-900 line-clamp-1">
+                <h3 className="text-base font-bold text-[var(--text-primary)] line-clamp-1">
                   {project.name}
                 </h3>
                 <StatusBadge status={project.status} />
               </div>
 
               {project.description && (
-                <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                <p className="text-xs text-[var(--text-secondary)] mb-3 line-clamp-2">
                   {project.description}
                 </p>
               )}
 
-              <div className="flex items-center gap-3 text-xs text-gray-500">
+              <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)]">
                 {project.startDate && project.endDate && (
                   <span className="flex items-center gap-1">
                     <svg

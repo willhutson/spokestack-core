@@ -26,7 +26,7 @@ interface RecipeDetail {
 
 const NODE_TYPE_COLORS: Record<string, string> = {
   START: "bg-emerald-100 text-emerald-700",
-  END: "bg-gray-100 text-gray-700",
+  END: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   ACTION: "bg-blue-100 text-blue-700",
   CONDITION: "bg-amber-100 text-amber-700",
   DELAY: "bg-purple-100 text-purple-700",
@@ -93,7 +93,7 @@ export default function RecipeDetailPage({
     return (
       <ModuleLayoutShell moduleType="WORKFLOWS">
         <div className="flex items-center justify-center py-20">
-          <p className="text-sm text-gray-400">Loading recipe...</p>
+          <p className="text-sm text-[var(--text-tertiary)]">Loading recipe...</p>
         </div>
       </ModuleLayoutShell>
     );
@@ -103,10 +103,10 @@ export default function RecipeDetailPage({
     return (
       <ModuleLayoutShell moduleType="WORKFLOWS">
         <div className="p-6">
-          <p className="text-sm text-gray-500">Recipe not found.</p>
+          <p className="text-sm text-[var(--text-secondary)]">Recipe not found.</p>
           <button
             onClick={() => router.push("/canvas/recipes")}
-            className="mt-4 text-sm text-indigo-600 hover:text-indigo-700"
+            className="mt-4 text-sm text-[var(--accent)] hover:text-[var(--accent)]"
           >
             &larr; Back to Recipes
           </button>
@@ -121,71 +121,71 @@ export default function RecipeDetailPage({
         {/* Back link */}
         <button
           onClick={() => router.push("/canvas/recipes")}
-          className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+          className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-secondary)] mb-4 inline-block"
         >
           &larr; Back to Recipes
         </button>
 
         {/* Header */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{recipe.name}</h1>
-              <p className="text-sm text-gray-500 mt-1">{recipe.description}</p>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">{recipe.name}</h1>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">{recipe.description}</p>
             </div>
-            <span className="text-xs font-medium px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+            <span className="text-xs font-medium px-2.5 py-1 bg-[var(--accent-subtle)] text-[var(--accent)] rounded-full">
               {recipe.category}
             </span>
           </div>
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+          <div className="flex items-center gap-4 text-sm text-[var(--text-secondary)] mb-4">
             <span>{recipe.nodeCount} nodes</span>
             <span>{recipe.setupTime} setup</span>
           </div>
           <button
             onClick={handleInstall}
             disabled={installing}
-            className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="px-5 py-2.5 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
           >
             {installing ? "Installing..." : "Install This Recipe"}
           </button>
         </div>
 
         {/* Workflow Steps */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Workflow Steps
           </h2>
           <div className="space-y-3">
             {recipe.nodes.map((node, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                className="flex items-center gap-3 p-3 bg-[var(--bg-base)] rounded-lg"
               >
-                <span className="text-xs font-bold text-gray-400 w-6 text-center">
+                <span className="text-xs font-bold text-[var(--text-tertiary)] w-6 text-center">
                   {idx + 1}
                 </span>
                 <span
                   className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    NODE_TYPE_COLORS[node.type] ?? "bg-gray-100 text-gray-700"
+                    NODE_TYPE_COLORS[node.type] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                   }`}
                 >
                   {node.type}
                 </span>
-                <span className="text-sm text-gray-700">{node.label}</span>
+                <span className="text-sm text-[var(--text-secondary)]">{node.label}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Required Configuration */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Required Configuration
           </h2>
           <ul className="space-y-2">
             {recipe.requiredConfig.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-indigo-500 mt-0.5 shrink-0">&bull;</span>
+              <li key={idx} className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+                <span className="text-[var(--accent)] mt-0.5 shrink-0">&bull;</span>
                 {item}
               </li>
             ))}

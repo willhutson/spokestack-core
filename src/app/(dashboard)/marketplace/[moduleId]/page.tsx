@@ -235,9 +235,9 @@ export default function MarketplaceModuleDetailPage() {
     return (
       <div className="max-w-3xl mx-auto p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-48" />
-          <div className="h-4 bg-gray-200 rounded w-96" />
-          <div className="h-64 bg-gray-100 rounded-xl" />
+          <div className="h-6 bg-[var(--bg-surface)] rounded w-48" />
+          <div className="h-4 bg-[var(--bg-surface)] rounded w-96" />
+          <div className="h-64 bg-[var(--bg-surface)] rounded-xl" />
         </div>
       </div>
     );
@@ -247,7 +247,7 @@ export default function MarketplaceModuleDetailPage() {
 
   function PricingBadge() {
     if (!published) {
-      if (legacy?.price) return <span className="text-xs text-gray-500">{aed.format(legacy.price / 100)}/mo</span>;
+      if (legacy?.price) return <span className="text-xs text-[var(--text-secondary)]">{aed.format(legacy.price / 100)}/mo</span>;
       return <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Free</span>;
     }
     const p = published.pricing;
@@ -255,7 +255,7 @@ export default function MarketplaceModuleDetailPage() {
       return <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Free</span>;
     }
     const amount = p.monthlyPriceCents ?? p.priceCents ?? 0;
-    return <span className="text-xs text-gray-600">{aed.format(amount / 100)}{p.monthlyPriceCents ? "/mo" : ""}</span>;
+    return <span className="text-xs text-[var(--text-secondary)]">{aed.format(amount / 100)}{p.monthlyPriceCents ? "/mo" : ""}</span>;
   }
 
   /* ── rating distribution ────────────────────────────────────── */
@@ -267,10 +267,10 @@ export default function MarketplaceModuleDetailPage() {
     return (
       <div className="space-y-1">
         {[5, 4, 3, 2, 1].map((star) => (
-          <div key={star} className="flex items-center gap-2 text-xs text-gray-500">
+          <div key={star} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
             <span className="w-4 text-right">{star}</span>
             <span className="text-amber-400">★</span>
-            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="flex-1 h-2 bg-[var(--bg-surface)] rounded-full overflow-hidden">
               <div className="h-full bg-amber-400 rounded-full" style={{ width: `${(counts[star - 1] / max) * 100}%` }} />
             </div>
             <span className="w-6 text-right">{counts[star - 1]}</span>
@@ -295,7 +295,7 @@ export default function MarketplaceModuleDetailPage() {
       {/* Back */}
       <button
         onClick={() => router.push("/marketplace")}
-        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-secondary)] transition-colors"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -307,18 +307,18 @@ export default function MarketplaceModuleDetailPage() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            <h1 className="text-xl font-semibold text-gray-900">{name}</h1>
+            <h1 className="text-xl font-semibold text-[var(--text-primary)]">{name}</h1>
             {version && (
-              <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">v{version}</span>
+              <span className="text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] px-2 py-0.5 rounded-full">v{version}</span>
             )}
             {category && (
-              <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">{category}</span>
+              <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">{category}</span>
             )}
             {industry && (
               <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">{industry}</span>
             )}
           </div>
-          <p className="text-sm text-gray-500">{published?.shortDescription ?? description}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{published?.shortDescription ?? description}</p>
         </div>
 
         {/* Install / Uninstall */}
@@ -339,7 +339,7 @@ export default function MarketplaceModuleDetailPage() {
             <button
               onClick={handleInstall}
               disabled={isInstalling}
-              className="rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] px-4 py-2 text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
             >
               {isInstalling ? "Installing..." : "Install"}
             </button>
@@ -348,15 +348,15 @@ export default function MarketplaceModuleDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-gray-200">
+      <div className="flex gap-1 border-b border-[var(--border)]">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === t.key
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-[var(--accent)] text-[var(--accent)]"
+                : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
             }`}
           >
             {t.label}
@@ -368,45 +368,45 @@ export default function MarketplaceModuleDetailPage() {
       {activeTab === "overview" && (
         <div className="space-y-6">
           {/* Description */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <h2 className="text-sm font-semibold text-gray-900 mb-2">Description</h2>
-            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{description}</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Description</h2>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">{description}</p>
           </div>
 
           {/* Stats row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-              <p className="text-xs text-gray-400 mb-1">Pricing</p>
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">Pricing</p>
               <PricingBadge />
             </div>
             {published && (
               <>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-400 mb-1">Installs</p>
-                  <p className="text-sm font-semibold text-gray-900">{published.installCount.toLocaleString()}</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Installs</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{published.installCount.toLocaleString()}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-400 mb-1">Avg Rating</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Avg Rating</p>
                   <div className="flex items-center justify-center gap-1">
                     <Stars rating={published.avgRating} size="text-sm" />
-                    <span className="text-xs text-gray-500">({published.reviewCount})</span>
+                    <span className="text-xs text-[var(--text-secondary)]">({published.reviewCount})</span>
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-400 mb-1">Publisher</p>
-                  <p className="text-xs text-gray-600 truncate">{published.publisherOrgId}</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Publisher</p>
+                  <p className="text-xs text-[var(--text-secondary)] truncate">{published.publisherOrgId}</p>
                 </div>
               </>
             )}
             {legacy && !published && (
               <>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-400 mb-1">Min Tier</p>
-                  <p className="text-sm font-semibold text-gray-900">{legacy.minTier}</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Min Tier</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{legacy.minTier}</p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-400 mb-1">Agent</p>
-                  <p className="text-sm font-semibold text-gray-900">{legacy.agentName}</p>
+                <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Agent</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{legacy.agentName}</p>
                 </div>
               </>
             )}
@@ -428,24 +428,24 @@ export default function MarketplaceModuleDetailPage() {
         <div className="space-y-4">
           {published?.tools && published.tools.length > 0 ? (
             published.tools.map((tool) => (
-              <div key={tool.name} className="bg-white border border-gray-200 rounded-xl p-5">
+              <div key={tool.name} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-semibold text-gray-900">{tool.name}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">{tool.name}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] bg-[var(--accent-subtle)] px-1.5 py-0.5 rounded">
                     {tool.method}
                   </span>
-                  <code className="text-xs text-gray-400">{tool.path}</code>
+                  <code className="text-xs text-[var(--text-tertiary)]">{tool.path}</code>
                 </div>
-                <p className="text-sm text-gray-600 mb-3">{tool.description}</p>
+                <p className="text-sm text-[var(--text-secondary)] mb-3">{tool.description}</p>
                 {tool.parameters && tool.parameters.length > 0 && (
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-gray-500 mb-1">Parameters</p>
+                    <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Parameters</p>
                     {tool.parameters.map((p) => (
                       <div key={p.name} className="flex items-baseline gap-2 text-xs">
-                        <code className="text-indigo-600 font-medium">{p.name}</code>
-                        {p.type && <span className="text-gray-400">{p.type}</span>}
+                        <code className="text-[var(--accent)] font-medium">{p.name}</code>
+                        {p.type && <span className="text-[var(--text-tertiary)]">{p.type}</span>}
                         {p.required && <span className="text-red-400">required</span>}
-                        {p.description && <span className="text-gray-500">— {p.description}</span>}
+                        {p.description && <span className="text-[var(--text-secondary)]">— {p.description}</span>}
                       </div>
                     ))}
                   </div>
@@ -453,7 +453,7 @@ export default function MarketplaceModuleDetailPage() {
               </div>
             ))
           ) : (
-            <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">
               No tool definitions available for this module.
             </div>
           )}
@@ -465,22 +465,22 @@ export default function MarketplaceModuleDetailPage() {
         <div className="space-y-6">
           {/* Rating distribution */}
           {reviews.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Rating Distribution</h3>
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Rating Distribution</h3>
               <RatingDistribution />
             </div>
           )}
 
           {/* Submit review form (only for published + installed + not own module) */}
           {published && isInstalled && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Write a Review</h3>
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Write a Review</h3>
               <div className="flex items-center gap-1 mb-3">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button
                     key={n}
                     onClick={() => setReviewRating(n)}
-                    className={`text-2xl transition-colors ${n <= reviewRating ? "text-amber-400" : "text-gray-300"} hover:text-amber-400`}
+                    className={`text-2xl transition-colors ${n <= reviewRating ? "text-amber-400" : "text-[var(--text-tertiary)]"} hover:text-amber-400`}
                   >
                     ★
                   </button>
@@ -491,12 +491,12 @@ export default function MarketplaceModuleDetailPage() {
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Share your experience (optional)"
                 rows={3}
-                className="w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full border border-[var(--border)] rounded-lg p-3 text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
               />
               <button
                 onClick={handleSubmitReview}
                 disabled={submittingReview}
-                className="mt-3 rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                className="mt-3 rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] px-4 py-2 text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
               >
                 {submittingReview ? "Submitting..." : "Submit Review"}
               </button>
@@ -506,7 +506,7 @@ export default function MarketplaceModuleDetailPage() {
           {/* Review cards */}
           {reviews.length > 0 ? (
             reviews.map((r) => (
-              <div key={r.id} className="bg-white border border-gray-200 rounded-xl p-5">
+              <div key={r.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-1">
                   <Stars rating={r.rating} size="text-sm" />
                   {r.isVerifiedInstall && (
@@ -515,14 +515,14 @@ export default function MarketplaceModuleDetailPage() {
                     </span>
                   )}
                 </div>
-                {r.text && <p className="text-sm text-gray-600 mt-2">{r.text}</p>}
-                <p className="text-xs text-gray-400 mt-2">
+                {r.text && <p className="text-sm text-[var(--text-secondary)] mt-2">{r.text}</p>}
+                <p className="text-xs text-[var(--text-tertiary)] mt-2">
                   {new Date(r.createdAt).toLocaleDateString()} &middot; {r.reviewerOrgId}
                 </p>
               </div>
             ))
           ) : (
-            <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">
               No reviews yet.
             </div>
           )}

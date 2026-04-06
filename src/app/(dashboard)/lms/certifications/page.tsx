@@ -96,34 +96,34 @@ export default function CertificationsPage() {
         <LmsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Certifications</h1>
-            <p className="text-sm text-gray-500">Track and manage professional certifications.</p>
+            <h1 className="text-xl font-semibold text-[var(--text-primary)]">Certifications</h1>
+            <p className="text-sm text-[var(--text-secondary)]">Track and manage professional certifications.</p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
+            className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent)]"
           >
             {showForm ? "Cancel" : "Add Certification"}
           </button>
         </div>
 
         {showForm && (
-          <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">New Certification</h3>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 mb-6">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-3">New Certification</h3>
             <div className="grid grid-cols-2 gap-3">
-              <input placeholder="Certification Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-              <input placeholder="Issuing Body" value={form.issuer} onChange={(e) => setForm({ ...form, issuer: e.target.value })} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="Certification Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
+              <input placeholder="Issuing Body" value={form.issuer} onChange={(e) => setForm({ ...form, issuer: e.target.value })} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Date Earned</label>
-                <input type="date" value={form.dateEarned} onChange={(e) => setForm({ ...form, dateEarned: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                <label className="block text-xs text-[var(--text-secondary)] mb-1">Date Earned</label>
+                <input type="date" value={form.dateEarned} onChange={(e) => setForm({ ...form, dateEarned: e.target.value })} className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Expiry Date</label>
-                <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+                <label className="block text-xs text-[var(--text-secondary)] mb-1">Expiry Date</label>
+                <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" />
               </div>
             </div>
             <div className="mt-3 flex justify-end">
-              <button onClick={handleSubmit} disabled={saving || !form.name} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">
+              <button onClick={handleSubmit} disabled={saving || !form.name} className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent)] disabled:opacity-50">
                 {saving ? "Saving..." : "Add Certification"}
               </button>
             </div>
@@ -131,22 +131,22 @@ export default function CertificationsPage() {
         )}
 
         {loading ? (
-          <p className="text-sm text-gray-400 text-center py-8">Loading...</p>
+          <p className="text-sm text-[var(--text-tertiary)] text-center py-8">Loading...</p>
         ) : certifications.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-            <p className="text-sm text-gray-500">No certifications tracked yet. Add your first certification above.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center">
+            <p className="text-sm text-[var(--text-secondary)]">No certifications tracked yet. Add your first certification above.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[var(--bg-base)] border-b border-[var(--border)]">
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Certification</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Issuing Body</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Earned</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Expires</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Certification</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Issuing Body</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Earned</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Expires</th>
+                  <th className="text-left px-4 py-3 font-medium text-[var(--text-secondary)]">Status</th>
+                  <th className="text-right px-4 py-3 font-medium text-[var(--text-secondary)]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,11 +154,11 @@ export default function CertificationsPage() {
                   const v = cert.value;
                   const status = computeStatus(v.expiryDate);
                   return (
-                    <tr key={cert.id} className="border-b border-gray-100 last:border-0">
-                      <td className="px-4 py-3 font-medium text-gray-900">{v.name}</td>
-                      <td className="px-4 py-3 text-gray-600">{v.issuer || "N/A"}</td>
-                      <td className="px-4 py-3 text-gray-600">{v.dateEarned ? new Date(v.dateEarned).toLocaleDateString() : "N/A"}</td>
-                      <td className="px-4 py-3 text-gray-600">{v.expiryDate ? new Date(v.expiryDate).toLocaleDateString() : "No expiry"}</td>
+                    <tr key={cert.id} className="border-b border-[var(--border)] last:border-0">
+                      <td className="px-4 py-3 font-medium text-[var(--text-primary)]">{v.name}</td>
+                      <td className="px-4 py-3 text-[var(--text-secondary)]">{v.issuer || "N/A"}</td>
+                      <td className="px-4 py-3 text-[var(--text-secondary)]">{v.dateEarned ? new Date(v.dateEarned).toLocaleDateString() : "N/A"}</td>
+                      <td className="px-4 py-3 text-[var(--text-secondary)]">{v.expiryDate ? new Date(v.expiryDate).toLocaleDateString() : "No expiry"}</td>
                       <td className="px-4 py-3">
                         <span className={cn("px-2 py-1 rounded-full text-xs font-medium", statusColors[status])}>
                           {status.replace("_", " ")}
@@ -167,7 +167,7 @@ export default function CertificationsPage() {
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => console.log("Download certificate:", cert.id)}
-                          className="text-xs text-indigo-600 hover:text-indigo-700"
+                          className="text-xs text-[var(--accent)] hover:text-[var(--accent)]"
                         >
                           Download
                         </button>

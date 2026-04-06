@@ -304,7 +304,7 @@ export function AgentChat({
                       <button
                         key={artifact.id}
                         onClick={() => onArtifactClick?.(artifact)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border border-gray-200 bg-white hover:bg-gray-50 hover:border-indigo-300 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border border-[var(--border)] bg-[var(--bg-base)] hover:bg-[var(--bg-base)] hover:border-indigo-300 transition-colors cursor-pointer"
                       >
                         <span>{config?.icon ?? "📄"}</span>
                         <span className="truncate max-w-[150px]">{artifact.title}</span>
@@ -325,7 +325,7 @@ export function AgentChat({
 
       {/* Handoff prompt */}
       {pendingHandoff && (
-        <div className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3">
+        <div className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-[var(--accent)] bg-[var(--accent-subtle)] px-4 py-3">
           <div className="flex-1 min-w-0">
             <p className="text-sm text-indigo-800">
               <span className="font-medium">Switch to {pendingHandoff.target_agent.replace(/_/g, " ")}?</span>{" "}
@@ -338,13 +338,13 @@ export function AgentChat({
                 onAgentSwitch?.(pendingHandoff.target_agent);
                 setPendingHandoff(null);
               }}
-              className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-700 transition-colors"
+              className="rounded-md bg-[var(--accent)] px-3 py-1 text-xs font-medium text-[var(--primary-foreground)] hover:bg-[var(--accent)] transition-colors"
             >
               Switch
             </button>
             <button
               onClick={() => setPendingHandoff(null)}
-              className="rounded-md px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-100 transition-colors"
+              className="rounded-md px-2 py-1 text-xs text-[var(--accent)] hover:bg-[var(--accent-subtle)] transition-colors"
             >
               Stay
             </button>
@@ -356,15 +356,15 @@ export function AgentChat({
       {attachments.length > 0 && (
         <div className="px-3 pb-1 flex flex-wrap gap-1.5">
           {attachments.map((a) => (
-            <div key={a.id} className="inline-flex items-center gap-1.5 px-2 py-1 text-xs bg-gray-100 rounded-md">
+            <div key={a.id} className="inline-flex items-center gap-1.5 px-2 py-1 text-xs bg-[var(--bg-surface)] rounded-md">
               {a.type.startsWith("image/") ? (
-                <Image className="w-3 h-3 text-gray-500" />
+                <Image className="w-3 h-3 text-[var(--text-secondary)]" />
               ) : (
-                <FileText className="w-3 h-3 text-gray-500" />
+                <FileText className="w-3 h-3 text-[var(--text-secondary)]" />
               )}
               <span className="truncate max-w-[100px]">{a.name}</span>
               <button onClick={() => setAttachments((prev) => prev.filter((x) => x.id !== a.id))}>
-                <X className="w-3 h-3 text-gray-400 hover:text-gray-600" />
+                <X className="w-3 h-3 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]" />
               </button>
             </div>
           ))}
@@ -375,7 +375,7 @@ export function AgentChat({
       <div
         className={cn(
           "border-t p-3 transition-colors",
-          isDragOver && "bg-indigo-50 border-indigo-300 border-dashed"
+          isDragOver && "bg-[var(--accent-subtle)] border-indigo-300 border-dashed"
         )}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
         onDragLeave={() => setIsDragOver(false)}

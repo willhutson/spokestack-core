@@ -35,7 +35,7 @@ interface SurveyResponse {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  Draft: "bg-gray-100 text-gray-600",
+  Draft: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   Active: "bg-green-100 text-green-700",
   Closed: "bg-red-100 text-red-600",
 };
@@ -134,39 +134,39 @@ export default function SurveyDetailPage() {
 
   return (
     <ModuleLayoutShell moduleType="SURVEYS">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         {loading ? (
-          <div className="text-center py-12 text-sm text-gray-400">Loading...</div>
+          <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : !survey ? (
           <div className="text-center py-16">
-            <p className="text-sm text-gray-500 mb-4">Survey not found.</p>
-            <button onClick={() => router.push("/surveys")} className="text-sm text-indigo-600 hover:underline">Back to Surveys</button>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">Survey not found.</p>
+            <button onClick={() => router.push("/surveys")} className="text-sm text-[var(--accent)] hover:underline">Back to Surveys</button>
           </div>
         ) : (
           <>
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
-                <button onClick={() => router.push("/surveys")} className="text-xs text-gray-400 hover:text-gray-600 mb-2 flex items-center gap-1">
+                <button onClick={() => router.push("/surveys")} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] mb-2 flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                   Back to Surveys
                 </button>
-                <h1 className="text-2xl font-bold text-gray-900">{survey.title}</h1>
+                <h1 className="text-2xl font-bold text-[var(--text-primary)]">{survey.title}</h1>
                 <div className="flex items-center gap-3 mt-2">
                   <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium", STATUS_COLORS[survey.status] ?? "bg-gray-100 text-gray-600")}>
                     {survey.status}
                   </span>
-                  <span className="text-xs text-gray-500">{responses.length} responses</span>
-                  <span className="text-xs text-gray-500">{completionRate}% completion</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{responses.length} responses</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{completionRate}% completion</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => router.push(`/surveys/builder?id=${surveyId}`)}
-                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  className="px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
                   Edit
                 </button>
                 <button onClick={copyShareLink}
-                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  className="px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
                   {copied ? "Copied!" : "Share"}
                 </button>
                 {survey.status === "Active" && (
@@ -177,7 +177,7 @@ export default function SurveyDetailPage() {
                 )}
                 {survey.status === "Draft" && (
                   <button onClick={() => updateStatus("Active")}
-                    className="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                    className="px-3 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
                     Activate
                   </button>
                 )}
@@ -186,26 +186,26 @@ export default function SurveyDetailPage() {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Questions</p>
-                <p className="text-xl font-bold text-gray-900">{survey.questions.length}</p>
+              <div className="border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Questions</p>
+                <p className="text-xl font-bold text-[var(--text-primary)]">{survey.questions.length}</p>
               </div>
-              <div className="border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Responses</p>
-                <p className="text-xl font-bold text-gray-900">{responses.length}</p>
+              <div className="border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Responses</p>
+                <p className="text-xl font-bold text-[var(--text-primary)]">{responses.length}</p>
               </div>
-              <div className="border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Completion Rate</p>
+              <div className="border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Completion Rate</p>
                 <p className="text-xl font-bold text-emerald-600">{completionRate}%</p>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-6 border-b border-gray-200">
+            <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
               {tabs.map((t) => (
                 <button key={t.id} onClick={() => setTab(t.id)}
                   className={cn("px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
-                    tab === t.id ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"
+                    tab === t.id ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
                   )}>
                   {t.label}
                 </button>
@@ -216,21 +216,21 @@ export default function SurveyDetailPage() {
             {tab === "questions" && (
               <div className="space-y-3">
                 {survey.questions.length === 0 ? (
-                  <p className="text-sm text-gray-400 py-8 text-center">No questions in this survey.</p>
+                  <p className="text-sm text-[var(--text-tertiary)] py-8 text-center">No questions in this survey.</p>
                 ) : (
                   survey.questions.map((q, i) => (
-                    <div key={i} className="flex items-start gap-3 border border-gray-200 rounded-lg p-4">
-                      <span className="text-xs font-medium text-gray-400 mt-0.5 w-5">{i + 1}.</span>
-                      <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <div key={i} className="flex items-start gap-3 border border-[var(--border)] rounded-lg p-4">
+                      <span className="text-xs font-medium text-[var(--text-tertiary)] mt-0.5 w-5">{i + 1}.</span>
+                      <svg className="w-4 h-4 text-[var(--text-tertiary)] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d={TYPE_ICONS[q.type] ?? TYPE_ICONS.text} />
                       </svg>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{q.text}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">Type: {q.type}</p>
+                        <p className="text-sm font-medium text-[var(--text-primary)]">{q.text}</p>
+                        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Type: {q.type}</p>
                         {q.options && q.options.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {q.options.map((opt, j) => (
-                              <span key={j} className="px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded">{opt}</span>
+                              <span key={j} className="px-2 py-0.5 text-xs bg-[var(--bg-surface)] text-[var(--text-secondary)] rounded">{opt}</span>
                             ))}
                           </div>
                         )}
@@ -244,32 +244,32 @@ export default function SurveyDetailPage() {
             {/* Responses Tab */}
             {tab === "responses" && (
               responses.length === 0 ? (
-                <div className="text-center py-12 border border-gray-200 rounded-xl">
-                  <p className="text-sm text-gray-500 mb-1">No responses yet</p>
-                  <p className="text-xs text-gray-400">Responses will appear once participants submit the survey.</p>
+                <div className="text-center py-12 border border-[var(--border)] rounded-xl">
+                  <p className="text-sm text-[var(--text-secondary)] mb-1">No responses yet</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">Responses will appear once participants submit the survey.</p>
                 </div>
               ) : (
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="border border-[var(--border)] rounded-lg overflow-hidden">
                   <table className="w-full">
                     <thead>
-                      <tr className="bg-gray-50">
-                        <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Respondent</th>
+                      <tr className="bg-[var(--bg-base)]">
+                        <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Respondent</th>
                         {survey.questions.slice(0, 4).map((q, i) => (
-                          <th key={i} className="text-left text-xs font-medium text-gray-500 px-4 py-3 truncate max-w-[150px]">{q.text}</th>
+                          <th key={i} className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3 truncate max-w-[150px]">{q.text}</th>
                         ))}
-                        <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Submitted</th>
+                        <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Submitted</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {responses.map((r, i) => (
-                        <tr key={i} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-900">{r.respondent ?? `Respondent ${i + 1}`}</td>
+                        <tr key={i} className="hover:bg-[var(--bg-hover)]">
+                          <td className="px-4 py-3 text-sm text-[var(--text-primary)]">{r.respondent ?? `Respondent ${i + 1}`}</td>
                           {survey.questions.slice(0, 4).map((q, j) => (
-                            <td key={j} className="px-4 py-3 text-sm text-gray-600 truncate max-w-[150px]">
+                            <td key={j} className="px-4 py-3 text-sm text-[var(--text-secondary)] truncate max-w-[150px]">
                               {String(r.answers[q.text] ?? "-")}
                             </td>
                           ))}
-                          <td className="px-4 py-3 text-xs text-gray-400">
+                          <td className="px-4 py-3 text-xs text-[var(--text-tertiary)]">
                             {r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : "-"}
                           </td>
                         </tr>

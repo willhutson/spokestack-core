@@ -233,8 +233,8 @@ export default function PublishWizardPage() {
     <div className="p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-lg font-semibold text-gray-900">Publish Module</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Submit a new module for review and publishing</p>
+        <h1 className="text-lg font-semibold text-[var(--text-primary)]">Publish Module</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-0.5">Submit a new module for review and publishing</p>
       </div>
 
       {/* Step indicator */}
@@ -245,10 +245,10 @@ export default function PublishWizardPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
                   i < step
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
                     : i === step
-                    ? "bg-indigo-100 text-indigo-700 ring-2 ring-indigo-600"
-                    : "bg-gray-100 text-gray-400"
+                    ? "bg-[var(--accent-subtle)] text-[var(--accent)] ring-2 ring-indigo-600"
+                    : "bg-[var(--bg-surface)] text-[var(--text-tertiary)]"
                 }`}
               >
                 {i < step ? (
@@ -259,51 +259,51 @@ export default function PublishWizardPage() {
                   i + 1
                 )}
               </div>
-              <span className={`text-[10px] mt-1 whitespace-nowrap ${i === step ? "text-indigo-700 font-medium" : "text-gray-400"}`}>
+              <span className={`text-[10px] mt-1 whitespace-nowrap ${i === step ? "text-[var(--accent)] font-medium" : "text-[var(--text-tertiary)]"}`}>
                 {label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`flex-1 h-px mx-2 mt-[-14px] ${i < step ? "bg-indigo-600" : "bg-gray-200"}`} />
+              <div className={`flex-1 h-px mx-2 mt-[-14px] ${i < step ? "bg-[var(--accent)]" : "bg-[var(--bg-surface)]"}`} />
             )}
           </div>
         ))}
       </div>
 
       {/* Step content */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6">
         {/* Step 1: Module Info */}
         {step === 0 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Module Information</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Module Information</h2>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name *</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="My Awesome Module"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Slug *</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Slug *</label>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 placeholder="my-awesome-module"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
-              <p className="text-[10px] text-gray-400 mt-1">Auto-generated from name. You can edit it.</p>
+              <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Auto-generated from name. You can edit it.</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Category *</label>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Category *</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 >
                   <option value="">Select category</option>
                   {CATEGORIES.map((c) => (
@@ -312,11 +312,11 @@ export default function PublishWizardPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Industry (optional)</label>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Industry (optional)</label>
                 <select
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                 >
                   <option value="">None</option>
                   {INDUSTRIES.filter(Boolean).map((ind) => (
@@ -326,26 +326,26 @@ export default function PublishWizardPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Short Description * (max 120 chars)</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Short Description * (max 120 chars)</label>
               <textarea
                 value={shortDescription}
                 onChange={(e) => setShortDescription(e.target.value.slice(0, 120))}
                 rows={2}
                 placeholder="A brief summary of what this module does"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
               />
               <p className={`text-[10px] mt-0.5 ${shortDescription.length > 110 ? "text-amber-600" : "text-gray-400"}`}>
                 {shortDescription.length}/120
               </p>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Description *</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Description *</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
                 placeholder="Detailed description of the module, its features, and use cases"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -354,16 +354,16 @@ export default function PublishWizardPage() {
         {/* Step 2: Tools */}
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Tool Definitions</h2>
-            <p className="text-xs text-gray-500 mb-2">
-              Paste a JSON array of tool definitions. Each tool must have a <code className="bg-gray-100 px-1 rounded">path</code> starting with <code className="bg-gray-100 px-1 rounded">/api/v1/</code> and a valid HTTP method.
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Tool Definitions</h2>
+            <p className="text-xs text-[var(--text-secondary)] mb-2">
+              Paste a JSON array of tool definitions. Each tool must have a <code className="bg-[var(--bg-surface)] px-1 rounded">path</code> starting with <code className="bg-[var(--bg-surface)] px-1 rounded">/api/v1/</code> and a valid HTTP method.
             </p>
             <textarea
               value={toolsJson}
               onChange={(e) => setToolsJson(e.target.value)}
               rows={14}
               placeholder={`[\n  {\n    "method": "POST",\n    "path": "/api/v1/my-tool/run",\n    "name": "run_tool",\n    "description": "Runs my tool"\n  }\n]`}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
             />
             {toolValidation && toolValidation.errors.length > 0 && (
               <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
@@ -390,8 +390,8 @@ export default function PublishWizardPage() {
         {/* Step 3: Agent Prompt */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">System Prompt</h2>
-            <p className="text-xs text-gray-500 mb-2">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">System Prompt</h2>
+            <p className="text-xs text-[var(--text-secondary)] mb-2">
               Define the system prompt for the module agent. Minimum 50 characters, maximum 10,000.
             </p>
             <textarea
@@ -399,7 +399,7 @@ export default function PublishWizardPage() {
               onChange={(e) => setSystemPrompt(e.target.value.slice(0, 10000))}
               rows={14}
               placeholder="You are a helpful assistant that..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
             />
             <div className="flex items-center justify-between">
               <p className={`text-[10px] ${systemPrompt.length < 50 ? "text-red-500" : systemPrompt.length > 9500 ? "text-amber-600" : "text-gray-400"}`}>
@@ -421,15 +421,15 @@ export default function PublishWizardPage() {
         {/* Step 4: Pricing */}
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Pricing</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Pricing</h2>
             <div className="space-y-3">
               {PRICING_TYPES.map((pt) => (
                 <label
                   key={pt.key}
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                     pricingType === pt.key
-                      ? "border-indigo-300 bg-indigo-50"
-                      : "border-gray-200 hover:bg-gray-50"
+                      ? "border-indigo-300 bg-[var(--accent-subtle)]"
+                      : "border-[var(--border)] hover:bg-[var(--bg-base)]"
                   }`}
                 >
                   <input
@@ -440,17 +440,17 @@ export default function PublishWizardPage() {
                     onChange={() => setPricingType(pt.key as "free" | "paid" | "subscription")}
                     className="accent-indigo-600"
                   />
-                  <span className="text-sm text-gray-900">{pt.label}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{pt.label}</span>
                 </label>
               ))}
             </div>
             {pricingType !== "free" && (
               <div className="mt-4">
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Price (AED) {pricingType === "subscription" && "/ month"}
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">AED</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--text-tertiary)]">AED</span>
                   <input
                     type="number"
                     min="0.01"
@@ -458,11 +458,11 @@ export default function PublishWizardPage() {
                     value={priceAed}
                     onChange={(e) => setPriceAed(e.target.value)}
                     placeholder="0.00"
-                    className="w-full border border-gray-300 rounded-lg pl-12 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border border-[var(--border-strong)] rounded-lg pl-12 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                   />
                 </div>
                 {priceAed && !isNaN(parseFloat(priceAed)) && parseFloat(priceAed) > 0 && (
-                  <p className="text-[10px] text-gray-400 mt-1">
+                  <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
                     {currencyFmt.format(parseFloat(priceAed))} = {Math.round(parseFloat(priceAed) * 100)} fils (cents)
                   </p>
                 )}
@@ -474,7 +474,7 @@ export default function PublishWizardPage() {
         {/* Step 5: Review & Submit */}
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Review & Submit</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Review & Submit</h2>
 
             {submitResult?.success && (
               <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-4 mb-4">
@@ -492,44 +492,44 @@ export default function PublishWizardPage() {
 
             {!submitResult?.success && (
               <>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3 text-sm">
+                <div className="bg-[var(--bg-base)] rounded-lg p-4 space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Name</span>
-                    <span className="text-gray-900 font-medium">{name}</span>
+                    <span className="text-[var(--text-secondary)]">Name</span>
+                    <span className="text-[var(--text-primary)] font-medium">{name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Slug</span>
-                    <span className="text-gray-900 font-mono text-xs">{slug}</span>
+                    <span className="text-[var(--text-secondary)]">Slug</span>
+                    <span className="text-[var(--text-primary)] font-mono text-xs">{slug}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Category</span>
-                    <span className="text-gray-900">{category}</span>
+                    <span className="text-[var(--text-secondary)]">Category</span>
+                    <span className="text-[var(--text-primary)]">{category}</span>
                   </div>
                   {industry && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Industry</span>
-                      <span className="text-gray-900">{industry}</span>
+                      <span className="text-[var(--text-secondary)]">Industry</span>
+                      <span className="text-[var(--text-primary)]">{industry}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Short Description</span>
-                    <span className="text-gray-900 text-right max-w-[60%]">{shortDescription}</span>
+                    <span className="text-[var(--text-secondary)]">Short Description</span>
+                    <span className="text-[var(--text-primary)] text-right max-w-[60%]">{shortDescription}</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-3">
-                    <span className="text-gray-500">Description</span>
-                    <p className="text-gray-900 mt-1 text-xs whitespace-pre-wrap">{description}</p>
+                  <div className="border-t border-[var(--border)] pt-3">
+                    <span className="text-[var(--text-secondary)]">Description</span>
+                    <p className="text-[var(--text-primary)] mt-1 text-xs whitespace-pre-wrap">{description}</p>
                   </div>
-                  <div className="border-t border-gray-200 pt-3 flex justify-between">
-                    <span className="text-gray-500">Tools</span>
-                    <span className="text-gray-900">{toolsJson ? JSON.parse(toolsJson).length : 0} tool(s)</span>
+                  <div className="border-t border-[var(--border)] pt-3 flex justify-between">
+                    <span className="text-[var(--text-secondary)]">Tools</span>
+                    <span className="text-[var(--text-primary)]">{toolsJson ? JSON.parse(toolsJson).length : 0} tool(s)</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-3 flex justify-between">
-                    <span className="text-gray-500">System Prompt</span>
-                    <span className="text-gray-900">{systemPrompt.length.toLocaleString()} chars</span>
+                  <div className="border-t border-[var(--border)] pt-3 flex justify-between">
+                    <span className="text-[var(--text-secondary)]">System Prompt</span>
+                    <span className="text-[var(--text-primary)]">{systemPrompt.length.toLocaleString()} chars</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-3 flex justify-between">
-                    <span className="text-gray-500">Pricing</span>
-                    <span className="text-gray-900">
+                  <div className="border-t border-[var(--border)] pt-3 flex justify-between">
+                    <span className="text-[var(--text-secondary)]">Pricing</span>
+                    <span className="text-[var(--text-primary)]">
                       {pricingType === "free" && "Free"}
                       {pricingType === "paid" && `${currencyFmt.format(parseFloat(priceAed || "0"))} one-time`}
                       {pricingType === "subscription" && `${currencyFmt.format(parseFloat(priceAed || "0"))}/mo`}
@@ -540,7 +540,7 @@ export default function PublishWizardPage() {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="w-full bg-indigo-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                  className="w-full bg-[var(--accent)] text-[var(--primary-foreground)] text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
                   {submitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -566,7 +566,7 @@ export default function PublishWizardPage() {
           <button
             onClick={() => setStep((s) => s - 1)}
             disabled={step === 0}
-            className="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-base)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Back
           </button>
@@ -574,7 +574,7 @@ export default function PublishWizardPage() {
             <button
               onClick={() => setStep((s) => s + 1)}
               disabled={!isCurrentStepValid()}
-              className="text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="text-sm font-medium px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--primary-foreground)] hover:bg-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>

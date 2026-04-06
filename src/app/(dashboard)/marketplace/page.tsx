@@ -145,8 +145,8 @@ export default function MarketplacePage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">Marketplace</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-lg font-semibold text-[var(--text-primary)]">Marketplace</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Browse and install agent-powered modules
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function MarketplacePage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search modules..."
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
         />
       </div>
 
@@ -167,8 +167,8 @@ export default function MarketplacePage() {
             onClick={() => setCategory(cat.key)}
             className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
               category === cat.key
-                ? "bg-indigo-100 text-indigo-700"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
             }`}
           >
             {cat.label}
@@ -225,7 +225,7 @@ export default function MarketplacePage() {
 
       {!registryError && filtered.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--text-tertiary)]">
             No modules match your search.
           </p>
         </div>

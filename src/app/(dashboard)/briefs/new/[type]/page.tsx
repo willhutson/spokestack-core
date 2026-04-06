@@ -49,12 +49,12 @@ export default function BriefsNewTypePage() {
       <ModuleLayoutShell moduleType="BRIEFS">
         <div className="p-6">
           <BriefsNav />
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">Invalid brief type</h3>
-            <p className="text-xs text-gray-500 mb-4">The type &quot;{type}&quot; is not recognized.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">Invalid brief type</h3>
+            <p className="text-xs text-[var(--text-secondary)] mb-4">The type &quot;{type}&quot; is not recognized.</p>
             <button
               onClick={() => router.push("/briefs/new")}
-              className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
             >
               Back to New Brief
             </button>
@@ -122,10 +122,10 @@ export default function BriefsNewTypePage() {
   }
 
   const inputClass =
-    "w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500";
+    "w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
   const textareaClass =
-    "w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500";
-  const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+    "w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
+  const labelClass = "block text-sm font-medium text-[var(--text-secondary)] mb-1";
 
   return (
     <ModuleLayoutShell moduleType="BRIEFS">
@@ -133,19 +133,19 @@ export default function BriefsNewTypePage() {
         <BriefsNav />
 
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <span className="hover:text-gray-700 cursor-pointer" onClick={() => router.push("/briefs")}>
+        <nav className="text-sm text-[var(--text-secondary)] mb-6">
+          <span className="hover:text-[var(--text-secondary)] cursor-pointer" onClick={() => router.push("/briefs")}>
             Briefs
           </span>
           <span className="mx-2">/</span>
-          <span className="hover:text-gray-700 cursor-pointer" onClick={() => router.push("/briefs/new")}>
+          <span className="hover:text-[var(--text-secondary)] cursor-pointer" onClick={() => router.push("/briefs/new")}>
             New
           </span>
           <span className="mx-2">/</span>
-          <span className="text-gray-900 font-medium capitalize">{type}</span>
+          <span className="text-[var(--text-primary)] font-medium capitalize">{type}</span>
         </nav>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
           New {type.charAt(0).toUpperCase() + type.slice(1)} Brief
         </h1>
 
@@ -205,7 +205,7 @@ export default function BriefsNewTypePage() {
                 <div className="flex flex-wrap gap-2">
                   {CHANNEL_OPTIONS.map((ch) => (
                     <button key={ch} type="button" onClick={() => toggleMulti(ch, channels, setChannels)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${channels.includes(ch) ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${channels.includes(ch) ? "bg-[var(--accent-subtle)] border-indigo-300 text-[var(--accent)]" : "bg-[var(--bg-base)] border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}
                     >{ch}</button>
                   ))}
                 </div>
@@ -229,7 +229,7 @@ export default function BriefsNewTypePage() {
                 <div className="flex flex-wrap gap-2">
                   {PLATFORM_OPTIONS.map((pl) => (
                     <button key={pl} type="button" onClick={() => toggleMulti(pl, platforms, setPlatforms)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${platforms.includes(pl) ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"}`}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${platforms.includes(pl) ? "bg-[var(--accent-subtle)] border-indigo-300 text-[var(--accent)]" : "bg-[var(--bg-base)] border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}
                     >{pl}</button>
                   ))}
                 </div>
@@ -259,14 +259,14 @@ export default function BriefsNewTypePage() {
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              className="px-5 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
             >
               {submitting ? "Creating..." : "Create Brief"}
             </button>
             <button
               type="button"
               onClick={() => router.push("/briefs/new")}
-              className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
             >
               Cancel
             </button>

@@ -11,7 +11,7 @@ export function NotificationBell({ unreadCount, onClick }: NotificationBellProps
   return (
     <button
       onClick={onClick}
-      className="relative rounded-lg p-2 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+      className="relative rounded-lg p-2 text-[var(--text-tertiary)] hover:bg-[var(--bg-surface)] hover:text-white transition-colors"
       title="Notifications"
     >
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

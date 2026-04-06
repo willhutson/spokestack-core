@@ -82,31 +82,31 @@ export default function SurveyAnalyticsPage() {
 
   return (
     <ModuleLayoutShell moduleType="SURVEYS">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         <SurveysNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Survey Analytics</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Performance insights for your surveys.</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Survey Analytics</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">Performance insights for your surveys.</p>
           </div>
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-sm text-gray-400">Loading...</div>
+          <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : surveys.length === 0 ? (
-          <div className="text-center py-16 border border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500 mb-1">No surveys yet</p>
-            <p className="text-xs text-gray-400">Create a survey to see analytics here.</p>
+          <div className="text-center py-16 border border-[var(--border)] rounded-xl">
+            <p className="text-sm text-[var(--text-secondary)] mb-1">No surveys yet</p>
+            <p className="text-xs text-[var(--text-tertiary)]">Create a survey to see analytics here.</p>
           </div>
         ) : (
           <>
             {/* Survey Selector */}
             <div className="mb-6">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Select Survey</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Select Survey</label>
               <select
                 value={selectedSurvey}
                 onChange={(e) => setSelectedSurvey(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-72"
+                className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm bg-[var(--bg-base)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] w-72"
               >
                 {surveys.map((s) => (
                   <option key={s.key} value={s.key}>{s.title}</option>
@@ -116,52 +116,52 @@ export default function SurveyAnalyticsPage() {
 
             {/* Overview Cards */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="border border-gray-200 rounded-xl p-5">
-                <p className="text-xs font-medium text-gray-500 mb-1">Total Responses</p>
-                <p className="text-2xl font-bold text-gray-900">{totalResponses}</p>
+              <div className="border border-[var(--border)] rounded-xl p-5">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Total Responses</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{totalResponses}</p>
               </div>
-              <div className="border border-gray-200 rounded-xl p-5">
-                <p className="text-xs font-medium text-gray-500 mb-1">Completion Rate</p>
+              <div className="border border-[var(--border)] rounded-xl p-5">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Completion Rate</p>
                 <p className="text-2xl font-bold text-emerald-600">{completionRate}%</p>
               </div>
-              <div className="border border-gray-200 rounded-xl p-5">
-                <p className="text-xs font-medium text-gray-500 mb-1">Avg Completion Time</p>
-                <p className="text-2xl font-bold text-gray-900">--</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">Not yet tracked</p>
+              <div className="border border-[var(--border)] rounded-xl p-5">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Avg Completion Time</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">--</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">Not yet tracked</p>
               </div>
             </div>
 
             {/* Per-question breakdown */}
             <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Question Breakdown</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Question Breakdown</h3>
               {survey && survey.questions.length > 0 ? (
                 <div className="space-y-3">
                   {survey.questions.map((q, i) => {
                     const qResponses = surveyResponses.filter((r) => q.text in r.answers).length;
                     return (
-                      <div key={i} className="flex items-center gap-4 border border-gray-200 rounded-lg p-4">
-                        <span className="text-xs font-medium text-gray-400 w-6">Q{i + 1}</span>
+                      <div key={i} className="flex items-center gap-4 border border-[var(--border)] rounded-lg p-4">
+                        <span className="text-xs font-medium text-[var(--text-tertiary)] w-6">Q{i + 1}</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-900 truncate">{q.text}</p>
+                          <p className="text-sm text-[var(--text-primary)] truncate">{q.text}</p>
                         </div>
                         <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium",
-                          "bg-gray-100 text-gray-600"
+                          "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                         )}>{q.type}</span>
-                        <span className="text-sm font-medium text-gray-700 w-20 text-right">{qResponses} responses</span>
+                        <span className="text-sm font-medium text-[var(--text-secondary)] w-20 text-right">{qResponses} responses</span>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <p className="text-xs text-gray-400">No questions in this survey.</p>
+                <p className="text-xs text-[var(--text-tertiary)]">No questions in this survey.</p>
               )}
             </div>
 
             {/* Response Timeline Placeholder */}
-            <div className="border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Response Timeline</h3>
-              <div className="flex items-center justify-center h-32 border-2 border-dashed border-gray-200 rounded-lg">
-                <p className="text-xs text-gray-400">Timeline visualization coming soon</p>
+            <div className="border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Response Timeline</h3>
+              <div className="flex items-center justify-center h-32 border-2 border-dashed border-[var(--border)] rounded-lg">
+                <p className="text-xs text-[var(--text-tertiary)]">Timeline visualization coming soon</p>
               </div>
             </div>
           </>

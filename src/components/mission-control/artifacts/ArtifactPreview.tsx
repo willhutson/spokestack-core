@@ -51,16 +51,16 @@ function DocumentRenderer({ data }: { data: unknown }) {
           return (
             <div key={i}>
               {!!s?.heading && (
-                <h3 className="mb-1 text-sm font-semibold text-gray-800">
+                <h3 className="mb-1 text-sm font-semibold text-[var(--text-primary)]">
                   {asString(s.heading)}
                 </h3>
               )}
               {!!s?.title && !s?.heading && (
-                <h3 className="mb-1 text-sm font-semibold text-gray-800">
+                <h3 className="mb-1 text-sm font-semibold text-[var(--text-primary)]">
                   {asString(s.title)}
                 </h3>
               )}
-              <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap">
+              <p className="text-sm leading-relaxed text-[var(--text-secondary)] whitespace-pre-wrap">
                 {asString(s?.body ?? s?.content ?? s?.text ?? "")}
               </p>
             </div>
@@ -74,7 +74,7 @@ function DocumentRenderer({ data }: { data: unknown }) {
   const text = typeof data === "string" ? data : record?.body ?? record?.content ?? record?.text;
   if (text) {
     return (
-      <div className="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap">
+      <div className="text-sm leading-relaxed text-[var(--text-secondary)] whitespace-pre-wrap">
         {asString(text)}
       </div>
     );
@@ -108,11 +108,11 @@ function TableRenderer({ data }: { data: unknown }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-200">
+          <tr className="border-b border-[var(--border)]">
             {columns.map((col) => (
               <th
                 key={col}
-                className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]"
               >
                 {col}
               </th>
@@ -123,10 +123,10 @@ function TableRenderer({ data }: { data: unknown }) {
           {rows.map((row, i) => (
             <tr
               key={i}
-              className={cn("border-b border-gray-100", i % 2 === 1 && "bg-gray-50")}
+              className={cn("border-b border-[var(--border)]", i % 2 === 1 && "bg-[var(--bg-base)]")}
             >
               {columns.map((col) => (
-                <td key={col} className="px-3 py-2 text-gray-700">
+                <td key={col} className="px-3 py-2 text-[var(--text-secondary)]">
                   {asString(row[col])}
                 </td>
               ))}
@@ -169,15 +169,15 @@ function TimelineRenderer({ data }: { data: unknown }) {
           <div key={i} className="relative flex gap-4 pb-6">
             {/* Vertical line */}
             {i < items.length - 1 && (
-              <div className="absolute left-[9px] top-5 h-full w-px bg-gray-200" />
+              <div className="absolute left-[9px] top-5 h-full w-px bg-[var(--bg-surface)]" />
             )}
             {/* Dot */}
-            <div className="relative z-10 mt-1 h-[18px] w-[18px] shrink-0 rounded-full border-2 border-indigo-400 bg-white" />
+            <div className="relative z-10 mt-1 h-[18px] w-[18px] shrink-0 rounded-full border-2 border-indigo-400 bg-[var(--bg-base)]" />
             {/* Content */}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 {!!entry.date && (
-                  <span className="text-xs font-medium text-gray-400">
+                  <span className="text-xs font-medium text-[var(--text-tertiary)]">
                     {asString(entry.date)}
                   </span>
                 )}
@@ -187,11 +187,11 @@ function TimelineRenderer({ data }: { data: unknown }) {
                   </span>
                 )}
               </div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-[var(--text-primary)]">
                 {asString(entry.title ?? entry.name ?? entry.label ?? "")}
               </p>
               {!!entry.description && (
-                <p className="mt-0.5 text-xs text-gray-500">
+                <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
                   {asString(entry.description)}
                 </p>
               )}
@@ -217,26 +217,26 @@ function DeckRenderer({ data }: { data: unknown }) {
         const bullets = asArray(s.bullets ?? s.points ?? s.items) ?? [];
 
         return (
-          <div key={i} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div key={i} className="rounded-lg border border-[var(--border)] bg-[var(--bg-base)] p-4">
             <div className="mb-2 flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded bg-indigo-100 text-xs font-bold text-indigo-600">
+              <span className="flex h-6 w-6 items-center justify-center rounded bg-[var(--accent-subtle)] text-xs font-bold text-[var(--accent)]">
                 {i + 1}
               </span>
-              <h4 className="text-sm font-semibold text-gray-800">
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">
                 {asString(s.title ?? s.heading ?? `Slide ${i + 1}`)}
               </h4>
             </div>
             {bullets.length > 0 && (
               <ul className="ml-8 list-disc space-y-1">
                 {bullets.map((b: unknown, j: number) => (
-                  <li key={j} className="text-xs text-gray-600">
+                  <li key={j} className="text-xs text-[var(--text-secondary)]">
                     {asString(b)}
                   </li>
                 ))}
               </ul>
             )}
             {!!s.notes && (
-              <p className="mt-2 ml-8 text-xs italic text-gray-400">
+              <p className="mt-2 ml-8 text-xs italic text-[var(--text-tertiary)]">
                 {asString(s.notes)}
               </p>
             )}
@@ -275,7 +275,7 @@ function MoodboardRenderer({ data }: { data: unknown }) {
               palette[i % palette.length],
             )}
           >
-            <span className="text-xs font-medium text-gray-700">{label}</span>
+            <span className="text-xs font-medium text-[var(--text-secondary)]">{label}</span>
           </div>
         );
       })}
@@ -300,31 +300,31 @@ function VideoScriptRenderer({ data }: { data: unknown }) {
             <div className="mb-1 flex items-center gap-2">
               <span className="text-xs font-bold text-red-500">SCENE {i + 1}</span>
               {!!s.setting && (
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--text-tertiary)]">
                   -- {asString(s.setting)}
                 </span>
               )}
             </div>
             {!!s.action && (
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold text-gray-500">Action: </span>
+              <p className="text-sm text-[var(--text-secondary)]">
+                <span className="font-semibold text-[var(--text-secondary)]">Action: </span>
                 {asString(s.action)}
               </p>
             )}
             {!!s.dialogue && (
-              <p className="mt-1 text-sm italic text-gray-600">
-                <span className="font-semibold not-italic text-gray-500">Dialogue: </span>
+              <p className="mt-1 text-sm italic text-[var(--text-secondary)]">
+                <span className="font-semibold not-italic text-[var(--text-secondary)]">Dialogue: </span>
                 &ldquo;{asString(s.dialogue)}&rdquo;
               </p>
             )}
             {!!s.voiceover && (
-              <p className="mt-1 text-sm italic text-gray-600">
-                <span className="font-semibold not-italic text-gray-500">VO: </span>
+              <p className="mt-1 text-sm italic text-[var(--text-secondary)]">
+                <span className="font-semibold not-italic text-[var(--text-secondary)]">VO: </span>
                 {asString(s.voiceover)}
               </p>
             )}
             {!!s.duration && (
-              <p className="mt-1 text-[10px] text-gray-400">
+              <p className="mt-1 text-[10px] text-[var(--text-tertiary)]">
                 Duration: {asString(s.duration)}
               </p>
             )}
@@ -353,8 +353,8 @@ function JsonTreeNode({
   if (value === null || value === undefined) {
     return (
       <div className="ml-4 text-xs">
-        <span className="text-gray-500">{label}: </span>
-        <span className="text-gray-400">null</span>
+        <span className="text-[var(--text-secondary)]">{label}: </span>
+        <span className="text-[var(--text-tertiary)]">null</span>
       </div>
     );
   }
@@ -368,16 +368,16 @@ function JsonTreeNode({
       <div className="ml-4">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
+          className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
           <span className="w-3 text-center text-[10px]">{open ? "\u25BC" : "\u25B6"}</span>
           <span className="font-medium">{label}</span>
-          <span className="text-gray-400">
+          <span className="text-[var(--text-tertiary)]">
             {Array.isArray(value) ? `[${value.length}]` : `{${entries.length}}`}
           </span>
         </button>
         {open && (
-          <div className="border-l border-gray-200 pl-1">
+          <div className="border-l border-[var(--border)] pl-1">
             {entries.map(([k, v]) => (
               <JsonTreeNode key={k} label={k} value={v} />
             ))}
@@ -389,7 +389,7 @@ function JsonTreeNode({
 
   return (
     <div className="ml-4 text-xs">
-      <span className="text-gray-500">{label}: </span>
+      <span className="text-[var(--text-secondary)]">{label}: </span>
       <span
         className={cn(
           typeof value === "string" ? "text-green-600" : "text-blue-600",
@@ -403,7 +403,7 @@ function JsonTreeNode({
 
 function FallbackRenderer({ data }: { data: unknown }) {
   return (
-    <pre className="overflow-x-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+    <pre className="overflow-x-auto rounded-lg bg-[var(--bg-base)] p-3 text-xs text-[var(--text-secondary)]">
       <code>{JSON.stringify(data, null, 2)}</code>
     </pre>
   );
@@ -435,21 +435,21 @@ export function ArtifactPreview({ artifact }: ArtifactPreviewProps) {
   const config = ARTIFACT_CONFIG[artifact.type as ArtifactType] ?? {
     label: artifact.type,
     icon: "📦",
-    color: "text-gray-500",
+    color: "text-[var(--text-secondary)]",
   };
 
   const Renderer = RENDERERS[artifact.type] ?? FallbackRenderer;
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)] shadow-sm">
       {/* Header */}
-      <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
+      <div className="flex items-center gap-2 border-b border-[var(--border)] px-4 py-3">
         <span className="text-lg">{config.icon}</span>
         <span className={cn("text-xs font-semibold uppercase tracking-wider", config.color)}>
           {config.label}
         </span>
         {artifact.version != null && (
-          <span className="ml-auto rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
+          <span className="ml-auto rounded-full bg-[var(--bg-surface)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)]">
             v{artifact.version}
           </span>
         )}
@@ -457,7 +457,7 @@ export function ArtifactPreview({ artifact }: ArtifactPreviewProps) {
 
       {/* Title */}
       <div className="px-4 pt-4 pb-2">
-        <h2 className="text-base font-bold text-gray-900">{artifact.title}</h2>
+        <h2 className="text-base font-bold text-[var(--text-primary)]">{artifact.title}</h2>
       </div>
 
       {/* Body */}

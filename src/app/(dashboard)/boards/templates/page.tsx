@@ -41,16 +41,16 @@ export default function BoardTemplatesPage() {
   const CATEGORY_COLORS: Record<string, string> = {
     Engineering: "bg-blue-100 text-blue-700",
     Marketing: "bg-purple-100 text-purple-700",
-    General: "bg-gray-100 text-gray-600",
+    General: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   };
 
   return (
     <ModuleLayoutShell moduleType="BOARDS">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         <BoardsNav />
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Board Templates</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Start with a pre-built board layout.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Board Templates</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Start with a pre-built board layout.</p>
         </div>
 
         {/* Category Filter */}
@@ -58,7 +58,7 @@ export default function BoardTemplatesPage() {
           {CATEGORIES.map((cat) => (
             <button key={cat} onClick={() => setActiveCategory(cat)}
               className={cn("px-3 py-1.5 text-xs font-medium rounded-full transition-colors",
-                activeCategory === cat ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                activeCategory === cat ? "bg-[var(--accent)] text-[var(--primary-foreground)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
               )}>
               {cat}
             </button>
@@ -66,36 +66,36 @@ export default function BoardTemplatesPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-sm text-gray-400">Loading...</div>
+          <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 border border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500">No templates in this category.</p>
+          <div className="text-center py-12 border border-[var(--border)] rounded-xl">
+            <p className="text-sm text-[var(--text-secondary)]">No templates in this category.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((t) => (
-              <div key={t.id} className="border border-gray-200 rounded-xl p-5 hover:border-indigo-300 transition-colors">
+              <div key={t.id} className="border border-[var(--border)] rounded-xl p-5 hover:border-[var(--accent)] transition-colors">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900">{t.name}</h3>
-                  <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", CATEGORY_COLORS[t.category] ?? "bg-gray-100 text-gray-600")}>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t.name}</h3>
+                  <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", CATEGORY_COLORS[t.category] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                     {t.category}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">{t.description}</p>
+                <p className="text-xs text-[var(--text-secondary)] mb-3">{t.description}</p>
 
                 {/* Column Preview */}
                 <div className="mb-4">
-                  <p className="text-[10px] font-medium text-gray-400 mb-1.5">Columns</p>
+                  <p className="text-[10px] font-medium text-[var(--text-tertiary)] mb-1.5">Columns</p>
                   <div className="flex flex-wrap gap-1">
                     {t.columns.map((col, i) => (
-                      <span key={i} className="px-2 py-0.5 text-[10px] bg-gray-100 text-gray-600 rounded">
+                      <span key={i} className="px-2 py-0.5 text-[10px] bg-[var(--bg-surface)] text-[var(--text-secondary)] rounded">
                         {col}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <button className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                <button className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">
                   Use Template
                 </button>
               </div>

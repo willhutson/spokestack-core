@@ -31,7 +31,7 @@ export const ARTIFACT_CONFIG: Record<ArtifactType, { label: string; icon: string
   calendar: { label: "Content Calendar", icon: "📅", color: "text-blue-500" },
   deck: { label: "Presentation", icon: "🎨", color: "text-orange-500" },
   brief: { label: "Creative Brief", icon: "📝", color: "text-green-500" },
-  document: { label: "Document", icon: "📄", color: "text-gray-500" },
+  document: { label: "Document", icon: "📄", color: "text-[var(--text-secondary)]" },
   moodboard: { label: "Moodboard", icon: "🖼️", color: "text-pink-500" },
   video_script: { label: "Video Script", icon: "🎬", color: "text-red-500" },
   report: { label: "Report", icon: "📊", color: "text-cyan-500" },
@@ -46,5 +46,5 @@ export const ARTIFACT_STATUS_CONFIG: Record<ArtifactStatus, { label: string; col
   draft: { label: "Draft", color: "text-amber-500" },
   final: { label: "Final", color: "text-green-600" },
   sent: { label: "Sent", color: "text-blue-500" },
-  archived: { label: "Archived", color: "text-gray-400" },
+  archived: { label: "Archived", color: "text-[var(--text-tertiary)]" },
 };

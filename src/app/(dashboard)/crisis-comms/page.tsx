@@ -79,24 +79,24 @@ function LogCrisisForm({ onCreated, onCancel }: { onCreated: () => void; onCance
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">Log Crisis</h2>
-        <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">Log Crisis</h2>
+        <button onClick={onCancel} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Crisis Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Brief crisis name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
-          <div><label className="block text-xs font-medium text-gray-700 mb-1">Severity</label>
-            <select value={severity} onChange={e => setSeverity(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Crisis Name *</label>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Brief crisis name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" /></div>
+          <div><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Severity</label>
+            <select value={severity} onChange={e => setSeverity(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
               <option value="low">Low</option><option value="medium">Medium</option>
               <option value="high">High</option><option value="critical">Critical</option>
             </select></div>
-          <div className="sm:col-span-2"><label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the crisis situation..." className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" /></div>
+          <div className="sm:col-span-2"><label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Description</label>
+            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} placeholder="Describe the crisis situation..." className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] resize-none" /></div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
           <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors">
             {submitting ? "Logging..." : "Log Crisis"}
@@ -150,11 +150,11 @@ export default function CrisisCommsPage() {
   }
 
   const Skeleton = () => (
-    <div className="animate-pulse bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
       {[1, 2, 3].map(i => (
-        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-gray-100 last:border-b-0">
-          <div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-4 w-40 bg-gray-200 rounded" />
-          <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+        <div key={i} className="px-5 py-4 flex items-center gap-6 border-b border-[var(--border)] last:border-b-0">
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded" /><div className="h-4 w-40 bg-[var(--bg-surface)] rounded" />
+          <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full ml-auto" />
         </div>
       ))}
     </div>
@@ -166,11 +166,11 @@ export default function CrisisCommsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Crisis Communications</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Monitor, respond to, and manage crisis situations.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Crisis Communications</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Monitor, respond to, and manage crisis situations.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me manage a crisis communication situation.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Ask Agent</button>
+          <button onClick={() => openChatWithContext("Help me manage a crisis communication situation.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Ask Agent</button>
           {tab === "status_board" && !showForm && (
             <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">Log Crisis</button>
           )}
@@ -179,28 +179,28 @@ export default function CrisisCommsPage() {
 
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Active Crises</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Active Crises</p>
           <p className="text-xl font-bold text-red-600 mt-1">{activeCrises.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Resolved</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Resolved</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{resolvedCrises.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Stakeholders</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{stakeholders.length}</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Stakeholders</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{stakeholders.length}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Holding Statements</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{statements.length}</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs text-[var(--text-secondary)]">Holding Statements</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{statements.length}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {TAB_LABELS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>
             {t.label}
           </button>
         ))}
@@ -213,9 +213,9 @@ export default function CrisisCommsPage() {
           {/* Status Board */}
           {tab === "status_board" && (
             projects.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No crises logged</h3>
-                <p className="text-xs text-gray-500 mb-4">Log a crisis to begin tracking and managing the response.</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No crises logged</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Log a crisis to begin tracking and managing the response.</p>
                 <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">Log Crisis</button>
               </div>
             ) : (
@@ -227,12 +227,12 @@ export default function CrisisCommsPage() {
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-3">
                           <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${SEVERITY_COLORS[sev]}`}>{sev}</span>
-                          <h3 className="text-sm font-semibold text-gray-900">{p.name}</h3>
+                          <h3 className="text-sm font-semibold text-[var(--text-primary)]">{p.name}</h3>
                         </div>
                         <StatusBadge status={p.status} />
                       </div>
-                      {p.description && <p className="text-sm text-gray-700 mb-2">{p.description}</p>}
-                      <p className="text-xs text-gray-500">Logged {fmtDate(p.createdAt)}</p>
+                      {p.description && <p className="text-sm text-[var(--text-secondary)] mb-2">{p.description}</p>}
+                      <p className="text-xs text-[var(--text-secondary)]">Logged {fmtDate(p.createdAt)}</p>
                     </div>
                   );
                 })}
@@ -244,13 +244,13 @@ export default function CrisisCommsPage() {
           {tab === "playbooks" && (
             <div className="space-y-4">
               {PLAYBOOKS.map((pb, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+                <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-sm font-semibold text-gray-900">{pb.title}</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)]">{pb.title}</h3>
                     <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${SEVERITY_COLORS[pb.severity]}`}>{pb.severity}</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">{pb.description}</p>
-                  <button onClick={() => openChatWithContext(`Walk me through the "${pb.title}" crisis playbook step by step.`)} className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+                  <p className="text-sm text-[var(--text-secondary)] mb-3">{pb.description}</p>
+                  <button onClick={() => openChatWithContext(`Walk me through the "${pb.title}" crisis playbook step by step.`)} className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent)]">
                     Activate Playbook
                   </button>
                 </div>
@@ -261,26 +261,26 @@ export default function CrisisCommsPage() {
           {/* Stakeholders */}
           {tab === "stakeholders" && (
             stakeholders.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No stakeholders mapped</h3>
-                <p className="text-xs text-gray-500 mb-4">Map key stakeholders for crisis communication plans.</p>
-                <button onClick={() => openChatWithContext("Help me map crisis communication stakeholders.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Map Stakeholders</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No stakeholders mapped</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Map key stakeholders for crisis communication plans.</p>
+                <button onClick={() => openChatWithContext("Help me map crisis communication stakeholders.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Map Stakeholders</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
-                  <thead><tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Name</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Role</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Contact</th>
-                    <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Priority</th>
+                  <thead><tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Name</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Role</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Contact</th>
+                    <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Priority</th>
                   </tr></thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {stakeholders.map(s => { const d = parseVal(s.value); return (
-                      <tr key={s.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{s.key}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.role as string) || "-"}</td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{(d.contact as string) || "-"}</td>
+                      <tr key={s.id} className="hover:bg-[var(--bg-hover)] transition-colors">
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{s.key}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.role as string) || "-"}</td>
+                        <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{(d.contact as string) || "-"}</td>
                         <td className="px-5 py-4">
                           <span className={`px-2 py-0.5 rounded text-xs font-medium ${SEVERITY_COLORS[(d.priority as string) || "medium"]}`}>
                             {(d.priority as string) || "medium"}
@@ -297,21 +297,21 @@ export default function CrisisCommsPage() {
           {/* Statements */}
           {tab === "statements" && (
             statements.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No holding statements</h3>
-                <p className="text-xs text-gray-500 mb-4">Prepare holding statements for potential crisis scenarios.</p>
-                <button onClick={() => openChatWithContext("Help me draft a holding statement for a crisis scenario.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Draft Statement</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No holding statements</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Prepare holding statements for potential crisis scenarios.</p>
+                <button onClick={() => openChatWithContext("Help me draft a holding statement for a crisis scenario.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Draft Statement</button>
               </div>
             ) : (
               <div className="space-y-4">
                 {statements.map(s => (
-                  <div key={s.id} className="bg-white border border-gray-200 rounded-xl p-5">
+                  <div key={s.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-gray-900">{s.title}</h3>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{s.title}</h3>
                       <StatusBadge status={s.status} />
                     </div>
-                    {s.content && <p className="text-sm text-gray-600 line-clamp-3">{s.content}</p>}
-                    <p className="text-xs text-gray-400 mt-2">{fmtDate(s.createdAt)}</p>
+                    {s.content && <p className="text-sm text-[var(--text-secondary)] line-clamp-3">{s.content}</p>}
+                    <p className="text-xs text-[var(--text-tertiary)] mt-2">{fmtDate(s.createdAt)}</p>
                   </div>
                 ))}
               </div>

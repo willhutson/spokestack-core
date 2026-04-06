@@ -10,7 +10,7 @@ interface AgentSwitcherProps {
 export function AgentSwitcher({ onSelect }: AgentSwitcherProps) {
   return (
     <div className="px-3 py-2">
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
         Quick Agents
       </p>
       <div className="grid grid-cols-2 gap-2">
@@ -23,11 +23,11 @@ export function AgentSwitcher({ onSelect }: AgentSwitcherProps) {
               onClick={() => onSelect(type)}
               className={cn(
                 "flex items-center gap-2 rounded-lg border border-gray-800 px-3 py-2 text-left transition-colors",
-                "hover:border-gray-600 hover:bg-gray-800/50",
+                "hover:border-gray-600 hover:bg-[var(--bg-surface)]/50",
               )}
             >
               <span className="text-base">{agent.icon}</span>
-              <span className="truncate text-xs font-medium text-gray-300">{agent.name}</span>
+              <span className="truncate text-xs font-medium text-[var(--text-tertiary)]">{agent.name}</span>
             </button>
           );
         })}

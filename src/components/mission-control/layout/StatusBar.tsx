@@ -11,7 +11,7 @@ export function StatusBar({ connectedAgents, lastMessageTime }: StatusBarProps) 
     : null;
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-800 bg-gray-950 px-4 py-1.5 text-[11px] text-gray-500">
+    <div className="flex items-center justify-between border-t border-gray-800 bg-gray-950 px-4 py-1.5 text-[11px] text-[var(--text-secondary)]">
       <div className="flex items-center gap-4">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-green-500" />

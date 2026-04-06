@@ -79,12 +79,12 @@ export default function CoursesPage() {
         <LmsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Course Catalog</h1>
-            <p className="text-sm text-gray-500">Browse and enroll in available courses.</p>
+            <h1 className="text-xl font-semibold text-[var(--text-primary)]">Course Catalog</h1>
+            <p className="text-sm text-[var(--text-secondary)]">Browse and enroll in available courses.</p>
           </div>
           <Link
             href="/lms/create"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
+            className="px-4 py-2 bg-[var(--accent)] text-[var(--primary-foreground)] rounded-lg text-sm font-medium hover:bg-[var(--accent)]"
           >
             New Course
           </Link>
@@ -95,12 +95,12 @@ export default function CoursesPage() {
             placeholder="Search courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64"
+            className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm w-64"
           />
           <select
             value={filterLevel}
             onChange={(e) => setFilterLevel(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm"
           >
             <option value="">All Levels</option>
             {LEVELS.map((l) => (
@@ -110,7 +110,7 @@ export default function CoursesPage() {
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm"
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((c) => (
@@ -120,17 +120,17 @@ export default function CoursesPage() {
         </div>
 
         {loading ? (
-          <p className="text-sm text-gray-400 text-center py-8">Loading...</p>
+          <p className="text-sm text-[var(--text-tertiary)] text-center py-8">Loading...</p>
         ) : courses.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-            <p className="text-sm text-gray-500">No courses found. Create your first course.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center">
+            <p className="text-sm text-[var(--text-secondary)]">No courses found. Create your first course.</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {courses.map((course) => {
               const v = course.value;
               return (
-                <div key={course.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-indigo-300 transition-all">
+                <div key={course.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-indigo-300 transition-all">
                   <div className="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
                     <svg className="w-12 h-12 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
@@ -138,15 +138,15 @@ export default function CoursesPage() {
                   </div>
                   <div className="p-4">
                     <div className="flex items-start justify-between">
-                      <h3 className="text-sm font-medium text-gray-900 flex-1">{v.title}</h3>
-                      <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium ml-2 shrink-0", levelColors[v.level] || "bg-gray-100 text-gray-600")}>
+                      <h3 className="text-sm font-medium text-[var(--text-primary)] flex-1">{v.title}</h3>
+                      <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium ml-2 shrink-0", levelColors[v.level] || "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                         {v.level}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{v.instructor || "No instructor"}</p>
-                    <p className="text-xs text-gray-400 mt-1">{v.description?.slice(0, 80) || "No description"}</p>
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{v.instructor || "No instructor"}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-1">{v.description?.slice(0, 80) || "No description"}</p>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--border)]">
+                      <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)]">
                         <span>{v.duration || "N/A"}</span>
                         <span>{(v.modules || []).length} modules</span>
                         <span>{v.enrollments || 0} enrolled</span>

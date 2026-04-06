@@ -30,7 +30,7 @@ const INDUSTRY_COLORS: Record<string, string> = {
   healthcare: "bg-red-50 text-red-700 border-red-200",
   retail: "bg-amber-50 text-amber-700 border-amber-200",
   manufacturing: "bg-purple-50 text-purple-700 border-purple-200",
-  education: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  education: "bg-[var(--accent-subtle)] text-[var(--accent)] border-[var(--accent)]",
   real_estate: "bg-teal-50 text-teal-700 border-teal-200",
 };
 
@@ -43,10 +43,10 @@ function getInitials(name: string): string {
 }
 
 function getIndustryColor(industry?: string): string {
-  if (!industry) return "bg-gray-100 text-gray-600 border-gray-200";
+  if (!industry) return "bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border)]";
   return (
     INDUSTRY_COLORS[industry.toLowerCase()] ||
-    "bg-gray-100 text-gray-600 border-gray-200"
+    "bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border)]"
   );
 }
 
@@ -101,12 +101,12 @@ function AddCompanyForm({
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">New Company</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Company</h2>
         <button
           onClick={onCancel}
-          className="text-xs text-gray-400 hover:text-gray-600"
+          className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
         >
           Cancel
         </button>
@@ -114,7 +114,7 @@ function AddCompanyForm({
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Company Name *
             </label>
             <Input
@@ -124,7 +124,7 @@ function AddCompanyForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Industry
             </label>
             <Input
@@ -134,7 +134,7 @@ function AddCompanyForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Website
             </label>
             <Input
@@ -145,7 +145,7 @@ function AddCompanyForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Notes
             </label>
             <Input
@@ -155,7 +155,7 @@ function AddCompanyForm({
             />
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
           <Button type="submit" disabled={submitting}>
             {submitting ? "Adding..." : "Add Company"}
@@ -204,8 +204,8 @@ export default function CompaniesPage() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Companies</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Companies</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               View and manage company profiles.
             </p>
           </div>
@@ -241,22 +241,22 @@ export default function CompaniesPage() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-5 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 animate-pulse"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-200" />
-                  <div className="h-4 w-28 bg-gray-200 rounded" />
+                  <div className="w-10 h-10 rounded-full bg-[var(--bg-surface)]" />
+                  <div className="h-4 w-28 bg-[var(--bg-surface)] rounded" />
                 </div>
-                <div className="h-3 w-16 bg-gray-200 rounded" />
+                <div className="h-3 w-16 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         ) : companies.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
               No companies found
             </h3>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-[var(--text-secondary)] mb-4">
               {search
                 ? "Try adjusting your search."
                 : "Add your first company to get started."}
@@ -272,14 +272,14 @@ export default function CompaniesPage() {
             {companies.map((c) => (
               <div
                 key={c.id}
-                className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-semibold text-indigo-700">
+                  <div className="w-10 h-10 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center text-sm font-semibold text-[var(--accent)]">
                     {getInitials(c.key)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">
                       {c.key}
                     </h3>
                     {c.value.website && (
@@ -287,7 +287,7 @@ export default function CompaniesPage() {
                         href={c.value.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-indigo-600 hover:text-indigo-700 truncate block"
+                        className="text-xs text-[var(--accent)] hover:text-[var(--accent-hover)] truncate block"
                       >
                         {c.value.website.replace(/^https?:\/\//, "")}
                       </a>
@@ -303,11 +303,11 @@ export default function CompaniesPage() {
                   </Badge>
                 )}
                 {c.value.notes && (
-                  <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                  <p className="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2">
                     {c.value.notes}
                   </p>
                 )}
-                <p className="text-[10px] text-gray-400 mt-3">
+                <p className="text-[10px] text-[var(--text-tertiary)] mt-3">
                   Added{" "}
                   {new Date(c.createdAt).toLocaleDateString("en-US", {
                     month: "short",

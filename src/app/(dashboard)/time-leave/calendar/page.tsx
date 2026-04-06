@@ -27,7 +27,7 @@ const TYPE_COLORS: Record<string, string> = {
   Annual: "bg-blue-200 text-blue-800",
   Sick: "bg-red-200 text-red-800",
   Personal: "bg-purple-200 text-purple-800",
-  Unpaid: "bg-gray-200 text-gray-700",
+  Unpaid: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
 };
 
 function getDaysInMonth(year: number, month: number): number {
@@ -113,41 +113,41 @@ export default function CalendarPage() {
         <TimeLeaveNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Team availability overview</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Calendar</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">Team availability overview</p>
           </div>
         </div>
 
         {/* Month Navigation */}
         <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => setMonthOffset((o) => o - 1)} className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Prev</button>
-          <span className="text-sm font-semibold text-gray-900 min-w-[140px] text-center">{monthLabel}</span>
-          <button onClick={() => setMonthOffset((o) => o + 1)} className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Next</button>
-          <button onClick={() => setMonthOffset(0)} className={cn("px-3 py-1.5 text-xs font-medium rounded-lg transition-colors", monthOffset === 0 ? "bg-indigo-100 text-indigo-700" : "text-gray-600 bg-gray-100 hover:bg-gray-200")}>Today</button>
+          <button onClick={() => setMonthOffset((o) => o - 1)} className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Prev</button>
+          <span className="text-sm font-semibold text-[var(--text-primary)] min-w-[140px] text-center">{monthLabel}</span>
+          <button onClick={() => setMonthOffset((o) => o + 1)} className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Next</button>
+          <button onClick={() => setMonthOffset(0)} className={cn("px-3 py-1.5 text-xs font-medium rounded-lg transition-colors", monthOffset === 0 ? "bg-[var(--accent-subtle)] text-[var(--accent)]" : "text-[var(--text-secondary)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)]")}>Today</button>
         </div>
 
         {/* Legend */}
         <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-blue-200" /><span className="text-xs text-gray-500">Annual</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-red-200" /><span className="text-xs text-gray-500">Sick</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-purple-200" /><span className="text-xs text-gray-500">Personal</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-blue-200" /><span className="text-xs text-[var(--text-secondary)]">Annual</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-red-200" /><span className="text-xs text-[var(--text-secondary)]">Sick</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-purple-200" /><span className="text-xs text-[var(--text-secondary)]">Personal</span></div>
         </div>
 
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">Loading...</div>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             {/* Day headers */}
-            <div className="grid grid-cols-7 bg-gray-50">
+            <div className="grid grid-cols-7 bg-[var(--bg-base)]">
               {dayLabels.map((d) => (
-                <div key={d} className="text-center text-xs font-medium text-gray-500 py-2 border-b border-gray-200">{d}</div>
+                <div key={d} className="text-center text-xs font-medium text-[var(--text-secondary)] py-2 border-b border-[var(--border)]">{d}</div>
               ))}
             </div>
             {/* Calendar grid */}
             <div className="grid grid-cols-7">
               {/* Empty cells for offset */}
               {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-gray-100 bg-gray-50" />
+                <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-[var(--border)] bg-[var(--bg-base)]" />
               ))}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
@@ -155,16 +155,16 @@ export default function CalendarPage() {
                 const leaves = dayLeaveMap[iso] ?? [];
                 const isToday = iso === new Date().toISOString().split("T")[0];
                 return (
-                  <div key={day} className={cn("min-h-[80px] border-b border-r border-gray-100 p-1", isToday && "bg-indigo-50")}>
-                    <div className={cn("text-xs font-medium mb-1", isToday ? "text-indigo-600" : "text-gray-500")}>{day}</div>
+                  <div key={day} className={cn("min-h-[80px] border-b border-r border-[var(--border)] p-1", isToday && "bg-[var(--accent-subtle)]")}>
+                    <div className={cn("text-xs font-medium mb-1", isToday ? "text-[var(--accent)]" : "text-[var(--text-secondary)]")}>{day}</div>
                     <div className="space-y-0.5">
                       {leaves.slice(0, 3).map((l, idx) => (
-                        <div key={idx} className={cn("text-[10px] px-1 py-0.5 rounded truncate", TYPE_COLORS[l.type] ?? "bg-gray-100 text-gray-600")}>
+                        <div key={idx} className={cn("text-[10px] px-1 py-0.5 rounded truncate", TYPE_COLORS[l.type] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                           {l.name}
                         </div>
                       ))}
                       {leaves.length > 3 && (
-                        <div className="text-[10px] text-gray-400 px-1">+{leaves.length - 3} more</div>
+                        <div className="text-[10px] text-[var(--text-tertiary)] px-1">+{leaves.length - 3} more</div>
                       )}
                     </div>
                   </div>

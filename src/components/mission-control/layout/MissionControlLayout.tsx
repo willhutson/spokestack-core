@@ -151,7 +151,7 @@ export function MissionControlLayout() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => commandPalette.toggle()}
-            className="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-gray-600"
+            className="flex items-center gap-2 rounded-lg border border-gray-700 bg-[var(--bg-base)] px-3 py-1.5 text-xs text-[var(--text-tertiary)] transition-colors hover:border-gray-600"
           >
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <circle cx="11" cy="11" r="8" />
@@ -190,7 +190,7 @@ export function MissionControlLayout() {
         {!sidebarCollapsed && (
           <div
             onMouseDown={handleResizeStart}
-            className="w-1 cursor-col-resize bg-gray-800 transition-colors hover:bg-indigo-500/50"
+            className="w-1 cursor-col-resize bg-[var(--bg-surface)] transition-colors hover:bg-[var(--accent)]/50"
           />
         )}
 
@@ -234,12 +234,12 @@ export function MissionControlLayout() {
 
       {/* Notification panel placeholder */}
       {notificationsOpen && (
-        <div className="fixed right-4 top-14 z-40 w-80 rounded-xl border border-gray-700 bg-gray-900 p-4 shadow-2xl">
+        <div className="fixed right-4 top-14 z-40 w-80 rounded-xl border border-gray-700 bg-[var(--bg-base)] p-4 shadow-2xl">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-white">Notifications</h3>
             <button
               onClick={() => setNotificationsOpen(false)}
-              className="text-gray-500 hover:text-white"
+              className="text-[var(--text-secondary)] hover:text-white"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M18 6L6 18M6 6l12 12" />
@@ -247,9 +247,9 @@ export function MissionControlLayout() {
             </button>
           </div>
           {unreadCount === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">No new notifications</p>
+            <p className="text-sm text-[var(--text-secondary)] py-4 text-center">No new notifications</p>
           ) : (
-            <p className="text-sm text-gray-400">{unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}</p>
+            <p className="text-sm text-[var(--text-tertiary)]">{unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}</p>
           )}
         </div>
       )}

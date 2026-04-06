@@ -50,46 +50,46 @@ async function getAuthHeaders() {
 function LoadingSkeleton() {
   return (
     <div className="p-6 animate-pulse">
-      <div className="h-4 w-20 bg-gray-200 rounded mb-4" />
+      <div className="h-4 w-20 bg-[var(--bg-surface)] rounded mb-4" />
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-7 w-56 bg-gray-200 rounded" />
-            <div className="h-5 w-20 bg-gray-200 rounded-full" />
+            <div className="h-7 w-56 bg-[var(--bg-surface)] rounded" />
+            <div className="h-5 w-20 bg-[var(--bg-surface)] rounded-full" />
           </div>
-          <div className="h-4 w-72 bg-gray-200 rounded mt-2" />
+          <div className="h-4 w-72 bg-[var(--bg-surface)] rounded mt-2" />
           <div className="flex gap-4 mt-2">
-            <div className="h-3 w-28 bg-gray-200 rounded" />
-            <div className="h-3 w-28 bg-gray-200 rounded" />
+            <div className="h-3 w-28 bg-[var(--bg-surface)] rounded" />
+            <div className="h-3 w-28 bg-[var(--bg-surface)] rounded" />
           </div>
         </div>
-        <div className="h-9 w-28 bg-gray-200 rounded-lg" />
+        <div className="h-9 w-28 bg-[var(--bg-surface)] rounded-lg" />
       </div>
       <div className="mb-8">
-        <div className="h-4 w-16 bg-gray-200 rounded mb-3" />
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="h-4 w-16 bg-[var(--bg-surface)] rounded mb-3" />
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
           <div className="flex gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex flex-col items-center gap-1">
-                <div className="w-8 h-8 bg-gray-200 rounded-full" />
-                <div className="h-3 w-16 bg-gray-200 rounded" />
+                <div className="w-8 h-8 bg-[var(--bg-surface)] rounded-full" />
+                <div className="h-3 w-16 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         </div>
       </div>
       <div>
-        <div className="h-4 w-24 bg-gray-200 rounded mb-3" />
+        <div className="h-4 w-24 bg-[var(--bg-surface)] rounded mb-3" />
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between mb-2"
+            className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg px-4 py-3 flex items-center justify-between mb-2"
           >
             <div className="flex items-center gap-3">
-              <div className="w-2.5 h-2.5 bg-gray-200 rounded-full" />
-              <div className="h-4 w-40 bg-gray-200 rounded" />
+              <div className="w-2.5 h-2.5 bg-[var(--bg-surface)] rounded-full" />
+              <div className="h-4 w-40 bg-[var(--bg-surface)] rounded" />
             </div>
-            <div className="h-3 w-20 bg-gray-200 rounded" />
+            <div className="h-3 w-20 bg-[var(--bg-surface)] rounded" />
           </div>
         ))}
       </div>
@@ -146,16 +146,16 @@ export default function ProjectDetailPage({
   if (notFound) {
     return (
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
             Project not found
           </h3>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-[var(--text-secondary)] mb-4">
             This project may have been deleted or you don&apos;t have access.
           </p>
           <button
             onClick={() => router.push("/projects")}
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Back to Projects
           </button>
@@ -171,10 +171,10 @@ export default function ProjectDetailPage({
           <h3 className="text-sm font-medium text-red-700 mb-1">
             Error loading project
           </h3>
-          <p className="text-xs text-gray-500 mb-4">{error}</p>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">{error}</p>
           <button
             onClick={() => router.push("/projects")}
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Back to Projects
           </button>
@@ -195,7 +195,7 @@ export default function ProjectDetailPage({
       {/* Back button */}
       <button
         onClick={() => router.push("/projects")}
-        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-4"
+        className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-4"
       >
         <svg
           className="w-4 h-4"
@@ -217,17 +217,17 @@ export default function ProjectDetailPage({
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
               {project.name}
             </h1>
             <StatusBadge status={project.status} />
           </div>
           {project.description && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               {project.description}
             </p>
           )}
-          <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+          <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)] mt-2">
             {project.startDate && (
               <span>
                 Start:{" "}
@@ -256,7 +256,7 @@ export default function ProjectDetailPage({
               `Give me a detailed status update on project "${project.name}"`
             )
           }
-          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -277,20 +277,20 @@ export default function ProjectDetailPage({
 
       {/* Phases Timeline */}
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Phases</h2>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
           <PhasesTimeline phases={sortedPhases} />
         </div>
       </div>
 
       {/* Milestones */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
           Milestones
         </h2>
         {project.milestones.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-            <p className="text-xs text-gray-500">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-6 text-center">
+            <p className="text-xs text-[var(--text-secondary)]">
               No milestones defined yet.
             </p>
           </div>
@@ -302,7 +302,7 @@ export default function ProjectDetailPage({
               return (
                 <div
                   key={ms.id}
-                  className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between"
+                  className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -311,14 +311,14 @@ export default function ProjectDetailPage({
                           ? "bg-emerald-500"
                           : isPast
                             ? "bg-red-400"
-                            : "bg-gray-300"
+                            : "bg-[var(--bg-hover)]"
                       }`}
                     />
                     <span
                       className={`text-sm ${
                         ms.completed
-                          ? "text-gray-400 line-through"
-                          : "text-gray-900"
+                          ? "text-[var(--text-tertiary)] line-through"
+                          : "text-[var(--text-primary)]"
                       }`}
                     >
                       {ms.name}
@@ -326,7 +326,7 @@ export default function ProjectDetailPage({
                   </div>
                   <span
                     className={`text-xs ${
-                      isPast ? "text-red-500 font-medium" : "text-gray-500"
+                      isPast ? "text-red-500 font-medium" : "text-[var(--text-secondary)]"
                     }`}
                   >
                     {new Date(ms.dueDate).toLocaleDateString("en-US", {

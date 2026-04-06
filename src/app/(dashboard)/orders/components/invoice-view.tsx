@@ -25,13 +25,13 @@ export default function InvoiceView({ order, onClose }: InvoiceViewProps) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+      <div className="bg-[var(--bg-base)] rounded-xl shadow-xl w-full max-w-lg mx-4">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Invoice #{order.orderNumber}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Invoice #{order.orderNumber}</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -43,12 +43,12 @@ export default function InvoiceView({ order, onClose }: InvoiceViewProps) {
           {/* Invoice meta */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Bill To</label>
-              <p className="text-sm font-medium text-gray-900 mt-0.5">{order.customerName}</p>
+              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Bill To</label>
+              <p className="text-sm font-medium text-[var(--text-primary)] mt-0.5">{order.customerName}</p>
             </div>
             <div className="text-right">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Date</label>
-              <p className="text-sm text-gray-900 mt-0.5">
+              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Date</label>
+              <p className="text-sm text-[var(--text-primary)] mt-0.5">
                 {new Date(order.createdAt).toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
@@ -61,20 +61,20 @@ export default function InvoiceView({ order, onClose }: InvoiceViewProps) {
           {/* Line items */}
           <table className="w-full mb-6">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left text-xs font-medium text-gray-500 pb-2">Item</th>
-                <th className="text-right text-xs font-medium text-gray-500 pb-2">Qty</th>
-                <th className="text-right text-xs font-medium text-gray-500 pb-2">Price</th>
-                <th className="text-right text-xs font-medium text-gray-500 pb-2">Total</th>
+              <tr className="border-b border-[var(--border)]">
+                <th className="text-left text-xs font-medium text-[var(--text-secondary)] pb-2">Item</th>
+                <th className="text-right text-xs font-medium text-[var(--text-secondary)] pb-2">Qty</th>
+                <th className="text-right text-xs font-medium text-[var(--text-secondary)] pb-2">Price</th>
+                <th className="text-right text-xs font-medium text-[var(--text-secondary)] pb-2">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[var(--border)]">
               {order.items.map((item, i) => (
                 <tr key={i}>
-                  <td className="py-2.5 text-sm text-gray-900">{item.name}</td>
-                  <td className="py-2.5 text-sm text-gray-600 text-right">{item.quantity}</td>
-                  <td className="py-2.5 text-sm text-gray-600 text-right">{formatter.format(item.unitPrice)}</td>
-                  <td className="py-2.5 text-sm font-medium text-gray-900 text-right">
+                  <td className="py-2.5 text-sm text-[var(--text-primary)]">{item.name}</td>
+                  <td className="py-2.5 text-sm text-[var(--text-secondary)] text-right">{item.quantity}</td>
+                  <td className="py-2.5 text-sm text-[var(--text-secondary)] text-right">{formatter.format(item.unitPrice)}</td>
+                  <td className="py-2.5 text-sm font-medium text-[var(--text-primary)] text-right">
                     {formatter.format(item.quantity * item.unitPrice)}
                   </td>
                 </tr>
@@ -83,31 +83,31 @@ export default function InvoiceView({ order, onClose }: InvoiceViewProps) {
           </table>
 
           {/* Totals */}
-          <div className="border-t border-gray-200 pt-4 space-y-2">
+          <div className="border-t border-[var(--border)] pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Subtotal</span>
-              <span className="text-gray-900">{formatter.format(subtotal)}</span>
+              <span className="text-[var(--text-secondary)]">Subtotal</span>
+              <span className="text-[var(--text-primary)]">{formatter.format(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Tax (10%)</span>
-              <span className="text-gray-900">{formatter.format(tax)}</span>
+              <span className="text-[var(--text-secondary)]">Tax (10%)</span>
+              <span className="text-[var(--text-primary)]">{formatter.format(tax)}</span>
             </div>
-            <div className="flex justify-between text-base font-semibold pt-2 border-t border-gray-200">
-              <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">{formatter.format(order.total)}</span>
+            <div className="flex justify-between text-base font-semibold pt-2 border-t border-[var(--border)]">
+              <span className="text-[var(--text-primary)]">Total</span>
+              <span className="text-[var(--text-primary)]">{formatter.format(order.total)}</span>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] border border-[var(--border-strong)] rounded-md hover:bg-[var(--bg-hover)] transition-colors"
           >
             Close
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors">
+          <button className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-hover)] transition-colors">
             Download PDF
           </button>
         </div>

@@ -124,8 +124,8 @@ export default function DashboardLayout({
 
   if (!sessionChecked) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 rounded-lg bg-indigo-600 animate-pulse" />
+      <div className="flex h-screen items-center justify-center bg-[var(--bg-base)]">
+        <div className="w-8 h-8 rounded-lg bg-[var(--accent)] animate-pulse" />
       </div>
     );
   }

@@ -36,18 +36,18 @@ function priorityDot(priority?: string) {
     case "URGENT": return "bg-red-400";
     case "HIGH": return "bg-orange-400";
     case "MEDIUM": return "bg-yellow-400";
-    case "LOW": return "bg-gray-300";
-    default: return "bg-gray-300";
+    case "LOW": return "bg-[var(--bg-hover)]";
+    default: return "bg-[var(--bg-hover)]";
   }
 }
 
 function SkeletonColumn() {
   return (
-    <div className="flex flex-col bg-gray-50 rounded-xl border border-gray-200 p-3">
-      <div className="animate-pulse h-5 bg-gray-200 rounded w-1/2 mb-3" />
+    <div className="flex flex-col bg-[var(--bg-base)] rounded-xl border border-[var(--border)] p-3">
+      <div className="animate-pulse h-5 bg-[var(--bg-surface)] rounded w-1/2 mb-3" />
       <div className="space-y-2">
-        <div className="animate-pulse h-16 bg-gray-200 rounded-lg" />
-        <div className="animate-pulse h-16 bg-gray-200 rounded-lg" />
+        <div className="animate-pulse h-16 bg-[var(--bg-surface)] rounded-lg" />
+        <div className="animate-pulse h-16 bg-[var(--bg-surface)] rounded-lg" />
       </div>
     </div>
   );
@@ -83,18 +83,18 @@ export default function BoardsPage() {
 
   return (
     <ModuleLayoutShell moduleType="BOARDS">
-    <div className="p-6 h-full flex flex-col bg-white">
+    <div className="p-6 h-full flex flex-col bg-[var(--bg-base)]">
       <BoardsNav />
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Boards</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Visual collaboration spaces for your team</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Boards</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Visual collaboration spaces for your team</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => openChatWithContext("Create a kanban board for my team.")}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
@@ -103,7 +103,7 @@ export default function BoardsPage() {
           </button>
           <button
             onClick={() => router.push("/tasks")}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -118,7 +118,7 @@ export default function BoardsPage() {
         <button
           onClick={() => setView("board")}
           className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
-            view === "board" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            view === "board" ? "bg-[var(--accent)] text-[var(--primary-foreground)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
           }`}
         >
           Active Board
@@ -126,7 +126,7 @@ export default function BoardsPage() {
         <button
           onClick={() => setView("templates")}
           className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
-            view === "templates" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            view === "templates" ? "bg-[var(--accent)] text-[var(--primary-foreground)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
           }`}
         >
           Templates
@@ -139,15 +139,15 @@ export default function BoardsPage() {
             <button
               key={t.name}
               onClick={() => router.push("/tasks")}
-              className="text-left bg-white border border-gray-200 rounded-lg p-5 hover:border-indigo-300 hover:shadow-sm transition-all group"
+              className="text-left bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-5 hover:border-[var(--accent)] hover:shadow-sm transition-all group"
             >
-              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="w-10 h-10 bg-[var(--accent-subtle)] rounded-lg flex items-center justify-center mb-3 group-hover:bg-[var(--accent-subtle)] transition-colors">
+                <svg className="w-5 h-5 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d={t.icon} />
                 </svg>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">{t.name}</h3>
-              <p className="text-xs text-gray-500">{t.description}</p>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t.name}</h3>
+              <p className="text-xs text-[var(--text-secondary)]">{t.description}</p>
             </button>
           ))}
         </div>
@@ -162,13 +162,13 @@ export default function BoardsPage() {
           {COLUMNS.map((col) => {
             const colTasks = tasksByStatus(col.key);
             return (
-              <div key={col.key} className="flex flex-col bg-gray-50 rounded-xl border border-gray-200">
+              <div key={col.key} className="flex flex-col bg-[var(--bg-base)] rounded-xl border border-[var(--border)]">
                 {/* Column header */}
                 <div className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span className={`w-2.5 h-2.5 rounded-full ${col.color}`} />
-                    <h3 className="text-sm font-semibold text-gray-700">{col.label}</h3>
-                    <span className="text-xs font-medium text-gray-400 bg-gray-200 rounded-full px-2 py-0.5">
+                    <h3 className="text-sm font-semibold text-[var(--text-secondary)]">{col.label}</h3>
+                    <span className="text-xs font-medium text-[var(--text-tertiary)] bg-[var(--bg-surface)] rounded-full px-2 py-0.5">
                       {colTasks.length}
                     </span>
                   </div>
@@ -177,29 +177,29 @@ export default function BoardsPage() {
                 {/* Cards */}
                 <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-2">
                   {colTasks.length === 0 ? (
-                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-gray-300 rounded-lg">
-                      <p className="text-xs text-gray-400">No items</p>
+                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-[var(--border-strong)] rounded-lg">
+                      <p className="text-xs text-[var(--text-tertiary)]">No items</p>
                     </div>
                   ) : (
                     colTasks.map((task) => (
                       <div
                         key={task.id}
                         onClick={() => router.push("/tasks")}
-                        className="bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors cursor-pointer"
+                        className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 hover:border-[var(--border-strong)] transition-colors cursor-pointer"
                       >
                         <div className="flex items-start gap-2">
                           <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${priorityDot(task.priority)}`} />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{task.title}</p>
+                            <p className="text-sm font-medium text-[var(--text-primary)] truncate">{task.title}</p>
                             {task.description && (
-                              <p className="text-xs text-gray-500 truncate mt-0.5">{task.description}</p>
+                              <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">{task.description}</p>
                             )}
                             <div className="flex items-center gap-2 mt-2">
                               {task.taskList && (
-                                <span className="text-xs text-gray-400">{task.taskList.name}</span>
+                                <span className="text-xs text-[var(--text-tertiary)]">{task.taskList.name}</span>
                               )}
                               {task.dueDate && (
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-[var(--text-tertiary)]">
                                   {new Date(task.dueDate).toLocaleDateString()}
                                 </span>
                               )}

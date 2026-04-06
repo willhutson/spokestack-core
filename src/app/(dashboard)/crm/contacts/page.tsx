@@ -36,7 +36,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   active: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  inactive: "bg-gray-100 text-gray-500 border-gray-200",
+  inactive: "bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border)]",
   churned: "bg-red-50 text-red-600 border-red-200",
 };
 
@@ -95,12 +95,12 @@ function AddContactForm({
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">New Contact</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Contact</h2>
         <button
           onClick={onCancel}
-          className="text-xs text-gray-400 hover:text-gray-600"
+          className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
         >
           Cancel
         </button>
@@ -108,7 +108,7 @@ function AddContactForm({
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Name *
             </label>
             <Input
@@ -118,7 +118,7 @@ function AddContactForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Email
             </label>
             <Input
@@ -129,7 +129,7 @@ function AddContactForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Company
             </label>
             <Input
@@ -139,7 +139,7 @@ function AddContactForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Type
             </label>
             <select
@@ -155,7 +155,7 @@ function AddContactForm({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Phone
             </label>
             <Input
@@ -166,7 +166,7 @@ function AddContactForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Status
             </label>
             <select
@@ -180,7 +180,7 @@ function AddContactForm({
             </select>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
           <Button type="submit" disabled={submitting}>
             {submitting ? "Adding..." : "Add Contact"}
@@ -231,8 +231,8 @@ export default function ContactsPage() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Contacts</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Manage your leads, prospects, and customers.
             </p>
           </div>
@@ -276,24 +276,24 @@ export default function ContactsPage() {
         )}
 
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden animate-pulse">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="px-5 py-4 flex items-center gap-6 border-b border-gray-100 last:border-b-0"
+                className="px-5 py-4 flex items-center gap-6 border-b border-[var(--border)] last:border-b-0"
               >
-                <div className="h-4 w-32 bg-gray-200 rounded" />
-                <div className="h-4 w-40 bg-gray-200 rounded" />
-                <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+                <div className="h-4 w-32 bg-[var(--bg-surface)] rounded" />
+                <div className="h-4 w-40 bg-[var(--bg-surface)] rounded" />
+                <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full ml-auto" />
               </div>
             ))}
           </div>
         ) : contacts.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
               No contacts found
             </h3>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-[var(--text-secondary)] mb-4">
               {search || typeFilter
                 ? "Try adjusting your filters."
                 : "Add your first contact to get started."}
@@ -305,44 +305,44 @@ export default function ContactsPage() {
             )}
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">
+                <tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">
                     Name
                   </th>
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">
                     Email
                   </th>
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">
                     Company
                   </th>
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">
                     Type
                   </th>
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {contacts.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50">
+                  <tr key={c.id} className="hover:bg-[var(--bg-hover)]">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-700">
+                        <div className="w-8 h-8 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center text-xs font-semibold text-[var(--accent)]">
                           {c.key.charAt(0).toUpperCase()}
                         </div>
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-medium text-[var(--text-primary)]">
                           {c.key}
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-gray-600">
+                    <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">
                       {c.value.email || "-"}
                     </td>
-                    <td className="px-5 py-4 text-sm text-gray-600">
+                    <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">
                       {c.value.company || "-"}
                     </td>
                     <td className="px-5 py-4">

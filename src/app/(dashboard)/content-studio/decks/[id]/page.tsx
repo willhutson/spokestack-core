@@ -102,8 +102,8 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
       <ModuleLayoutShell moduleType="CONTENT_STUDIO">
         <StudioNav />
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
-          <div className="h-96 bg-gray-100 rounded-xl" />
+          <div className="h-8 w-48 bg-[var(--bg-surface)] rounded" />
+          <div className="h-96 bg-[var(--bg-surface)] rounded-xl" />
         </div>
       </ModuleLayoutShell>
     );
@@ -113,9 +113,9 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
     return (
       <ModuleLayoutShell moduleType="CONTENT_STUDIO">
         <StudioNav />
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">Deck not found</h3>
-          <Link href="/content-studio/decks" className="text-sm text-indigo-600 hover:text-indigo-700">Back to Decks</Link>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">Deck not found</h3>
+          <Link href="/content-studio/decks" className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]">Back to Decks</Link>
         </div>
       </ModuleLayoutShell>
     );
@@ -128,23 +128,23 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
       {/* Top bar */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link href="/content-studio/decks" className="text-sm text-gray-500 hover:text-gray-700">&larr; Back</Link>
+          <Link href="/content-studio/decks" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-secondary)]">&larr; Back</Link>
           <input
             value={deckTitle}
             onChange={(e) => setDeckTitle(e.target.value)}
-            className="text-xl font-bold text-gray-900 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-indigo-500 focus:outline-none px-1"
+            className="text-xl font-bold text-[var(--text-primary)] bg-transparent border-b border-transparent hover:border-[var(--border-strong)] focus:border-[var(--accent)] focus:outline-none px-1"
           />
-          <span className="text-xs text-gray-400">{slides.length} slide{slides.length !== 1 ? "s" : ""}</span>
+          <span className="text-xs text-[var(--text-tertiary)]">{slides.length} slide{slides.length !== 1 ? "s" : ""}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={save}
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
           >
             {saving ? "Saving..." : "Save"}
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+          <button className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
             Export
           </button>
         </div>
@@ -160,20 +160,20 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
               className={cn(
                 "w-full text-left p-3 rounded-lg border transition-colors",
                 i === currentSlide
-                  ? "border-indigo-500 bg-indigo-50"
-                  : "border-gray-200 bg-white hover:border-gray-300"
+                  ? "border-[var(--accent)] bg-[var(--accent-subtle)]"
+                  : "border-[var(--border)] bg-[var(--bg-base)] hover:border-[var(--border-strong)]"
               )}
             >
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-gray-400 w-5">{i + 1}</span>
-                <span className="text-sm text-gray-700 truncate">{s.title || "Untitled"}</span>
+                <span className="text-xs font-medium text-[var(--text-tertiary)] w-5">{i + 1}</span>
+                <span className="text-sm text-[var(--text-secondary)] truncate">{s.title || "Untitled"}</span>
               </div>
             </button>
           ))}
           <div className="flex gap-2 pt-2">
             <button
               onClick={addSlide}
-              className="flex-1 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+              className="flex-1 px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors"
             >
               + Add Slide
             </button>
@@ -189,32 +189,32 @@ export default function DeckViewerPage({ params }: { params: Promise<{ id: strin
 
         {/* Main area: current slide */}
         {slide && (
-          <div className="flex-1 bg-white border border-gray-200 rounded-xl p-8">
+          <div className="flex-1 bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8">
             <div className="mb-6">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Slide Title</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Slide Title</label>
               <input
                 value={slide.title}
                 onChange={(e) => updateSlide("title", e.target.value)}
-                className="w-full text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-200 focus:border-indigo-500 focus:outline-none pb-1"
+                className="w-full text-lg font-semibold text-[var(--text-primary)] bg-transparent border-b border-[var(--border)] focus:border-[var(--accent)] focus:outline-none pb-1"
               />
             </div>
             <div className="mb-6">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Body</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Body</label>
               <textarea
                 value={slide.body}
                 onChange={(e) => updateSlide("body", e.target.value)}
                 rows={8}
-                className="w-full text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y"
+                className="w-full text-sm text-[var(--text-secondary)] bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] resize-y"
                 placeholder="Slide content..."
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Speaker Notes</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Speaker Notes</label>
               <textarea
                 value={slide.notes}
                 onChange={(e) => updateSlide("notes", e.target.value)}
                 rows={3}
-                className="w-full text-sm text-gray-600 bg-yellow-50 border border-yellow-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-y"
+                className="w-full text-sm text-[var(--text-secondary)] bg-yellow-50 border border-yellow-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-y"
                 placeholder="Notes for this slide..."
               />
             </div>

@@ -87,8 +87,8 @@ export default function AppointmentsListPage() {
     <ModuleLayoutShell moduleType="TIME_LEAVE">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Scheduler</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Scheduler</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             View and manage all appointments.
           </p>
         </div>
@@ -104,8 +104,8 @@ export default function AppointmentsListPage() {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors capitalize",
                 filter === f
-                  ? "bg-indigo-100 text-indigo-700"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
               )}
             >
               {f}
@@ -115,48 +115,48 @@ export default function AppointmentsListPage() {
 
         {/* Table */}
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse">
-            <div className="h-4 w-48 bg-gray-200 rounded mb-4" />
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 animate-pulse">
+            <div className="h-4 w-48 bg-[var(--bg-surface)] rounded mb-4" />
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded mb-2" />
+              <div key={i} className="h-12 bg-[var(--bg-surface)] rounded mb-2" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm bg-white border border-gray-200 rounded-xl">
+          <div className="text-center py-16 text-[var(--text-tertiary)] text-sm bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
             No {filter} appointments.
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                <tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Type
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Title
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Attendees
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Date & Time
                   </th>
-                  <th className="text-center px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-center px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Duration
                   </th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Location
                   </th>
-                  <th className="text-center px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-center px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Status
                   </th>
-                  <th className="text-center px-5 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="text-center px-5 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filtered.map((appt) => {
                   const type = (appt.value.type as string) || "general";
                   const attendees = (appt.value.attendees as string[]) || [];
@@ -169,29 +169,29 @@ export default function AppointmentsListPage() {
                     status !== "CANCELLED" && status !== "COMPLETED";
 
                   return (
-                    <tr key={appt.id} className="hover:bg-gray-50">
+                    <tr key={appt.id} className="hover:bg-[var(--bg-hover)]">
                       <td className="px-5 py-3">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--accent-subtle)] flex items-center justify-center text-xs font-bold text-[var(--accent)]">
                           {TYPE_ICONS[type] || "G"}
                         </div>
                       </td>
-                      <td className="px-5 py-3 font-medium text-gray-900">
+                      <td className="px-5 py-3 font-medium text-[var(--text-primary)]">
                         {appt.key}
                       </td>
-                      <td className="px-5 py-3 text-gray-600">
+                      <td className="px-5 py-3 text-[var(--text-secondary)]">
                         {attendees.length > 0
                           ? attendees.join(", ")
                           : "--"}
                       </td>
-                      <td className="px-5 py-3 text-gray-600">
+                      <td className="px-5 py-3 text-[var(--text-secondary)]">
                         {dateStr} {timeStr}
                       </td>
-                      <td className="px-5 py-3 text-center text-gray-600">
+                      <td className="px-5 py-3 text-center text-[var(--text-secondary)]">
                         {dur >= 60
                           ? `${Math.floor(dur / 60)}h${dur % 60 > 0 ? ` ${dur % 60}m` : ""}`
                           : `${dur}m`}
                       </td>
-                      <td className="px-5 py-3 text-gray-600 max-w-xs truncate">
+                      <td className="px-5 py-3 text-[var(--text-secondary)] max-w-xs truncate">
                         {loc}
                       </td>
                       <td className="px-5 py-3 text-center">

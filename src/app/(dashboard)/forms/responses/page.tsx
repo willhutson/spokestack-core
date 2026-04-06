@@ -96,10 +96,10 @@ export default function FormResponsesPage() {
         <FormsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Responses</h1>
-            <p className="text-sm text-gray-500 mt-0.5">View and analyze form submissions</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Responses</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">View and analyze form submissions</p>
           </div>
-          <button onClick={exportCsv} disabled={filteredResponses.length === 0} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors">
+          <button onClick={exportCsv} disabled={filteredResponses.length === 0} className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-50 transition-colors">
             Export CSV
           </button>
         </div>
@@ -107,8 +107,8 @@ export default function FormResponsesPage() {
         {/* Form Selector */}
         <div className="flex items-center gap-4 mb-6">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Select Form</label>
-            <select value={selectedFormId ?? ""} onChange={(e) => setSelectedFormId(e.target.value || null)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[200px]">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Select Form</label>
+            <select value={selectedFormId ?? ""} onChange={(e) => setSelectedFormId(e.target.value || null)} className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] min-w-[200px]">
               <option value="">All Forms</option>
               {forms.map((f) => <option key={f.id} value={f.id}>{f.value.name ?? "Untitled"}</option>)}
             </select>
@@ -117,48 +117,48 @@ export default function FormResponsesPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs text-gray-400 mb-1">Total Responses</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs text-[var(--text-tertiary)] mb-1">Total Responses</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs text-gray-400 mb-1">Completed</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs text-[var(--text-tertiary)] mb-1">Completed</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.completed}</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs text-gray-400 mb-1">Completion Rate</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.rate}%</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+            <p className="text-xs text-[var(--text-tertiary)] mb-1">Completion Rate</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.rate}%</p>
           </div>
         </div>
 
         {/* Response Table */}
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">Loading...</div>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : filteredResponses.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No responses yet</h3>
-            <p className="text-xs text-gray-500">Responses will appear here once people submit your form.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No responses yet</h3>
+            <p className="text-xs text-[var(--text-secondary)]">Responses will appear here once people submit your form.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Submitted At</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Respondent</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Status</th>
-                  <th className="text-right text-xs font-medium text-gray-500 px-4 py-3">Details</th>
+                <tr className="bg-[var(--bg-base)]">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Submitted At</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Respondent</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Status</th>
+                  <th className="text-right text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filteredResponses.map((resp) => {
                   const v = resp.value;
                   const isExpanded = expandedRow === resp.id;
                   return (
                     <>
-                      <tr key={resp.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => setExpandedRow(isExpanded ? null : resp.id)}>
-                        <td className="px-4 py-3 text-sm text-gray-600">{v.submittedAt ? new Date(v.submittedAt).toLocaleString() : new Date(resp.createdAt).toLocaleString()}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{v.respondent ?? "Anonymous"}</td>
+                      <tr key={resp.id} className="hover:bg-[var(--bg-hover)] cursor-pointer" onClick={() => setExpandedRow(isExpanded ? null : resp.id)}>
+                        <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{v.submittedAt ? new Date(v.submittedAt).toLocaleString() : new Date(resp.createdAt).toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm text-[var(--text-primary)]">{v.respondent ?? "Anonymous"}</td>
                         <td className="px-4 py-3">
                           <span className={cn(
                             "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
@@ -167,22 +167,22 @@ export default function FormResponsesPage() {
                             {v.completionStatus ?? "unknown"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right text-xs text-indigo-600 font-medium">{isExpanded ? "Hide" : "View"}</td>
+                        <td className="px-4 py-3 text-right text-xs text-[var(--accent)] font-medium">{isExpanded ? "Hide" : "View"}</td>
                       </tr>
                       {isExpanded && (
                         <tr key={`${resp.id}-detail`}>
-                          <td colSpan={4} className="px-4 py-4 bg-gray-50">
+                          <td colSpan={4} className="px-4 py-4 bg-[var(--bg-base)]">
                             {v.responses ? (
                               <div className="space-y-2">
                                 {Object.entries(v.responses).map(([key, val]) => (
                                   <div key={key} className="flex items-start gap-3">
-                                    <span className="text-xs font-medium text-gray-500 min-w-[120px]">{key}</span>
-                                    <span className="text-xs text-gray-900">{String(val)}</span>
+                                    <span className="text-xs font-medium text-[var(--text-secondary)] min-w-[120px]">{key}</span>
+                                    <span className="text-xs text-[var(--text-primary)]">{String(val)}</span>
                                   </div>
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-xs text-gray-400">No detailed responses available.</p>
+                              <p className="text-xs text-[var(--text-tertiary)]">No detailed responses available.</p>
                             )}
                           </td>
                         </tr>

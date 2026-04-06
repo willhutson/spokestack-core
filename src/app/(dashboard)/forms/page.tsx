@@ -23,7 +23,7 @@ interface FormEntry {
 function statusBadge(status: string) {
   if (status === "ACTIVE") return "bg-emerald-50 text-emerald-600";
   if (status === "CLOSED") return "bg-red-50 text-red-600";
-  return "bg-gray-100 text-gray-600";
+  return "bg-[var(--bg-surface)] text-[var(--text-secondary)]";
 }
 
 export default function FormsListPage() {
@@ -78,10 +78,10 @@ export default function FormsListPage() {
         <FormsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">All Forms</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{forms.length} form{forms.length !== 1 ? "s" : ""}</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">All Forms</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">{forms.length} form{forms.length !== 1 ? "s" : ""}</p>
           </div>
-          <Link href="/forms/builder" className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+          <Link href="/forms/builder" className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
             New Form
           </Link>
         </div>
@@ -89,18 +89,18 @@ export default function FormsListPage() {
         {loading ? (
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-xl p-5">
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
-                <div className="h-3 bg-gray-200 rounded w-1/3 mb-2" />
-                <div className="h-3 bg-gray-200 rounded w-1/2" />
+              <div key={i} className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                <div className="h-4 bg-[var(--bg-surface)] rounded w-2/3 mb-3" />
+                <div className="h-3 bg-[var(--bg-surface)] rounded w-1/3 mb-2" />
+                <div className="h-3 bg-[var(--bg-surface)] rounded w-1/2" />
               </div>
             ))}
           </div>
         ) : forms.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No forms yet</h3>
-            <p className="text-xs text-gray-500 mb-4">Create your first form to start collecting responses.</p>
-            <Link href="/forms/builder" className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No forms yet</h3>
+            <p className="text-xs text-[var(--text-secondary)] mb-4">Create your first form to start collecting responses.</p>
+            <Link href="/forms/builder" className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">
               Create Form
             </Link>
           </div>
@@ -112,29 +112,29 @@ export default function FormsListPage() {
               const status = v.status ?? "DRAFT";
               const edited = form.updatedAt ?? form.createdAt;
               return (
-                <div key={form.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                <div key={form.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:shadow-sm transition-shadow">
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-sm font-medium text-gray-900 truncate">{v.name ?? "Untitled Form"}</h3>
+                    <h3 className="text-sm font-medium text-[var(--text-primary)] truncate">{v.name ?? "Untitled Form"}</h3>
                     <span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shrink-0 ml-2", statusBadge(status))}>{status}</span>
                   </div>
                   <div className="space-y-1 mb-4">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-400">Fields</span>
-                      <span className="text-gray-600">{fieldCount}</span>
+                      <span className="text-[var(--text-tertiary)]">Fields</span>
+                      <span className="text-[var(--text-secondary)]">{fieldCount}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-400">Responses</span>
-                      <span className="text-gray-600">{v.responseCount ?? 0}</span>
+                      <span className="text-[var(--text-tertiary)]">Responses</span>
+                      <span className="text-[var(--text-secondary)]">{v.responseCount ?? 0}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-400">Last Edited</span>
-                      <span className="text-gray-600">{edited ? new Date(edited).toLocaleDateString() : "--"}</span>
+                      <span className="text-[var(--text-tertiary)]">Last Edited</span>
+                      <span className="text-[var(--text-secondary)]">{edited ? new Date(edited).toLocaleDateString() : "--"}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 border-t border-gray-100 pt-3">
-                    <Link href="/forms/builder" className="px-2 py-1 text-xs font-medium text-indigo-600 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors">Edit</Link>
-                    <Link href="/forms/responses" className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors">Responses</Link>
-                    <button onClick={() => duplicateForm(form)} className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors">Duplicate</button>
+                  <div className="flex items-center gap-1.5 border-t border-[var(--border)] pt-3">
+                    <Link href="/forms/builder" className="px-2 py-1 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded hover:bg-[var(--accent-subtle)] transition-colors">Edit</Link>
+                    <Link href="/forms/responses" className="px-2 py-1 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] rounded hover:bg-[var(--bg-hover)] transition-colors">Responses</Link>
+                    <button onClick={() => duplicateForm(form)} className="px-2 py-1 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] rounded hover:bg-[var(--bg-hover)] transition-colors">Duplicate</button>
                     <button onClick={() => deleteForm(form.id)} disabled={deleting === form.id} className="px-2 py-1 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 disabled:opacity-50 transition-colors">
                       {deleting === form.id ? "..." : "Delete"}
                     </button>

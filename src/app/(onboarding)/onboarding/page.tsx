@@ -49,14 +49,14 @@ export default function OnboardingLandingPage() {
             Spokestack
           </span>
         </h1>
-        <p className="mb-10 text-lg text-gray-400">
+        <p className="mb-10 text-lg text-[var(--text-tertiary)]">
           Enter your website URL and we will build your workspace automatically.
         </p>
 
         {/* URL input */}
         <div className="mx-auto mb-8 flex max-w-lg items-center gap-3">
-          <div className="flex flex-1 items-center gap-3 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 focus-within:border-indigo-500 transition-colors">
-            <svg className="h-5 w-5 text-gray-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <div className="flex flex-1 items-center gap-3 rounded-xl border border-gray-700 bg-[var(--bg-base)] px-4 py-3 focus-within:border-[var(--accent)] transition-colors">
+            <svg className="h-5 w-5 text-[var(--text-secondary)] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <circle cx="12" cy="12" r="10" />
               <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
             </svg>
@@ -66,14 +66,14 @@ export default function OnboardingLandingPage() {
               onKeyDown={(e) => e.key === "Enter" && startScan()}
               placeholder="Enter your website URL"
               disabled={scanning}
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-500 outline-none disabled:opacity-50"
+              className="flex-1 bg-transparent text-sm text-white placeholder:text-[var(--text-secondary)] outline-none disabled:opacity-50"
             />
           </div>
           {!scanning && (
             <button
               onClick={startScan}
               disabled={!url.trim()}
-              className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--primary-foreground)] transition-colors hover:bg-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Scan
             </button>
@@ -93,8 +93,8 @@ export default function OnboardingLandingPage() {
                     isDone
                       ? "bg-gray-800/50 text-green-400"
                       : isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-600"
+                        ? "bg-[var(--bg-surface)] text-white"
+                        : "text-[var(--text-secondary)]"
                   }`}
                 >
                   <span className="text-lg">{isDone ? "✅" : step.icon}</span>
@@ -111,7 +111,7 @@ export default function OnboardingLandingPage() {
         {/* Branded preview mockup */}
         {complete && (
           <div className="mx-auto mb-8 max-w-lg">
-            <div className="rounded-xl border border-gray-700 bg-gray-900 p-6">
+            <div className="rounded-xl border border-gray-700 bg-[var(--bg-base)] p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-lg font-bold">
                   {url.replace(/^https?:\/\//, "").charAt(0).toUpperCase()}
@@ -120,13 +120,13 @@ export default function OnboardingLandingPage() {
                   <p className="font-semibold text-white">
                     {url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </p>
-                  <p className="text-xs text-gray-500">Workspace preview</p>
+                  <p className="text-xs text-[var(--text-secondary)]">Workspace preview</p>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {["Brand Colors", "Team Map", "Client List"].map((label) => (
-                  <div key={label} className="rounded-lg bg-gray-800 px-3 py-4 text-center">
-                    <p className="text-xs text-gray-400">{label}</p>
+                  <div key={label} className="rounded-lg bg-[var(--bg-surface)] px-3 py-4 text-center">
+                    <p className="text-xs text-[var(--text-tertiary)]">{label}</p>
                     <p className="mt-1 text-lg font-semibold text-indigo-400">Ready</p>
                   </div>
                 ))}
@@ -135,7 +135,7 @@ export default function OnboardingLandingPage() {
 
             <button
               onClick={handleBuild}
-              className="mt-6 w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
+              className="mt-6 w-full rounded-xl bg-[var(--accent)] px-6 py-3.5 text-sm font-semibold text-[var(--primary-foreground)] transition-colors hover:bg-[var(--accent)]"
             >
               Build my instance
             </button>

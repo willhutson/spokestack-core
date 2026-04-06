@@ -28,8 +28,8 @@ const NODE_TYPE_STYLES: Record<string, { bg: string; border: string; text: strin
   start: { bg: "bg-green-50", border: "border-green-300", text: "text-green-800" },
   end: { bg: "bg-red-50", border: "border-red-300", text: "text-red-800" },
   decision: { bg: "bg-yellow-50", border: "border-yellow-300", text: "text-yellow-800" },
-  process: { bg: "bg-white", border: "border-gray-300", text: "text-gray-900" },
-  default: { bg: "bg-white", border: "border-gray-300", text: "text-gray-900" },
+  process: { bg: "bg-[var(--bg-base)]", border: "border-[var(--border-strong)]", text: "text-[var(--text-primary)]" },
+  default: { bg: "bg-[var(--bg-base)]", border: "border-[var(--border-strong)]", text: "text-[var(--text-primary)]" },
 };
 
 export default function CanvasView({ nodes, edges }: CanvasViewProps) {
@@ -48,23 +48,23 @@ export default function CanvasView({ nodes, edges }: CanvasViewProps) {
 
   if (nodes.length === 0) {
     return (
-      <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+        <div className="w-12 h-12 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mx-auto mb-4">
+          <svg className="w-6 h-6 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
           </svg>
         </div>
-        <h3 className="text-sm font-medium text-gray-900 mb-1">No workflow canvas</h3>
-        <p className="text-xs text-gray-500">This project doesn&apos;t have a workflow diagram yet.</p>
+        <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No workflow canvas</h3>
+        <p className="text-xs text-[var(--text-secondary)]">This project doesn&apos;t have a workflow diagram yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-700">Workflow Canvas</h3>
-        <span className="text-xs text-gray-400">Read-only view</span>
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 className="text-sm font-medium text-[var(--text-secondary)]">Workflow Canvas</h3>
+        <span className="text-xs text-[var(--text-tertiary)]">Read-only view</span>
       </div>
       <div className="overflow-auto" style={{ maxHeight: "600px" }}>
         <div className="relative" style={{ width: maxX + padding, height: maxY + padding }}>

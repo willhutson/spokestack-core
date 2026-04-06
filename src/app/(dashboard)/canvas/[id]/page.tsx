@@ -57,7 +57,7 @@ const NODE_TYPES = [
   { type: "DELAY", label: "Delay", color: "bg-purple-500" },
   { type: "APPROVAL", label: "Approval", color: "bg-pink-500" },
   { type: "NOTIFICATION", label: "Notification", color: "bg-cyan-500" },
-  { type: "END", label: "End", color: "bg-gray-500" },
+  { type: "END", label: "End", color: "bg-[var(--bg-base)]0" },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -235,7 +235,7 @@ export default function CanvasEditorPage({
     return (
       <ModuleLayoutShell moduleType="WORKFLOWS">
         <div className="flex items-center justify-center h-screen">
-          <p className="text-sm text-gray-400">Loading canvas...</p>
+          <p className="text-sm text-[var(--text-tertiary)]">Loading canvas...</p>
         </div>
       </ModuleLayoutShell>
     );
@@ -245,11 +245,11 @@ export default function CanvasEditorPage({
     <ModuleLayoutShell moduleType="WORKFLOWS">
       <div className="flex flex-col h-screen">
         {/* ---- Top Bar ---- */}
-        <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shrink-0">
+        <div className="flex items-center justify-between px-4 py-2 bg-[var(--bg-base)] border-b border-[var(--border)] shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push("/canvas")}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
             >
               &larr; Back
             </button>
@@ -257,7 +257,7 @@ export default function CanvasEditorPage({
               type="text"
               value={canvasName}
               onChange={(e) => setCanvasName(e.target.value)}
-              className="text-lg font-semibold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 w-64"
+              className="text-lg font-semibold text-[var(--text-primary)] bg-transparent border-none focus:outline-none focus:ring-0 w-64"
               placeholder="Canvas name"
             />
           </div>
@@ -278,7 +278,7 @@ export default function CanvasEditorPage({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
             >
               {saving ? "Saving..." : "Save"}
             </button>
@@ -288,8 +288,8 @@ export default function CanvasEditorPage({
         {/* ---- Canvas Area ---- */}
         <div className="flex flex-1 min-h-0">
           {/* Node Palette (left sidebar) */}
-          <div className="w-48 bg-gray-50 border-r border-gray-200 p-3 shrink-0 overflow-y-auto">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <div className="w-48 bg-[var(--bg-base)] border-r border-[var(--border)] p-3 shrink-0 overflow-y-auto">
+            <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide mb-3">
               Add Nodes
             </p>
             <div className="space-y-2">
@@ -297,7 +297,7 @@ export default function CanvasEditorPage({
                 <button
                   key={nt.type}
                   onClick={() => handleAddNode(nt.type, nt.label)}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] border border-[var(--border)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
                 >
                   <span
                     className={`w-3 h-3 rounded-full ${nt.color} shrink-0`}

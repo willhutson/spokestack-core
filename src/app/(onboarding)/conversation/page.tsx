@@ -233,7 +233,7 @@ export default function OnboardingConversationPage() {
   // ── Audit / Migration step renders ───────────────────────────────
   if (step === "audit") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div data-theme="obsidian" className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4">
         <div className="w-full max-w-2xl">
           <ToolAudit
             onSubmit={handleAuditSubmit}
@@ -246,7 +246,7 @@ export default function OnboardingConversationPage() {
 
   if (step === "migration") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div data-theme="obsidian" className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4">
         <div className="w-full max-w-2xl">
           <MigrationPlan
             entries={auditEntries}
@@ -259,15 +259,15 @@ export default function OnboardingConversationPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div data-theme="obsidian" className="flex h-screen bg-[var(--bg-base)]">
       {/* Left: Chat */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className="flex-1 flex flex-col bg-[var(--bg-base)]">
         {/* Header */}
-        <div className="h-14 px-6 flex items-center border-b border-gray-200">
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold mr-2.5">
+        <div className="h-14 px-6 flex items-center border-b border-[var(--border)]">
+          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center text-[var(--primary-foreground)] text-xs font-bold mr-2.5">
             S
           </div>
-          <span className="font-semibold text-sm text-gray-900">SpokeStack Setup</span>
+          <span className="font-semibold text-sm text-[var(--text-primary)]">SpokeStack Setup</span>
         </div>
 
         {/* Messages */}
@@ -276,22 +276,22 @@ export default function OnboardingConversationPage() {
             <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className="flex items-start gap-3 max-w-[75%]">
                 {msg.role === "agent" && (
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center text-[var(--accent)] text-xs font-bold shrink-0 mt-0.5">
                     S
                   </div>
                 )}
                 <div
                   className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-100 text-gray-900"
+                      ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
+                      : "bg-[var(--bg-surface)] text-[var(--text-primary)]"
                   }`}
                 >
                   {msg.content || (
                     <span className="inline-flex gap-1">
-                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" />
-                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.15s]" />
-                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+                      <span className="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce" />
+                      <span className="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce [animation-delay:0.15s]" />
+                      <span className="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce [animation-delay:0.3s]" />
                     </span>
                   )}
                 </div>
@@ -302,7 +302,7 @@ export default function OnboardingConversationPage() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-gray-200 p-4">
+        <div className="border-t border-[var(--border)] p-4">
           <div className="flex gap-3">
             <input
               type="text"
@@ -310,13 +310,13 @@ export default function OnboardingConversationPage() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Type your response..."
-              className="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="flex-1 border border-[var(--border-strong)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               autoFocus
             />
             <button
               onClick={handleSend}
               disabled={streaming || !input.trim()}
-              className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-5 py-2.5 bg-[var(--accent)] text-[var(--primary-foreground)] text-sm font-medium rounded-xl hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Send
             </button>
@@ -325,23 +325,23 @@ export default function OnboardingConversationPage() {
       </div>
 
       {/* Right: Workspace preview */}
-      <div className="w-96 bg-gray-50 border-l border-gray-200 overflow-y-auto">
+      <div className="w-96 bg-[var(--bg-base)] border-l border-[var(--border)] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-sm font-semibold text-gray-900">Workspace Preview</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">Workspace Preview</h2>
             {totalEntities > 0 && (
-              <span className="text-xs text-gray-400">{totalEntities} entities</span>
+              <span className="text-xs text-[var(--text-tertiary)]">{totalEntities} entities</span>
             )}
           </div>
 
           {totalEntities === 0 ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+              <div className="w-16 h-16 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008V7.5zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                 </svg>
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-[var(--text-tertiary)]">
                 Your workspace will appear here as you tell us about your business.
               </p>
             </div>
@@ -350,16 +350,16 @@ export default function OnboardingConversationPage() {
               {/* Teams */}
               {workspace.teams.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Teams</h3>
+                  <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Teams</h3>
                   <div className="space-y-1.5">
                     {workspace.teams.map((team, i) => (
                       <div
                         key={i}
-                        className="bg-white border border-gray-200 rounded-lg px-3 py-2 flex items-center justify-between animate-[fadeIn_0.4s_ease-out]"
+                        className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg px-3 py-2 flex items-center justify-between animate-[fadeIn_0.4s_ease-out]"
                         style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
                       >
-                        <span className="text-sm text-gray-900">{team.name}</span>
-                        <span className="text-xs text-gray-400">{team.memberCount} members</span>
+                        <span className="text-sm text-[var(--text-primary)]">{team.name}</span>
+                        <span className="text-xs text-[var(--text-tertiary)]">{team.memberCount} members</span>
                       </div>
                     ))}
                   </div>
@@ -369,12 +369,12 @@ export default function OnboardingConversationPage() {
               {/* Leads */}
               {workspace.leads.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Key People</h3>
+                  <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Key People</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {workspace.leads.map((lead, i) => (
                       <span
                         key={i}
-                        className="bg-white border border-gray-200 rounded-full px-3 py-1 text-xs text-gray-700 animate-[fadeIn_0.4s_ease-out]"
+                        className="bg-[var(--bg-base)] border border-[var(--border)] rounded-full px-3 py-1 text-xs text-[var(--text-secondary)] animate-[fadeIn_0.4s_ease-out]"
                         style={{ animationDelay: `${i * 80}ms`, animationFillMode: "both" }}
                       >
                         {lead}
@@ -387,23 +387,23 @@ export default function OnboardingConversationPage() {
               {/* Workflows */}
               {workspace.workflows.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Workflows</h3>
+                  <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Workflows</h3>
                   <div className="space-y-2">
                     {workspace.workflows.map((wf, i) => (
                       <div
                         key={i}
-                        className="bg-white border border-gray-200 rounded-lg p-3 animate-[fadeIn_0.4s_ease-out]"
+                        className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 animate-[fadeIn_0.4s_ease-out]"
                         style={{ animationDelay: `${i * 120}ms`, animationFillMode: "both" }}
                       >
-                        <p className="text-sm font-medium text-gray-900 mb-1.5">{wf.name}</p>
+                        <p className="text-sm font-medium text-[var(--text-primary)] mb-1.5">{wf.name}</p>
                         <div className="flex items-center gap-1 flex-wrap">
                           {wf.steps.map((step, j) => (
                             <span key={j} className="flex items-center gap-1">
-                              <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">
+                              <span className="text-[10px] bg-[var(--accent-subtle)] text-[var(--accent)] px-2 py-0.5 rounded">
                                 {step}
                               </span>
                               {j < wf.steps.length - 1 && (
-                                <svg className="w-3 h-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="w-3 h-3 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>
                               )}
@@ -419,12 +419,12 @@ export default function OnboardingConversationPage() {
               {/* Integrations */}
               {workspace.integrations.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Integrations</h3>
+                  <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Integrations</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {workspace.integrations.map((int, i) => (
                       <span
                         key={i}
-                        className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-700 flex items-center gap-1.5 animate-[fadeIn_0.4s_ease-out]"
+                        className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-secondary)] flex items-center gap-1.5 animate-[fadeIn_0.4s_ease-out]"
                         style={{ animationDelay: `${i * 80}ms`, animationFillMode: "both" }}
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400" />

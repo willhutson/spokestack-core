@@ -38,9 +38,9 @@ const STATUS_COLORS: Record<string, string> = {
   RUNNING: "bg-blue-100 text-blue-700",
   COMPLETED: "bg-green-100 text-green-700",
   FAILED: "bg-red-100 text-red-700",
-  CANCELLED: "bg-gray-100 text-gray-600",
+  CANCELLED: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   PENDING: "bg-yellow-100 text-yellow-700",
-  SKIPPED: "bg-gray-100 text-gray-500",
+  SKIPPED: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
 };
 
 function formatDuration(ms: number | null): string {
@@ -74,7 +74,7 @@ function Collapsible({ title, children }: { title: string; children: React.React
     <div className="mt-2">
       <button
         onClick={() => setOpen(!open)}
-        className="text-xs font-medium text-indigo-600 hover:underline flex items-center gap-1"
+        className="text-xs font-medium text-[var(--accent)] hover:underline flex items-center gap-1"
       >
         <svg
           className={`w-3 h-3 transition-transform ${open ? "rotate-90" : ""}`}
@@ -88,7 +88,7 @@ function Collapsible({ title, children }: { title: string; children: React.React
         {title}
       </button>
       {open && (
-        <pre className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 overflow-x-auto max-h-48">
+        <pre className="mt-1 p-2 bg-[var(--bg-base)] border border-[var(--border)] rounded text-xs text-[var(--text-secondary)] overflow-x-auto max-h-48">
           {JSON.stringify(children, null, 2)}
         </pre>
       )}
@@ -135,16 +135,16 @@ export default function WorkflowRunDetailPage() {
 
   return (
     <ModuleLayoutShell moduleType="WORKFLOWS">
-      <div className="p-6 h-full flex flex-col bg-white">
+      <div className="p-6 h-full flex flex-col bg-[var(--bg-base)]">
         <WorkflowsNav />
 
         {loading && (
           <div className="space-y-4 animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3" />
-            <div className="h-4 bg-gray-200 rounded w-2/3" />
+            <div className="h-8 bg-[var(--bg-surface)] rounded w-1/3" />
+            <div className="h-4 bg-[var(--bg-surface)] rounded w-2/3" />
             <div className="space-y-3 mt-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 bg-gray-100 rounded-lg" />
+                <div key={i} className="h-16 bg-[var(--bg-surface)] rounded-lg" />
               ))}
             </div>
           </div>
@@ -153,8 +153,8 @@ export default function WorkflowRunDetailPage() {
         {error && !loading && (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">{error}</h2>
-              <Link href="/workflows/runs" className="text-sm text-indigo-600 hover:underline">
+              <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">{error}</h2>
+              <Link href="/workflows/runs" className="text-sm text-[var(--accent)] hover:underline">
                 Back to run history
               </Link>
             </div>
@@ -166,13 +166,13 @@ export default function WorkflowRunDetailPage() {
             {/* Header */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-1">
-                <Link href="/workflows/runs" className="text-sm text-indigo-600 hover:underline">
+                <Link href="/workflows/runs" className="text-sm text-[var(--accent)] hover:underline">
                   Run History
                 </Link>
-                <span className="text-gray-400">/</span>
+                <span className="text-[var(--text-tertiary)]">/</span>
               </div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">{run.workflowName}</h1>
+                <h1 className="text-2xl font-bold text-[var(--text-primary)]">{run.workflowName}</h1>
                 <span
                   className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${
                     STATUS_COLORS[run.status] || "bg-gray-100 text-gray-600"
@@ -181,28 +181,28 @@ export default function WorkflowRunDetailPage() {
                   {run.status}
                 </span>
               </div>
-              <p className="text-xs text-gray-400 font-mono">Run ID: {run.id}</p>
+              <p className="text-xs text-[var(--text-tertiary)] font-mono">Run ID: {run.id}</p>
             </div>
 
             {/* Info grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Started</p>
-                <p className="text-sm font-medium text-gray-900">{formatDate(run.startedAt)}</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Started</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{formatDate(run.startedAt)}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Ended</p>
-                <p className="text-sm font-medium text-gray-900">{formatDate(run.endedAt)}</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Ended</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{formatDate(run.endedAt)}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Duration</p>
-                <p className="text-sm font-medium text-gray-900 font-mono">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Duration</p>
+                <p className="text-sm font-medium text-[var(--text-primary)] font-mono">
                   {formatDuration(run.duration)}
                 </p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-1">Steps</p>
-                <p className="text-sm font-medium text-gray-900">{run.steps.length}</p>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">Steps</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{run.steps.length}</p>
               </div>
             </div>
 
@@ -216,13 +216,13 @@ export default function WorkflowRunDetailPage() {
 
             {/* Step timeline */}
             <div>
-              <h2 className="text-sm font-semibold text-gray-900 mb-4">Step Timeline</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Step Timeline</h2>
               {run.steps.length === 0 ? (
-                <p className="text-sm text-gray-400 py-4 text-center">No step data available</p>
+                <p className="text-sm text-[var(--text-tertiary)] py-4 text-center">No step data available</p>
               ) : (
                 <div className="relative">
                   {/* Vertical line */}
-                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-[var(--bg-surface)]" />
 
                   <div className="space-y-4">
                     {run.steps.map((step, idx) => (
@@ -236,14 +236,14 @@ export default function WorkflowRunDetailPage() {
                               ? "bg-red-500"
                               : step.status === "RUNNING"
                               ? "bg-blue-500"
-                              : "bg-gray-300"
+                              : "bg-[var(--bg-hover)]"
                           }`}
                         />
 
-                        <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-4">
                           <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-900">
+                              <span className="text-sm font-medium text-[var(--text-primary)]">
                                 {step.name}
                               </span>
                               <span
@@ -254,7 +254,7 @@ export default function WorkflowRunDetailPage() {
                                 {step.status}
                               </span>
                             </div>
-                            <span className="text-xs text-gray-500 font-mono">
+                            <span className="text-xs text-[var(--text-secondary)] font-mono">
                               {formatDuration(step.duration)}
                             </span>
                           </div>

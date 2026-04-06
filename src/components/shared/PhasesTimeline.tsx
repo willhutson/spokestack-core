@@ -7,7 +7,7 @@ interface Phase {
 export default function PhasesTimeline({ phases }: { phases: Phase[] }) {
   if (!phases || phases.length === 0) {
     return (
-      <p className="text-sm text-gray-400">No phases defined.</p>
+      <p className="text-sm text-[var(--text-tertiary)]">No phases defined.</p>
     );
   }
 
@@ -23,8 +23,8 @@ export default function PhasesTimeline({ phases }: { phases: Phase[] }) {
                     ? "bg-emerald-500 text-white"
                     : phase.status === "ACTIVE" ||
                         phase.status === "IN_PROGRESS"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-100 text-gray-500"
+                      ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
+                      : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                 }`}
               >
                 {phase.status === "COMPLETED" ? (
@@ -45,10 +45,10 @@ export default function PhasesTimeline({ phases }: { phases: Phase[] }) {
                   index + 1
                 )}
               </div>
-              <span className="text-xs text-gray-600 mt-1 text-center max-w-[80px] truncate">
+              <span className="text-xs text-[var(--text-secondary)] mt-1 text-center max-w-[80px] truncate">
                 {phase.name}
               </span>
-              <span className="text-[10px] text-gray-400 mt-0.5">
+              <span className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
                 {phase.status?.replace(/_/g, " ")}
               </span>
             </div>
@@ -57,7 +57,7 @@ export default function PhasesTimeline({ phases }: { phases: Phase[] }) {
                 className={`w-12 h-px mx-1 mb-8 ${
                   phase.status === "COMPLETED"
                     ? "bg-emerald-300"
-                    : "bg-gray-200"
+                    : "bg-[var(--bg-surface)]"
                 }`}
               />
             )}

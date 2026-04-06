@@ -57,20 +57,20 @@ export default function BriefsNewPage() {
         <BriefsNav />
 
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-6">
+        <nav className="text-sm text-[var(--text-secondary)] mb-6">
           <span
-            className="hover:text-gray-700 cursor-pointer"
+            className="hover:text-[var(--text-secondary)] cursor-pointer"
             onClick={() => router.push("/briefs")}
           >
             Briefs
           </span>
           <span className="mx-2">/</span>
-          <span className="text-gray-900 font-medium">New</span>
+          <span className="text-[var(--text-primary)] font-medium">New</span>
         </nav>
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Create a New Brief</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Create a New Brief</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Select the type of brief you want to create
           </p>
         </div>
@@ -80,13 +80,13 @@ export default function BriefsNewPage() {
             <button
               key={bt.type}
               onClick={() => router.push(`/briefs/new/${bt.type.toLowerCase()}`)}
-              className="bg-white border border-gray-200 rounded-xl p-5 text-left hover:border-indigo-300 hover:shadow-md transition-all group"
+              className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 text-left hover:border-indigo-300 hover:shadow-md transition-all group"
             >
               <div className="text-3xl mb-3">{bt.icon}</div>
-              <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                 {bt.name}
               </h3>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+              <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
                 {bt.description}
               </p>
             </button>

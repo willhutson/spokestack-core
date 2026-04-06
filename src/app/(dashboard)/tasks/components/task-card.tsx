@@ -12,7 +12,7 @@ export interface Task {
 }
 
 const PRIORITY_STYLES: Record<Task["priority"], string> = {
-  low: "bg-gray-100 text-gray-600",
+  low: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   medium: "bg-blue-100 text-blue-700",
   high: "bg-orange-100 text-orange-700",
   urgent: "bg-red-100 text-red-700",
@@ -40,7 +40,7 @@ export default function TaskCard({
   return (
     <div
       onClick={() => onClick?.(task)}
-      className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative"
+      className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative"
     >
       {/* Delete button on hover */}
       {onDelete && (
@@ -49,7 +49,7 @@ export default function TaskCard({
             e.stopPropagation();
             onDelete(task);
           }}
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-500"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-[var(--text-tertiary)] hover:text-red-500"
           title="Delete task"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -59,7 +59,7 @@ export default function TaskCard({
       )}
 
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+        <h4 className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
           {task.title}
         </h4>
         <span
@@ -70,23 +70,23 @@ export default function TaskCard({
       </div>
 
       {task.description && (
-        <p className="text-xs text-gray-500 mb-2 line-clamp-2">{task.description}</p>
+        <p className="text-xs text-[var(--text-secondary)] mb-2 line-clamp-2">{task.description}</p>
       )}
 
       <div className="flex items-center justify-between text-xs">
         {task.assignee ? (
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-medium">
+            <div className="w-5 h-5 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center text-[10px] font-medium">
               {task.assignee.charAt(0).toUpperCase()}
             </div>
-            <span className="text-gray-600">{task.assignee}</span>
+            <span className="text-[var(--text-secondary)]">{task.assignee}</span>
           </div>
         ) : (
-          <span className="text-gray-400">Unassigned</span>
+          <span className="text-[var(--text-tertiary)]">Unassigned</span>
         )}
 
         {task.dueDate && (
-          <span className={`${isOverdue ? "text-red-600 font-medium" : "text-gray-500"}`}>
+          <span className={`${isOverdue ? "text-red-600 font-medium" : "text-[var(--text-secondary)]"}`}>
             {new Date(task.dueDate).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -96,8 +96,8 @@ export default function TaskCard({
       </div>
 
       {task.listName && (
-        <div className="mt-2 pt-2 border-t border-gray-100">
-          <span className="text-[10px] text-gray-400">{task.listName}</span>
+        <div className="mt-2 pt-2 border-t border-[var(--border)]">
+          <span className="text-[10px] text-[var(--text-tertiary)]">{task.listName}</span>
         </div>
       )}
     </div>
