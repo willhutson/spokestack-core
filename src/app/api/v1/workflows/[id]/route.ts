@@ -5,14 +5,16 @@ import { json, error, unauthorized } from "@/lib/api";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await authenticate(req);
   if (!auth) return unauthorized();
 
+  const { id } = await params;
+
   try {
     const canvas = await prisma.wfCanvas.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { nodes: true, edges: true },
     });
 

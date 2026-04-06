@@ -44,10 +44,10 @@ export async function POST(req: NextRequest) {
   const budget = await prisma.contextEntry.create({
     data: {
       organizationId: auth.organizationId,
-      entryType: "MANUAL",
+      entryType: "ENTITY",
       category: "budget",
       key: body.key,
-      value: body.value as Record<string, unknown>,
+      value: body.value as object,
       confidence: 1.0,
     },
   });

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import FinanceNav from "./FinanceNav";
 
 interface Invoice {
   id: string;
@@ -77,6 +78,7 @@ export default function FinancePage() {
   return (
     <ModuleLayoutShell moduleType="FINANCE">
       <div className="p-6">
+      <FinanceNav />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

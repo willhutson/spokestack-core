@@ -5,6 +5,7 @@ import { getAuthHeaders } from "@/lib/client-auth";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 import CanvasRenderer, { type CanvasEdgeData } from "@/components/mission-control/CanvasRenderer";
 import type { CanvasNodeData } from "@/components/mission-control/CanvasNode";
+import WorkflowsNav from "./WorkflowsNav";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -135,6 +136,7 @@ export default function WorkflowsPage() {
   return (
     <ModuleLayoutShell moduleType="WORKFLOWS">
       <div className="p-6 h-full flex flex-col bg-white">
+      <WorkflowsNav />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

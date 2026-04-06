@@ -126,8 +126,9 @@ export default function CashFlowPage() {
                 <BarChart data={chartData} barGap={4}>
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   <Tooltip
-                    formatter={(value: number) => aedFormatter.format(value)}
+                    formatter={((value: number) => aedFormatter.format(value)) as any}
                     contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
                   />
                   <Bar dataKey="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
