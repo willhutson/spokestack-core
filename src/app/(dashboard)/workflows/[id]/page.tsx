@@ -174,7 +174,7 @@ export default function WorkflowDetailPage() {
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium text-red-600 bg-[var(--bg-surface)] border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
                 >
                   {deleting ? "Deleting..." : "Delete"}
                 </button>

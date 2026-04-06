@@ -167,7 +167,7 @@ export default function ProjectDetailPage({
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-white border border-red-200 rounded-xl p-12 text-center">
+        <div className="bg-[var(--bg-surface)] border border-red-200 rounded-xl p-12 text-center">
           <h3 className="text-sm font-medium text-red-700 mb-1">
             Error loading project
           </h3>

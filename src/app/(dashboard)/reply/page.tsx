@@ -192,7 +192,7 @@ export default function ReplyInboxPage() {
                     <div
                       className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0",
-                        PLATFORM_COLORS[platform] || "bg-gray-500"
+                        PLATFORM_COLORS[platform] || "bg-[var(--bg-base)]0"
                       )}
                     >
                       {platform.charAt(0).toUpperCase()}

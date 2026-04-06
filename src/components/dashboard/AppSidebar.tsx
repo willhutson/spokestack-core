@@ -204,9 +204,9 @@ export function AppSidebar({
             />
           ) : (
             <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--primary-foreground)] text-xs font-bold"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold"
               style={{
-                backgroundColor: branding?.primaryColor || "#6366F1",
+                backgroundColor: branding?.primaryColor || "var(--accent)",
               }}
             >
               {orgInitial}
