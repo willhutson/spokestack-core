@@ -26,7 +26,7 @@ function statusColor(s: string) {
   if (s === "Approved") return "bg-emerald-50 text-emerald-600";
   if (s === "Rejected") return "bg-red-50 text-red-600";
   if (s === "Pending") return "bg-amber-50 text-amber-600";
-  return "bg-gray-100 text-gray-600";
+  return "bg-[var(--bg-surface)] text-[var(--text-secondary)]";
 }
 
 function calcDays(start: string, end: string): number {
@@ -93,17 +93,17 @@ export default function ApprovalsPage() {
       <div className="p-6">
         <TimeLeaveNav />
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Approvals</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage leave requests from team members</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Approvals</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Manage leave requests from team members</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
+        <div className="flex gap-1 mb-6 bg-[var(--bg-surface)] rounded-lg p-1 w-fit">
           {tabs.map((t) => (
             <button
               key={t}
               onClick={() => setActiveTab(t)}
-              className={cn("px-4 py-2 text-sm font-medium rounded-md transition-colors", activeTab === t ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700")}
+              className={cn("px-4 py-2 text-sm font-medium rounded-md transition-colors", activeTab === t ? "bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}
             >
               {t} ({counts[t]})
             </button>
@@ -112,51 +112,51 @@ export default function ApprovalsPage() {
 
         {/* Reject Reason Dialog */}
         {rejectId && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Rejection Reason</h3>
-            <textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} rows={3} placeholder="Provide a reason for rejecting this request" className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-3" />
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Rejection Reason</h3>
+            <textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} rows={3} placeholder="Provide a reason for rejecting this request" className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] resize-none mb-3" />
             <div className="flex items-center gap-2">
-              <button onClick={() => updateStatus(rejectId, "Rejected", rejectReason)} disabled={updating === rejectId} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors">
+              <button onClick={() => updateStatus(rejectId, "Rejected", rejectReason)} disabled={updating === rejectId} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors">
                 {updating === rejectId ? "Rejecting..." : "Confirm Reject"}
               </button>
-              <button onClick={() => { setRejectId(null); setRejectReason(""); }} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={() => { setRejectId(null); setRejectReason(""); }} className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Cancel</button>
             </div>
           </div>
         )}
 
         {/* Requests List */}
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">Loading...</div>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No {activeTab.toLowerCase()} requests</h3>
-            <p className="text-xs text-gray-500">There are no {activeTab.toLowerCase()} leave requests to display.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No {activeTab.toLowerCase()} requests</h3>
+            <p className="text-xs text-[var(--text-secondary)]">There are no {activeTab.toLowerCase()} leave requests to display.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Employee</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Type</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Dates</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Days</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Reason</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Status</th>
-                  {activeTab === "Pending" && <th className="text-right text-xs font-medium text-gray-500 px-4 py-3">Actions</th>}
+                <tr className="bg-[var(--bg-base)]">
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Employee</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Type</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Dates</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Days</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Reason</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Status</th>
+                  {activeTab === "Pending" && <th className="text-right text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Actions</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filtered.map((entry) => {
                   const v = entry.value;
                   const days = v.startDate && v.endDate ? calcDays(v.startDate, v.endDate) : 0;
                   return (
-                    <tr key={entry.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{v.employeeName ?? v.userId ?? "Unknown"}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{v.type ?? "--"}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{v.startDate ?? "--"} - {v.endDate ?? "--"}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{days}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500 max-w-[200px] truncate">{v.notes || "--"}</td>
+                    <tr key={entry.id} className="hover:bg-[var(--bg-hover)]">
+                      <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{v.employeeName ?? v.userId ?? "Unknown"}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{v.type ?? "--"}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{v.startDate ?? "--"} - {v.endDate ?? "--"}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{days}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)] max-w-[200px] truncate">{v.notes || "--"}</td>
                       <td className="px-4 py-3">
                         <span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium", statusColor(v.status ?? "Pending"))}>{v.status ?? "Pending"}</span>
                       </td>

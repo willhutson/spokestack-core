@@ -65,19 +65,19 @@ function AddJournalistForm({ onCreated, onCancel }: { onCreated: () => void; onC
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">Add Journalist</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">Add Journalist</h2>
         <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Journalist name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Journalist name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Outlet</label>
-            <input value={outlet} onChange={e => setOutlet(e.target.value)} placeholder="e.g. Gulf News" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={outlet} onChange={e => setOutlet(e.target.value)} placeholder="e.g. Gulf News" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Beat</label>
-            <input value={beat} onChange={e => setBeat(e.target.value)} placeholder="e.g. Technology" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={beat} onChange={e => setBeat(e.target.value)} placeholder="e.g. Technology" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@outlet.com" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@outlet.com" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
         </div>
         <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
@@ -150,7 +150,7 @@ export default function MediaRelationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Media Relations</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Media Relations</h1>
           <p className="text-sm text-gray-500 mt-0.5">Manage journalist contacts, pitches, and coverage tracking.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -165,15 +165,15 @@ export default function MediaRelationsPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Journalists</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{journalists.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{journalists.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Media Lists</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{mediaLists.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{mediaLists.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Active Pitches</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{pitches.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{pitches.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Total AVE</p>
@@ -198,7 +198,7 @@ export default function MediaRelationsPage() {
           {tab === "journalists" && (
             journalists.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No journalists yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No journalists yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Add journalist contacts to build your media database.</p>
                 <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Journalist</button>
               </div>
@@ -215,7 +215,7 @@ export default function MediaRelationsPage() {
                   <tbody className="divide-y divide-gray-100">
                     {journalists.map(j => { const d = parseVal(j.value); return (
                       <tr key={j.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{j.key}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{j.key}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.outlet as string) || "-"}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.beat as string) || "-"}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.email as string) || "-"}</td>
@@ -232,7 +232,7 @@ export default function MediaRelationsPage() {
           {tab === "media_lists" && (
             mediaLists.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No media lists yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No media lists yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Create curated lists of media contacts for targeted outreach.</p>
                 <button onClick={() => openChatWithContext("Create a new media list for targeted journalist outreach.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Media List</button>
               </div>
@@ -240,7 +240,7 @@ export default function MediaRelationsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mediaLists.map(ml => { const d = parseVal(ml.value); return (
                   <div key={ml.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{ml.key}</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{ml.key}</h3>
                     <p className="text-xs text-gray-500 mb-3">{(d.description as string) || "No description"}</p>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>{(d.count as number) || 0} contacts</span>
@@ -256,7 +256,7 @@ export default function MediaRelationsPage() {
           {tab === "pitches" && (
             pitches.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No pitches yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No pitches yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Draft media pitches to send to journalists.</p>
                 <button onClick={() => openChatWithContext("Help me draft a media pitch for journalist outreach.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Draft Pitch</button>
               </div>
@@ -271,7 +271,7 @@ export default function MediaRelationsPage() {
                   <tbody className="divide-y divide-gray-100">
                     {pitches.map(p => (
                       <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{p.title}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{p.title}</td>
                         <td className="px-5 py-4"><StatusBadge status={p.status} /></td>
                         <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(p.createdAt)}</td>
                       </tr>
@@ -286,7 +286,7 @@ export default function MediaRelationsPage() {
           {tab === "coverage" && (
             coverage.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No coverage tracked yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No coverage tracked yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Track media mentions and calculate advertising value equivalent.</p>
                 <button onClick={() => openChatWithContext("Help me log a media coverage hit and calculate its AVE.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Log Coverage</button>
               </div>
@@ -303,7 +303,7 @@ export default function MediaRelationsPage() {
                   <tbody className="divide-y divide-gray-100">
                     {coverage.map(c => { const d = parseVal(c.value); return (
                       <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{c.key}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{c.key}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.outlet as string) || "-"}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.type as string) || "-"}</td>
                         <td className="px-5 py-4 text-right text-sm font-medium text-emerald-600">{fmtAED(Number(d.ave) || 0)}</td>

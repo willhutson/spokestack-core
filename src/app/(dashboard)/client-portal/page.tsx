@@ -17,7 +17,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xl font-bold text-[var(--text-primary)]">{value}</p>
     </div>
   );
 }
@@ -51,7 +51,7 @@ export default function ClientPortalPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Client Portal</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Client Portal</h1>
           <p className="text-sm text-gray-500 mt-0.5">Manage portal access, submissions, and client approvals.</p>
         </div>
         <button
@@ -106,7 +106,7 @@ export default function ClientPortalPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No portal users yet</h3>
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No portal users yet</h3>
             <p className="text-xs text-gray-500 mb-4">Invite clients to give them portal access for submissions and approvals.</p>
             <button
               onClick={() => openChatWithContext("Help me invite a new client to the portal.")}
@@ -123,7 +123,7 @@ export default function ClientPortalPage() {
                   {(client.name?.[0] ?? "?").toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{client.name}</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{client.name}</p>
                   {client.email && <p className="text-xs text-gray-500 truncate">{client.email}</p>}
                 </div>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${client.status === "ACTIVE" || !client.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
@@ -147,7 +147,7 @@ export default function ClientPortalPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 mb-1">No activity yet</h3>
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No activity yet</h3>
           <p className="text-xs text-gray-500">Client portal activity will appear here as clients interact with your portal.</p>
         </div>
       </section>
@@ -161,7 +161,7 @@ export default function ClientPortalPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 mb-1">No pending approvals</h3>
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No pending approvals</h3>
           <p className="text-xs text-gray-500">Client submissions requiring your approval will appear here.</p>
         </div>
       </section>

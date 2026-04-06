@@ -137,15 +137,15 @@ export default function ScheduledPage() {
 
   return (
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         <PublisherNav />
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
               Scheduled
               {!loading && posts.length > 0 && (
-                <span className="ml-2 text-base font-normal text-gray-400">
+                <span className="ml-2 text-base font-normal text-[var(--text-tertiary)]">
                   ({posts.length} post{posts.length !== 1 ? "s" : ""})
                 </span>
               )}

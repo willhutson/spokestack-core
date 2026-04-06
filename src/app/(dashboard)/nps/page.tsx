@@ -110,7 +110,7 @@ export default function NPSPage() {
     <div className="p-6 bg-white min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">NPS</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">NPS</h1>
           <p className="text-sm text-gray-500 mt-0.5">Net Promoter Score tracking and analysis.</p>
         </div>
         <div className="flex gap-2">
@@ -154,7 +154,7 @@ export default function NPSPage() {
           {/* Trend */}
           {trendPoints.length > 0 && (
             <div className="border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">NPS Trend</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">NPS Trend</h3>
               <div className="flex items-end gap-3 h-24">
                 {trendPoints.map((tp, i) => {
                   const normalized = ((tp.score + 100) / 200) * 100;
@@ -173,7 +173,7 @@ export default function NPSPage() {
           {/* Client-level NPS */}
           {Object.keys(clientScores).length > 0 && (
             <div className="border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Client-level NPS</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Client-level NPS</h3>
               <div className="space-y-2">
                 {Object.entries(clientScores).map(([cid, data]) => {
                   const p = data.scores.filter(s => s >= 9).length;
@@ -197,7 +197,7 @@ export default function NPSPage() {
           {showSurveyForm && (
             <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setShowSurveyForm(false)}>
               <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create NPS Survey</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Create NPS Survey</h3>
                 <div className="space-y-3">
                   <input value={surveyName} onChange={e => setSurveyName(e.target.value)} placeholder="Survey name" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                   <select value={surveyClientId} onChange={e => setSurveyClientId(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -218,7 +218,7 @@ export default function NPSPage() {
           {showResponseForm && (
             <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setShowResponseForm(false)}>
               <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Record NPS Response</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Record NPS Response</h3>
                 <div className="space-y-3">
                   <select value={respClientId} onChange={e => setRespClientId(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="">Select client</option>

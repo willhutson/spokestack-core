@@ -25,10 +25,10 @@ function roleBadge(role: string) {
   const colors: Record<string, string> = {
     OWNER: "bg-amber-100 text-amber-700",
     ADMIN: "bg-blue-100 text-blue-700",
-    MEMBER: "bg-gray-100 text-gray-600",
-    VIEWER: "bg-gray-100 text-gray-500",
+    MEMBER: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
+    VIEWER: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   };
-  return colors[role] ?? "bg-gray-100 text-gray-600";
+  return colors[role] ?? "bg-gray-100 text-[var(--text-secondary)]";
 }
 
 function getInitials(name?: string, email?: string): string {
@@ -121,38 +121,38 @@ export default function TeamDirectoryPage() {
         <TeamNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Team Directory</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{members.length} team member{members.length !== 1 ? "s" : ""}</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Team Directory</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">{members.length} team member{members.length !== 1 ? "s" : ""}</p>
           </div>
-          <button onClick={() => setShowInvite(!showInvite)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+          <button onClick={() => setShowInvite(!showInvite)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
             Invite Member
           </button>
         </div>
 
         {/* Invite Form */}
         {showInvite && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-gray-900">Invite Member</h2>
-              <button onClick={() => setShowInvite(false)} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+              <h2 className="text-sm font-semibold text-[var(--text-primary)]">Invite Member</h2>
+              <button onClick={() => setShowInvite(false)} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
             </div>
             <form onSubmit={handleInvite} className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Full name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name</label>
+                <input type="text" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Full name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
-                <input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} required placeholder="email@example.com" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Email</label>
+                <input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} required placeholder="email@example.com" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Role</label>
-                <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Role</label>
+                <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
                   {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
                 </select>
               </div>
               <div className="col-span-3">
-                <button type="submit" disabled={inviting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+                <button type="submit" disabled={inviting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
                   {inviting ? "Inviting..." : "Send Invite"}
                 </button>
               </div>
@@ -162,12 +162,12 @@ export default function TeamDirectoryPage() {
 
         {/* Search & Filters */}
         <div className="flex items-center gap-3 mb-6">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email..." className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64" />
-          <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email..." className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] w-64" />
+          <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
             <option value="All">All Departments</option>
             {deptNames.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
-          <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
             <option value="All">All Roles</option>
             {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
           </select>
@@ -177,41 +177,41 @@ export default function TeamDirectoryPage() {
         {loading ? (
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-xl p-5">
-                <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 bg-gray-200 rounded-full" /><div className="flex-1"><div className="h-4 bg-gray-200 rounded w-2/3 mb-1" /><div className="h-3 bg-gray-200 rounded w-1/2" /></div></div>
+              <div key={i} className="animate-pulse bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 bg-[var(--bg-surface)] rounded-full" /><div className="flex-1"><div className="h-4 bg-[var(--bg-surface)] rounded w-2/3 mb-1" /><div className="h-3 bg-[var(--bg-surface)] rounded w-1/2" /></div></div>
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No team members found</h3>
-            <p className="text-xs text-gray-500">Try adjusting your search or filters.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No team members found</h3>
+            <p className="text-xs text-[var(--text-secondary)]">Try adjusting your search or filters.</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {filtered.map((m) => (
-              <div key={m.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
+              <div key={m.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:shadow-sm transition-shadow">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-sm font-semibold text-indigo-600">
+                  <div className="w-10 h-10 bg-[var(--accent-subtle)] rounded-full flex items-center justify-center text-sm font-semibold text-[var(--accent)]">
                     {getInitials(m.user?.name, m.user?.email)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium text-gray-900 truncate">{m.user?.name ?? m.user?.email ?? "Unknown"}</div>
+                    <div className="text-sm font-medium text-[var(--text-primary)] truncate">{m.user?.name ?? m.user?.email ?? "Unknown"}</div>
                     <span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium", roleBadge(m.role))}>{m.role}</span>
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400 w-16">Email</span>
-                    <span className="text-xs text-gray-600 truncate">{m.user?.email ?? "--"}</span>
+                    <span className="text-xs text-[var(--text-tertiary)] w-16">Email</span>
+                    <span className="text-xs text-[var(--text-secondary)] truncate">{m.user?.email ?? "--"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400 w-16">Dept</span>
-                    <span className="text-xs text-gray-600">{m.team?.name ?? "--"}</span>
+                    <span className="text-xs text-[var(--text-tertiary)] w-16">Dept</span>
+                    <span className="text-xs text-[var(--text-secondary)]">{m.team?.name ?? "--"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400 w-16">Joined</span>
-                    <span className="text-xs text-gray-600">{m.joinedAt ? new Date(m.joinedAt).toLocaleDateString() : "--"}</span>
+                    <span className="text-xs text-[var(--text-tertiary)] w-16">Joined</span>
+                    <span className="text-xs text-[var(--text-secondary)]">{m.joinedAt ? new Date(m.joinedAt).toLocaleDateString() : "--"}</span>
                   </div>
                 </div>
               </div>

@@ -22,9 +22,9 @@ interface ContextEntry {
 
 const PLATFORM_CONFIG: Record<string, { label: string; color: string; bgColor: string; abbr: string }> = {
   instagram: { label: "Instagram", color: "text-pink-600", bgColor: "bg-pink-100", abbr: "IG" },
-  tiktok: { label: "TikTok", color: "text-gray-900", bgColor: "bg-gray-100", abbr: "TT" },
+  tiktok: { label: "TikTok", color: "text-[var(--text-primary)]", bgColor: "bg-[var(--bg-surface)]", abbr: "TT" },
   linkedin: { label: "LinkedIn", color: "text-blue-700", bgColor: "bg-blue-100", abbr: "LI" },
-  twitter: { label: "Twitter/X", color: "text-gray-800", bgColor: "bg-gray-100", abbr: "X" },
+  twitter: { label: "Twitter/X", color: "text-gray-800", bgColor: "bg-[var(--bg-surface)]", abbr: "X" },
   facebook: { label: "Facebook", color: "text-blue-600", bgColor: "bg-blue-100", abbr: "FB" },
 };
 
@@ -90,18 +90,18 @@ export default function PlatformsPage() {
 
   return (
     <ModuleLayoutShell moduleType="ANALYTICS">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         <AnalyticsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Platform Comparison</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Compare performance across social platforms.</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Platform Comparison</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">Compare performance across social platforms.</p>
           </div>
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+          <div className="flex gap-1 bg-[var(--bg-surface)] rounded-lg p-0.5">
             {PERIODS.map((p) => (
               <button key={p.value} onClick={() => setPeriod(p.value)}
                 className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors",
-                  period === p.value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  period === p.value ? "bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
                 )}>
                 {p.label}
               </button>
@@ -110,39 +110,39 @@ export default function PlatformsPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-sm text-gray-400">Loading...</div>
+          <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {platformCards.map((p) => (
-              <div key={p.key} className="border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+              <div key={p.key} className="border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                 {/* Platform Header */}
                 <div className="flex items-center gap-3 mb-4">
                   <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", p.bgColor)}>
                     <span className={cn("text-sm font-bold", p.color)}>{p.abbr}</span>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900">{p.label}</h3>
-                    <p className="text-[10px] text-gray-400">Last {period} days</p>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)]">{p.label}</h3>
+                    <p className="text-[10px] text-[var(--text-tertiary)]">Last {period} days</p>
                   </div>
                 </div>
 
                 {/* Metrics */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-[10px] font-medium text-gray-400 mb-0.5">Followers</p>
-                    <p className="text-lg font-bold text-gray-900">{p.followers.toLocaleString()}</p>
+                    <p className="text-[10px] font-medium text-[var(--text-tertiary)] mb-0.5">Followers</p>
+                    <p className="text-lg font-bold text-[var(--text-primary)]">{p.followers.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-medium text-gray-400 mb-0.5">Posts</p>
-                    <p className="text-lg font-bold text-gray-900">{p.posts}</p>
+                    <p className="text-[10px] font-medium text-[var(--text-tertiary)] mb-0.5">Posts</p>
+                    <p className="text-lg font-bold text-[var(--text-primary)]">{p.posts}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-medium text-gray-400 mb-0.5">Engagement Rate</p>
+                    <p className="text-[10px] font-medium text-[var(--text-tertiary)] mb-0.5">Engagement Rate</p>
                     <p className="text-lg font-bold text-emerald-600">{p.engagementRate.toFixed(1)}%</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-medium text-gray-400 mb-0.5">Total Reach</p>
-                    <p className="text-lg font-bold text-gray-900">{p.totalReach.toLocaleString()}</p>
+                    <p className="text-[10px] font-medium text-[var(--text-tertiary)] mb-0.5">Total Reach</p>
+                    <p className="text-lg font-bold text-[var(--text-primary)]">{p.totalReach.toLocaleString()}</p>
                   </div>
                 </div>
               </div>

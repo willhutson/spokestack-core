@@ -73,20 +73,20 @@ export default function BriefsReviewPage() {
         <BriefsNav />
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Review</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Review</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Briefs currently in review awaiting approval or feedback
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="text-sm text-gray-400">Loading briefs...</div>
+            <div className="text-sm text-[var(--text-tertiary)]">Loading briefs...</div>
           </div>
         ) : briefs.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No briefs in review</h3>
-            <p className="text-xs text-gray-500">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No briefs in review</h3>
+            <p className="text-xs text-[var(--text-secondary)]">
               Briefs accepted during triage will appear here for final review.
             </p>
           </div>
@@ -98,11 +98,11 @@ export default function BriefsReviewPage() {
               const days = daysInReview(brief.updatedAt);
 
               return (
-                <div key={brief.id} className="bg-white border border-gray-200 rounded-xl p-5">
+                <div key={brief.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">{brief.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">{brief.title}</h3>
                         {briefType && (
                           <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-purple-50 text-purple-700">
                             {briefType}
@@ -110,9 +110,9 @@ export default function BriefsReviewPage() {
                         )}
                       </div>
                       {brief.description && (
-                        <p className="text-xs text-gray-500 mb-2 line-clamp-2">{brief.description}</p>
+                        <p className="text-xs text-[var(--text-secondary)] mb-2 line-clamp-2">{brief.description}</p>
                       )}
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-[var(--text-tertiary)]">
                         {days === 0 ? "In review since today" : `In review for ${days} day${days !== 1 ? "s" : ""}`}
                       </p>
                     </div>
@@ -126,7 +126,7 @@ export default function BriefsReviewPage() {
                         onChange={(e) => setComment(e.target.value)}
                         placeholder="What changes are needed?"
                         rows={2}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                       />
                     </div>
                   )}
@@ -156,7 +156,7 @@ export default function BriefsReviewPage() {
                         </button>
                         <button
                           onClick={() => { setCommentId(null); setComment(""); }}
-                          className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                          className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
                         >
                           Cancel
                         </button>

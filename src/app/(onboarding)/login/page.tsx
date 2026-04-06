@@ -62,21 +62,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+    <div data-theme="obsidian" className="min-h-screen bg-[var(--bg-base)] flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-lg font-bold mr-3">
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent)] flex items-center justify-center text-[var(--primary-foreground)] text-lg font-bold mr-3">
             S
           </div>
-          <span className="text-2xl font-bold text-gray-900">SpokeStack</span>
+          <span className="text-2xl font-bold text-[var(--text-primary)]">SpokeStack</span>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <h1 className="text-xl font-semibold text-gray-900 text-center mb-1">
+        <div className="bg-[var(--bg-base)] rounded-2xl shadow-sm border border-[var(--border)] p-8">
+          <h1 className="text-xl font-semibold text-[var(--text-primary)] text-center mb-1">
             Welcome back
           </h1>
-          <p className="text-sm text-gray-500 text-center mb-6">
+          <p className="text-sm text-[var(--text-secondary)] text-center mb-6">
             Sign in to your workspace
           </p>
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-[var(--text-secondary)] mb-1"
               >
                 Email
               </label>
@@ -95,14 +95,14 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-[var(--text-secondary)] mb-1"
               >
                 Password
               </label>
@@ -113,7 +113,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Your password"
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
 
@@ -126,7 +126,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white text-sm font-medium rounded-lg px-4 py-2.5 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-[var(--accent)] text-[var(--primary-foreground)] text-sm font-medium rounded-lg px-4 py-2.5 hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
@@ -134,10 +134,10 @@ export default function LoginPage() {
 
           <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-[var(--border)]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-gray-400">or</span>
+              <span className="bg-[var(--bg-base)] px-2 text-[var(--text-tertiary)]">or</span>
             </div>
           </div>
 
@@ -145,7 +145,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-2.5 border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2.5 border border-[var(--border-strong)] rounded-lg px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -157,9 +157,9 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p className="text-sm text-gray-500 text-center mt-4">
+        <p className="text-sm text-[var(--text-secondary)] text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 font-medium">
+          <Link href="/signup" className="text-[var(--accent)] hover:text-[var(--accent-hover)] font-medium">
             Get started
           </Link>
         </p>

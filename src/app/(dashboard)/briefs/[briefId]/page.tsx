@@ -61,45 +61,45 @@ async function getAuthHeaders() {
 function LoadingSkeleton() {
   return (
     <div className="p-6 animate-pulse">
-      <div className="h-4 w-16 bg-gray-200 rounded mb-4" />
+      <div className="h-4 w-16 bg-[var(--bg-surface)] rounded mb-4" />
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-7 w-48 bg-gray-200 rounded" />
-            <div className="h-5 w-20 bg-gray-200 rounded-full" />
+            <div className="h-7 w-48 bg-[var(--bg-surface)] rounded" />
+            <div className="h-5 w-20 bg-[var(--bg-surface)] rounded-full" />
           </div>
-          <div className="h-4 w-32 bg-gray-200 rounded mt-2" />
-          <div className="h-4 w-64 bg-gray-200 rounded mt-2" />
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded mt-2" />
+          <div className="h-4 w-64 bg-[var(--bg-surface)] rounded mt-2" />
         </div>
-        <div className="h-9 w-28 bg-gray-200 rounded-lg" />
+        <div className="h-9 w-28 bg-[var(--bg-surface)] rounded-lg" />
       </div>
       <div className="mb-8">
-        <div className="h-4 w-16 bg-gray-200 rounded mb-3" />
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="h-4 w-16 bg-[var(--bg-surface)] rounded mb-3" />
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
           <div className="flex gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex flex-col items-center gap-1">
-                <div className="w-8 h-8 bg-gray-200 rounded-full" />
-                <div className="h-3 w-16 bg-gray-200 rounded" />
+                <div className="w-8 h-8 bg-[var(--bg-surface)] rounded-full" />
+                <div className="h-3 w-16 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
         </div>
       </div>
       <div>
-        <div className="h-4 w-20 bg-gray-200 rounded mb-3" />
+        <div className="h-4 w-20 bg-[var(--bg-surface)] rounded mb-3" />
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="bg-white border border-gray-200 rounded-lg px-5 py-3 flex items-center justify-between mb-2"
+            className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg px-5 py-3 flex items-center justify-between mb-2"
           >
             <div className="flex items-center gap-3">
-              <div className="h-4 w-14 bg-gray-200 rounded" />
-              <div className="h-4 w-36 bg-gray-200 rounded" />
+              <div className="h-4 w-14 bg-[var(--bg-surface)] rounded" />
+              <div className="h-4 w-36 bg-[var(--bg-surface)] rounded" />
             </div>
             <div className="flex items-center gap-3">
-              <div className="h-5 w-16 bg-gray-200 rounded-full" />
-              <div className="h-3 w-16 bg-gray-200 rounded" />
+              <div className="h-5 w-16 bg-[var(--bg-surface)] rounded-full" />
+              <div className="h-3 w-16 bg-[var(--bg-surface)] rounded" />
             </div>
           </div>
         ))}
@@ -157,16 +157,16 @@ export default function BriefDetailPage({
   if (notFound) {
     return (
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
             Brief not found
           </h3>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-[var(--text-secondary)] mb-4">
             This brief may have been deleted or you don&apos;t have access.
           </p>
           <button
             onClick={() => router.push("/briefs")}
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Back to Briefs
           </button>
@@ -182,10 +182,10 @@ export default function BriefDetailPage({
           <h3 className="text-sm font-medium text-red-700 mb-1">
             Error loading brief
           </h3>
-          <p className="text-xs text-gray-500 mb-4">{error}</p>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">{error}</p>
           <button
             onClick={() => router.push("/briefs")}
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Back to Briefs
           </button>
@@ -208,7 +208,7 @@ export default function BriefDetailPage({
       {/* Back button */}
       <button
         onClick={() => router.push("/briefs")}
-        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-4"
+        className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-4"
       >
         <svg
           className="w-4 h-4"
@@ -230,18 +230,18 @@ export default function BriefDetailPage({
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
               {brief.title}
             </h1>
             <StatusBadge status={brief.status} />
           </div>
           {clientDisplay && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               Client: {clientDisplay}
             </p>
           )}
           {brief.description && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               {brief.description}
             </p>
           )}
@@ -252,7 +252,7 @@ export default function BriefDetailPage({
               `Give me a summary of the brief "${brief.title}" including phase progress and artifact status`
             )
           }
-          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -273,37 +273,37 @@ export default function BriefDetailPage({
 
       {/* Phases Timeline */}
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">Phases</h2>
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Phases</h2>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
           <PhasesTimeline phases={sortedPhases} />
         </div>
       </div>
 
       {/* Artifacts */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
           Artifacts
-          <span className="ml-2 text-xs font-normal text-gray-400">
+          <span className="ml-2 text-xs font-normal text-[var(--text-tertiary)]">
             {brief.artifacts.length} file
             {brief.artifacts.length !== 1 ? "s" : ""}
           </span>
         </h2>
         {brief.artifacts.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
-            <p className="text-xs text-gray-500">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-6 text-center">
+            <p className="text-xs text-[var(--text-secondary)]">
               No artifacts uploaded yet.
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden divide-y divide-[var(--border)]">
             {brief.artifacts.map((artifact) => {
               const typeBg =
                 ARTIFACT_TYPE_STYLES[artifact.type?.toLowerCase()] ??
-                "bg-gray-50 text-gray-600";
+                "bg-[var(--bg-base)] text-[var(--text-secondary)]";
               return (
                 <div
                   key={artifact.id}
-                  className="px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="px-5 py-3 flex items-center justify-between hover:bg-[var(--bg-hover)] transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -311,13 +311,13 @@ export default function BriefDetailPage({
                     >
                       {artifact.type}
                     </span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-[var(--text-primary)]">
                       {artifact.name}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <StatusBadge status={artifact.status} />
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-[var(--text-tertiary)]">
                       {new Date(artifact.createdAt).toLocaleDateString(
                         "en-US",
                         { month: "short", day: "numeric" }

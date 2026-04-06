@@ -51,11 +51,11 @@ export default function BriefsPendingPage() {
   function renderSection(title: string, subtitle: string, items: Brief[], actionLabel: string) {
     return (
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">{title}</h2>
-        <p className="text-xs text-gray-500 mb-4">{subtitle}</p>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">{title}</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">{subtitle}</p>
         {items.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-            <p className="text-xs text-gray-500">Nothing here right now</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 text-center">
+            <p className="text-xs text-[var(--text-secondary)]">Nothing here right now</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -68,24 +68,24 @@ export default function BriefsPendingPage() {
                 <div
                   key={brief.id}
                   onClick={() => router.push(`/briefs/${brief.id}`)}
-                  className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">{brief.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">{brief.title}</h3>
                         {briefType && (
-                          <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+                          <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)]">
                             {briefType}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <div className="flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
                         <span>{actionLabel}</span>
                         {dueDate && <span>Due {formatDate(dueDate)}</span>}
                       </div>
                     </div>
-                    <span className="text-xs text-gray-400 whitespace-nowrap">
+                    <span className="text-xs text-[var(--text-tertiary)] whitespace-nowrap">
                       Updated {formatDate(brief.updatedAt)}
                     </span>
                   </div>
@@ -104,15 +104,15 @@ export default function BriefsPendingPage() {
         <BriefsNav />
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Pending</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Pending</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Briefs that need your attention or are awaiting action from others
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="text-sm text-gray-400">Loading briefs...</div>
+            <div className="text-sm text-[var(--text-tertiary)]">Loading briefs...</div>
           </div>
         ) : (
           <>

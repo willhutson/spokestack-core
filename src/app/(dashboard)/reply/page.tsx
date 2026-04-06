@@ -118,7 +118,7 @@ export default function ReplyInboxPage() {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Reply</h1>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               Unified social inbox and response management.
             </p>
@@ -201,7 +201,7 @@ export default function ReplyInboxPage() {
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-[var(--text-primary)]">
                           {sender}
                         </span>
                         <span

@@ -320,6 +320,159 @@
    Base Styles — applied via CSS vars from active theme
    ============================================================ */
 
+/* ============================================================
+   Global Theme Overrides
+   These apply the theme tokens to structural elements so
+   components don't need individual edits for fonts/radius/shadow.
+   ============================================================ */
+
+/* Typography — heading font applies to all headings */
+[data-theme] h1,
+[data-theme] h2,
+[data-theme] h3,
+[data-theme] h4 {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-heading);
+  font-weight: var(--weight-heading);
+}
+
+/* Body font applies globally */
+[data-theme] {
+  font-family: var(--font-body);
+}
+
+/* Border radius — override Tailwind's hardcoded radii on cards/panels */
+[data-theme] .rounded-xl {
+  border-radius: var(--radius);
+}
+
+[data-theme] .rounded-lg {
+  border-radius: calc(var(--radius) - 2px);
+}
+
+[data-theme] .rounded-md {
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* Shadow — override Tailwind's shadows with theme-aware ones */
+[data-theme] .shadow-sm {
+  box-shadow: var(--shadow);
+}
+
+[data-theme] .shadow-md,
+[data-theme] .shadow {
+  box-shadow: var(--shadow);
+}
+
+[data-theme] .shadow-lg {
+  box-shadow: var(--shadow), 0 0 0 1px var(--border);
+}
+
+/* Page background */
+[data-theme] {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+/* Card/surface elements that use bg-white or bg-gray-50 */
+[data-theme] .bg-card,
+[data-theme] [class*="bg-\[var\(--bg-surface\)\]"] {
+  box-shadow: var(--shadow);
+}
+
+/* Focus ring uses accent */
+[data-theme] *:focus-visible {
+  outline-color: var(--accent);
+}
+
+/* Scrollbar styling for dark themes */
+[data-theme][style*="color-scheme: dark"] ::-webkit-scrollbar,
+[data-theme="obsidian"] ::-webkit-scrollbar,
+[data-theme="volt"] ::-webkit-scrollbar,
+[data-theme="indigo"] ::-webkit-scrollbar,
+[data-theme="copper"] ::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-theme="obsidian"] ::-webkit-scrollbar-thumb,
+[data-theme="volt"] ::-webkit-scrollbar-thumb,
+[data-theme="indigo"] ::-webkit-scrollbar-thumb,
+[data-theme="copper"] ::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 3px;
+}
+
+[data-theme="obsidian"] ::-webkit-scrollbar-track,
+[data-theme="volt"] ::-webkit-scrollbar-track,
+[data-theme="indigo"] ::-webkit-scrollbar-track,
+[data-theme="copper"] ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* Input/Select/Textarea inherit body font + theme colors */
+[data-theme] input,
+[data-theme] select,
+[data-theme] textarea {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+}
+
+[data-theme] input::placeholder,
+[data-theme] textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Button text inherits body font */
+[data-theme] button {
+  font-family: var(--font-body);
+}
+
+/* ============================================================
+   Theme Utility Classes
+   Use these for elements that need theme fonts/radius but
+   aren't semantic HTML elements (h1-h4, etc.)
+   ============================================================ */
+
+/* Apply heading font to any element */
+[data-theme] .font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-heading);
+  font-weight: var(--weight-heading);
+}
+
+/* Large stat numbers should use heading font (matches Paper designs) */
+[data-theme] .text-2xl.font-bold,
+[data-theme] .text-3xl.font-bold,
+[data-theme] .text-4xl.font-bold {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Apply body font explicitly */
+[data-theme] .font-body {
+  font-family: var(--font-body);
+}
+
+/* Apply mono font */
+[data-theme] .font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Theme-aware radius (for elements not using rounded-xl/lg/md) */
+[data-theme] .rounded-theme {
+  border-radius: var(--radius);
+}
+
+/* Theme-aware shadow */
+[data-theme] .shadow-theme {
+  box-shadow: var(--shadow);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;

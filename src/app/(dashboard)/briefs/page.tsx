@@ -34,7 +34,7 @@ interface Client {
 
 const PIPELINE_COLUMNS = ["DRAFT", "ACTIVE", "IN_REVIEW", "COMPLETED"] as const;
 const COLUMN_COLORS: Record<string, string> = {
-  DRAFT: "border-gray-300 bg-gray-50",
+  DRAFT: "border-[var(--border-strong)] bg-[var(--bg-base)]",
   ACTIVE: "border-blue-300 bg-blue-50",
   IN_REVIEW: "border-purple-300 bg-purple-50",
   COMPLETED: "border-emerald-300 bg-emerald-50",
@@ -172,21 +172,21 @@ export default function BriefsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Briefs</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Briefs</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Manage creative briefs, artifacts, and client reviews
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => openChatWithContext("Summarize my active briefs and their review status")}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Ask Agent
           </button>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
           >
             + New Brief
           </button>
@@ -195,26 +195,26 @@ export default function BriefsPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">Total Briefs</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{totalBriefs}</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">Total Briefs</p>
+          <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">{totalBriefs}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">In Review</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">In Review</p>
           <p className="text-2xl font-bold text-purple-600 mt-1">{inReview}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">Completed This Month</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">Completed This Month</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">{completedThisMonth}</p>
         </div>
       </div>
 
       {/* Inline Create Form */}
       {showForm && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-900">New Brief</h2>
-            <button onClick={() => setShowForm(false)} className="text-xs text-gray-400 hover:text-gray-600">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Brief</h2>
+            <button onClick={() => setShowForm(false)} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">
               Cancel
             </button>
           </div>
@@ -224,19 +224,19 @@ export default function BriefsPage() {
               placeholder="Brief title"
               value={formTitle}
               onChange={(e) => setFormTitle(e.target.value)}
-              className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
             <textarea
               placeholder="Description (optional)"
               value={formDesc}
               onChange={(e) => setFormDesc(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
             <select
               value={formClient}
               onChange={(e) => setFormClient(e.target.value)}
-              className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             >
               <option value="">Select client (optional)</option>
               {clients.map((c) => (
@@ -247,7 +247,7 @@ export default function BriefsPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
             >
               {submitting ? "Creating..." : "Create Brief"}
             </button>
@@ -258,15 +258,15 @@ export default function BriefsPage() {
       {/* Pipeline Kanban */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="text-sm text-gray-400">Loading briefs...</div>
+          <div className="text-sm text-[var(--text-tertiary)]">Loading briefs...</div>
         </div>
       ) : briefs.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">No briefs yet</h3>
-          <p className="text-xs text-gray-500 mb-4">Create your first brief to start managing creative deliverables.</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No briefs yet</h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">Create your first brief to start managing creative deliverables.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
           >
             Create Brief
           </button>
@@ -285,13 +285,13 @@ export default function BriefsPage() {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={`rounded-xl border-2 p-3 min-h-[300px] transition-colors ${COLUMN_COLORS[col]} ${snapshot.isDraggingOver ? "ring-2 ring-indigo-400" : ""}`}
+              className={`rounded-xl border-2 p-3 min-h-[300px] transition-colors ${COLUMN_COLORS[col]} ${snapshot.isDraggingOver ? "ring-2 ring-[var(--accent)]" : ""}`}
             >
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                <h3 className="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wide">
                   {col.replace(/_/g, " ")}
                 </h3>
-                <span className="text-xs font-medium text-gray-500 bg-white rounded-full px-2 py-0.5">
+                <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] rounded-full px-2 py-0.5">
                   {buckets[col].length}
                 </span>
               </div>
@@ -310,17 +310,17 @@ export default function BriefsPage() {
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
                       {...dragProvided.dragHandleProps}
-                      className={`bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow cursor-grab ${dragSnapshot.isDragging ? "shadow-lg ring-2 ring-indigo-300" : ""}`}
+                      className={`bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 hover:shadow-md transition-shadow cursor-grab ${dragSnapshot.isDragging ? "shadow-lg ring-2 ring-[var(--accent)]" : ""}`}
                     >
                       <div onClick={() => router.push(`/briefs/${brief.id}`)}>
                         <div className="flex items-start justify-between gap-1 mb-1">
-                          <h4 className="text-sm font-semibold text-gray-900 line-clamp-2">{brief.title}</h4>
+                          <h4 className="text-sm font-semibold text-[var(--text-primary)] line-clamp-2">{brief.title}</h4>
                           <StatusBadge status={brief.status} />
                         </div>
                         {brief.clientName && (
-                          <p className="text-xs text-gray-500 mb-1">{brief.clientName}</p>
+                          <p className="text-xs text-[var(--text-secondary)] mb-1">{brief.clientName}</p>
                         )}
-                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                        <div className="flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
                           {totalPhases > 0 && <span>{completedPhases}/{totalPhases} phases</span>}
                           {(brief.artifactCount ?? 0) > 0 && (
                             <span>{brief.artifactCount} artifact{brief.artifactCount !== 1 ? "s" : ""}</span>
@@ -350,7 +350,7 @@ export default function BriefsPage() {
                             </button>
                             <button
                               onClick={(e) => { e.stopPropagation(); openChatWithContext(`Generate an artifact for brief: ${brief.title}`); }}
-                              className="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors"
+                              className="px-2 py-1 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded hover:bg-[var(--bg-hover)] transition-colors"
                             >
                               Generate Artifact
                             </button>
@@ -378,7 +378,7 @@ export default function BriefsPage() {
                           <button
                             disabled={updating === brief.id}
                             onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "ACTIVE"); }}
-                            className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                            className="px-2 py-1 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded hover:bg-[var(--bg-hover)] disabled:opacity-50 transition-colors"
                           >
                             ← Reopen
                           </button>

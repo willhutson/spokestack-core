@@ -93,7 +93,7 @@ export default function FaqPage() {
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Reply</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             FAQ library for quick, approved responses.
           </p>
@@ -200,7 +200,7 @@ export default function FaqPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold text-gray-900">
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                           {faq.key}
                         </h3>
                         <span

@@ -18,7 +18,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xl font-bold text-[var(--text-primary)]">{value}</p>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export default function DelegationPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Delegation</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Delegation</h1>
           <p className="text-sm text-gray-500 mt-0.5">Enterprise permission delegation and authority management.</p>
         </div>
         <button
@@ -116,7 +116,7 @@ export default function DelegationPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No active delegations</h3>
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No active delegations</h3>
             <p className="text-xs text-gray-500 mb-4">Create a delegation when you need someone to act on your behalf.</p>
             <button
               onClick={() => openChatWithContext("Help me set up a new delegation of authority.")}
@@ -139,7 +139,7 @@ export default function DelegationPage() {
               <tbody className="divide-y divide-gray-100">
                 {delegations.map((d) => (
                   <tr key={d.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{d.delegateTo}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{d.delegateTo}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{d.scope}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${d.status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>

@@ -61,15 +61,15 @@ function CreatePRForm({ onCreated, onCancel }: { onCreated: () => void; onCancel
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">New Press Release</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Press Release</h2>
         <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="space-y-4 mb-4">
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Title *</label>
-            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Press release headline" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Press release headline" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Content</label>
-            <textarea value={content} onChange={e => setContent(e.target.value)} rows={5} placeholder="Press release body..." className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" /></div>
+            <textarea value={content} onChange={e => setContent(e.target.value)} rows={5} placeholder="Press release body..." className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" /></div>
         </div>
         <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
@@ -150,7 +150,7 @@ export default function PressReleasesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Press Releases</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Press Releases</h1>
           <p className="text-sm text-gray-500 mt-0.5">Draft, approve, and distribute press releases.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function PressReleasesPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Drafts</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{drafts.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{drafts.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Pending Approval</p>
@@ -177,7 +177,7 @@ export default function PressReleasesPage() {
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Archived</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{archived.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{archived.length}</p>
         </div>
       </div>
 
@@ -198,7 +198,7 @@ export default function PressReleasesPage() {
           {tab === "drafts" && (
             drafts.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No drafts</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No drafts</h3>
                 <p className="text-xs text-gray-500 mb-4">Start a new press release draft.</p>
                 <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Release</button>
               </div>
@@ -214,7 +214,7 @@ export default function PressReleasesPage() {
                   <tbody className="divide-y divide-gray-100">
                     {drafts.map(d => (
                       <tr key={d.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{d.title}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{d.title}</td>
                         <td className="px-5 py-4"><StatusBadge status={d.status} /></td>
                         <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(d.createdAt)}</td>
                         <td className="px-5 py-4 text-right">
@@ -234,7 +234,7 @@ export default function PressReleasesPage() {
           {tab === "approvals" && (
             approvals.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No pending approvals</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No pending approvals</h3>
                 <p className="text-xs text-gray-500">Press releases submitted for review will appear here.</p>
               </div>
             ) : (
@@ -243,7 +243,7 @@ export default function PressReleasesPage() {
                   <div key={a.id} className="bg-white border border-gray-200 rounded-xl p-5">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-900">{a.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)]">{a.title}</h3>
                         <p className="text-xs text-gray-400 mt-0.5">Submitted {fmtDate(a.updatedAt || a.createdAt)}</p>
                       </div>
                       <StatusBadge status={a.status} />
@@ -267,7 +267,7 @@ export default function PressReleasesPage() {
           {tab === "distribution" && (
             distribution.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No distributions yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No distributions yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Track where your press releases have been sent.</p>
                 <button onClick={() => openChatWithContext("Help me set up press release distribution channels.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Set Up Distribution</button>
               </div>
@@ -283,7 +283,7 @@ export default function PressReleasesPage() {
                   <tbody className="divide-y divide-gray-100">
                     {distribution.map(d => { const v = parseVal(d.value); return (
                       <tr key={d.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{d.key}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{d.key}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(v.channel as string) || "-"}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(v.recipients as number) || 0}</td>
                         <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(d.createdAt)}</td>
@@ -299,7 +299,7 @@ export default function PressReleasesPage() {
           {tab === "archive" && (
             archived.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No archived releases</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No archived releases</h3>
                 <p className="text-xs text-gray-500">Approved and completed press releases will appear here.</p>
               </div>
             ) : (
@@ -313,7 +313,7 @@ export default function PressReleasesPage() {
                   <tbody className="divide-y divide-gray-100">
                     {archived.map(a => (
                       <tr key={a.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{a.title}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{a.title}</td>
                         <td className="px-5 py-4"><StatusBadge status={a.status} /></td>
                         <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(a.createdAt)}</td>
                       </tr>

@@ -27,7 +27,7 @@ interface ContextEntry {
 const STATUS_COLORS: Record<string, string> = {
   Active: "bg-green-100 text-green-700",
   Paused: "bg-yellow-100 text-yellow-700",
-  Completed: "bg-gray-100 text-gray-600",
+  Completed: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   Draft: "bg-blue-100 text-blue-700",
 };
 
@@ -119,7 +119,7 @@ export default function CampaignsPage() {
   }, [campaigns, statusFilter, sortKey, sortDir]);
 
   const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
-    <th className="text-left text-xs font-medium text-gray-500 px-4 py-3 cursor-pointer hover:text-gray-700 select-none"
+    <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3 cursor-pointer hover:text-[var(--text-secondary)] select-none"
       onClick={() => toggleSort(k)}>
       <span className="flex items-center gap-1">
         {label}
@@ -134,37 +134,37 @@ export default function CampaignsPage() {
 
   return (
     <ModuleLayoutShell moduleType="ANALYTICS">
-      <div className="p-6 bg-white min-h-full">
+      <div className="p-6 bg-[var(--bg-base)] min-h-full">
         <AnalyticsNav />
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Campaign Performance</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Track and compare campaign metrics across platforms.</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Campaign Performance</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">Track and compare campaign metrics across platforms.</p>
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm bg-[var(--bg-base)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           >
             {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-sm text-gray-400">Loading...</div>
+          <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 border border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500 mb-1">No campaigns found</p>
-            <p className="text-xs text-gray-400">Campaign data will appear once campaigns are tracked.</p>
+          <div className="text-center py-16 border border-[var(--border)] rounded-xl">
+            <p className="text-sm text-[var(--text-secondary)] mb-1">No campaigns found</p>
+            <p className="text-xs text-[var(--text-tertiary)]">Campaign data will appear once campaigns are tracked.</p>
           </div>
         ) : (
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="border border-[var(--border)] rounded-lg overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
+                <tr className="bg-[var(--bg-base)]">
                   <SortHeader label="Campaign" k="name" />
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Platforms</th>
-                  <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Status</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Platforms</th>
+                  <th className="text-left text-xs font-medium text-[var(--text-secondary)] px-4 py-3">Status</th>
                   <SortHeader label="Reach" k="reach" />
                   <SortHeader label="Impressions" k="impressions" />
                   <SortHeader label="Clicks" k="clicks" />
@@ -173,32 +173,32 @@ export default function CampaignsPage() {
                   <SortHeader label="Conversions" k="conversions" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filtered.map((c) => {
                   const ctr = c.impressions > 0 ? ((c.clicks / c.impressions) * 100).toFixed(1) : "0.0";
                   return (
-                    <tr key={c.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{c.name}</td>
+                    <tr key={c.id} className="hover:bg-[var(--bg-base)]">
+                      <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{c.name}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
                           {c.platforms.map((p) => (
-                            <span key={p} className="px-1.5 py-0.5 text-[9px] font-semibold bg-gray-100 text-gray-600 rounded">
+                            <span key={p} className="px-1.5 py-0.5 text-[9px] font-semibold bg-[var(--bg-surface)] text-[var(--text-secondary)] rounded">
                               {PLATFORM_ICONS[p] ?? p.slice(0, 2).toUpperCase()}
                             </span>
                           ))}
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-600")}>
+                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", STATUS_COLORS[c.status] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]")}>
                           {c.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{c.reach.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{c.impressions.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{c.clicks.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{ctr}%</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{aed.format(c.spend)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{c.conversions.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{c.reach.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{c.impressions.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{c.clicks.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{ctr}%</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{aed.format(c.spend)}</td>
+                      <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{c.conversions.toLocaleString()}</td>
                     </tr>
                   );
                 })}

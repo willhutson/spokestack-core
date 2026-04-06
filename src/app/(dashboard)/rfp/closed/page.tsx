@@ -87,7 +87,7 @@ export default function ClosedRfpPage() {
     <ModuleLayoutShell moduleType="BRIEFS">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">RFP</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Review closed proposals and outcomes.
           </p>
@@ -208,7 +208,7 @@ export default function ClosedRfpPage() {
                       {rfp.status}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">
+                      <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                         {rfp.title}
                       </p>
                       <p className="text-xs text-gray-500">{client}</p>

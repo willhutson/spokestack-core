@@ -34,7 +34,7 @@ const TAB_LABELS: { key: Tab; label: string }[] = [
 ];
 
 const TYPE_STYLES: Record<string, string> = {
-  GENERAL: "bg-gray-100 text-gray-600",
+  GENERAL: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   BRAND: "bg-purple-50 text-purple-600",
   CLIENT: "bg-blue-50 text-blue-600",
 };
@@ -55,7 +55,7 @@ function weekDates(): Date[] {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  DRAFT: "bg-gray-200 text-gray-700",
+  DRAFT: "bg-[var(--bg-surface)] text-[var(--text-secondary)]",
   ACTIVE: "bg-blue-100 text-blue-700",
   IN_REVIEW: "bg-yellow-100 text-yellow-700",
   APPROVED: "bg-emerald-100 text-emerald-700",
@@ -92,29 +92,29 @@ function NewLibraryForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">New Library</h2>
-        <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Library</h2>
+        <button onClick={onCancel} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Library name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Name *</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Library name" className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Type</label>
-            <select value={libraryType} onChange={(e) => setLibraryType(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Type</label>
+            <select value={libraryType} onChange={(e) => setLibraryType(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
               <option value="GENERAL">General</option>
               <option value="BRAND">Brand</option>
               <option value="CLIENT">Client</option>
             </select>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
-          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
             {submitting ? "Creating..." : "Create Library"}
           </button>
         </div>
@@ -185,10 +185,10 @@ export default function ContentStudioPage() {
   const Loader = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white border border-gray-200 rounded-xl p-5">
-          <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
-          <div className="h-3 w-20 bg-gray-200 rounded mb-4" />
-          <div className="flex gap-4"><div className="h-3 w-16 bg-gray-200 rounded" /><div className="h-3 w-16 bg-gray-200 rounded" /></div>
+        <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+          <div className="h-4 w-32 bg-[var(--bg-surface)] rounded mb-2" />
+          <div className="h-3 w-20 bg-[var(--bg-surface)] rounded mb-4" />
+          <div className="flex gap-4"><div className="h-3 w-16 bg-[var(--bg-surface)] rounded" /><div className="h-3 w-16 bg-[var(--bg-surface)] rounded" /></div>
         </div>
       ))}
     </div>
@@ -201,30 +201,30 @@ export default function ContentStudioPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Content Studio</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Create and manage content assets with AI assistance.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Content Studio</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Create and manage content assets with AI assistance.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => openChatWithContext("Help me upload a new asset to my content library.")} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Upload Asset</button>
+          <button onClick={() => openChatWithContext("Help me upload a new asset to my content library.")} className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Upload Asset</button>
           {tab === "libraries" && !showForm && (
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">New Library</button>
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">New Library</button>
           )}
           {tab === "moodboards" && (
-            <button onClick={() => openChatWithContext("Create a new moodboard for my project.")} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Create Moodboard</button>
+            <button onClick={() => openChatWithContext("Create a new moodboard for my project.")} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">Create Moodboard</button>
           )}
           {tab === "video" && (
-            <button onClick={() => openChatWithContext("Create a video project brief.")} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">New Video Project</button>
+            <button onClick={() => openChatWithContext("Create a video project brief.")} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">New Video Project</button>
           )}
           {tab === "documents" && (
-            <button onClick={() => openChatWithContext("Create a new document.")} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">New Document</button>
+            <button onClick={() => openChatWithContext("Create a new document.")} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">New Document</button>
           )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {TAB_LABELS.map((t) => (
-          <button key={t.key} onClick={() => { setTab(t.key); setExpandedId(null); }} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+          <button key={t.key} onClick={() => { setTab(t.key); setExpandedId(null); }} className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === t.key ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>
             {t.label}
           </button>
         ))}
@@ -237,38 +237,38 @@ export default function ContentStudioPage() {
           {/* Libraries */}
           {tab === "libraries" && (
             libraries.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No asset libraries yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Create one to start organizing your content.</p>
-                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Library</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No asset libraries yet</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create one to start organizing your content.</p>
+                <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">New Library</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {libraries.map((lib) => (
-                  <div key={lib.id} onClick={() => expandLibrary(lib.id)} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors cursor-pointer">
+                  <div key={lib.id} onClick={() => expandLibrary(lib.id)} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors cursor-pointer">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-gray-900">{lib.name}</h3>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${TYPE_STYLES[lib.libraryType] ?? "bg-gray-100 text-gray-600"}`}>{lib.libraryType}</span>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{lib.name}</h3>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${TYPE_STYLES[lib.libraryType] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{lib.libraryType}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
                       <span>{lib._count.folders} folder{lib._count.folders !== 1 ? "s" : ""}</span>
                       <span>{lib._count.assets} asset{lib._count.assets !== 1 ? "s" : ""}</span>
                     </div>
                     {expandedId === lib.id && (
-                      <div className="mt-4 pt-3 border-t border-gray-100">
-                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
-                          <div><span className="font-medium text-gray-500">Visibility:</span> {lib.visibility}</div>
-                          <div><span className="font-medium text-gray-500">Created:</span> {fmtDate(lib.createdAt)}</div>
+                      <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                        <div className="grid grid-cols-2 gap-2 text-xs text-[var(--text-secondary)] mb-3">
+                          <div><span className="font-medium text-[var(--text-secondary)]">Visibility:</span> {lib.visibility}</div>
+                          <div><span className="font-medium text-[var(--text-secondary)]">Created:</span> {fmtDate(lib.createdAt)}</div>
                         </div>
                         {libAssets.length > 0 ? (
                           <div className="space-y-1">{libAssets.slice(0, 8).map((a) => (
-                            <div key={a.id} className="flex items-center gap-2 text-xs text-gray-600">
-                              <span className="w-2 h-2 rounded-full bg-indigo-400" />
+                            <div key={a.id} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                              <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />
                               <span className="truncate">{a.name}</span>
-                              <span className="ml-auto text-gray-400">{a.assetType}</span>
+                              <span className="ml-auto text-[var(--text-tertiary)]">{a.assetType}</span>
                             </div>
                           ))}</div>
-                        ) : <p className="text-xs text-gray-400">No assets in this library.</p>}
+                        ) : <p className="text-xs text-[var(--text-tertiary)]">No assets in this library.</p>}
                       </div>
                     )}
                   </div>
@@ -280,28 +280,28 @@ export default function ContentStudioPage() {
           {/* Moodboards */}
           {tab === "moodboards" && (
             moodboards.length === 0 && imageAssets.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No moodboards yet</h3>
-                <p className="text-xs text-gray-500 mb-4">Create a BRAND library to use as a moodboard.</p>
-                <button onClick={() => openChatWithContext("Create a new moodboard for my project.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Moodboard</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No moodboards yet</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create a BRAND library to use as a moodboard.</p>
+                <button onClick={() => openChatWithContext("Create a new moodboard for my project.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Create Moodboard</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {moodboards.map((mb) => (
-                  <div key={mb.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors">
-                    <div className="grid grid-cols-3 gap-0.5 bg-gray-100 h-32">
+                  <div key={mb.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--border-strong)] transition-colors">
+                    <div className="grid grid-cols-3 gap-0.5 bg-[var(--bg-surface)] h-32">
                       {imageAssets.slice(0, 6).map((img, i) => (
-                        <div key={i} className="bg-gray-200 flex items-center justify-center text-xs text-gray-400">
+                        <div key={i} className="bg-[var(--bg-surface)] flex items-center justify-center text-xs text-[var(--text-tertiary)]">
                           {img.url ? <img src={img.url} alt="" className="w-full h-full object-cover" /> : "IMG"}
                         </div>
                       ))}
                       {imageAssets.length < 6 && Array.from({ length: 6 - Math.min(imageAssets.length, 6) }).map((_, i) => (
-                        <div key={`ph-${i}`} className="bg-gray-100" />
+                        <div key={`ph-${i}`} className="bg-[var(--bg-surface)]" />
                       ))}
                     </div>
                     <div className="p-4">
-                      <h3 className="text-sm font-semibold text-gray-900">{mb.name}</h3>
-                      <p className="text-xs text-gray-500 mt-1">{mb._count.assets} asset{mb._count.assets !== 1 ? "s" : ""}</p>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{mb.name}</h3>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">{mb._count.assets} asset{mb._count.assets !== 1 ? "s" : ""}</p>
                     </div>
                   </div>
                 ))}
@@ -312,32 +312,32 @@ export default function ContentStudioPage() {
           {/* Video Projects */}
           {tab === "video" && (
             videoBriefs.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No video projects</h3>
-                <p className="text-xs text-gray-500 mb-4">Start a video project brief with AI.</p>
-                <button onClick={() => openChatWithContext("Create a video project brief.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Video Project</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No video projects</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Start a video project brief with AI.</p>
+                <button onClick={() => openChatWithContext("Create a video project brief.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">New Video Project</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {videoBriefs.map((b) => (
-                  <div key={b.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
+                  <div key={b.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] transition-colors">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-sm font-semibold text-gray-900">{b.title}</h3>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[b.status] ?? "bg-gray-100 text-gray-600"}`}>{b.status}</span>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{b.title}</h3>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[b.status] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{b.status}</span>
                     </div>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs text-gray-600">
+                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                         <span className="w-2 h-2 rounded-full bg-emerald-400" />
                         <span>Script:</span>
                         <span className="ml-auto font-medium">{b.metadata?.scriptStatus as string ?? "Pending"}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-gray-600">
+                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                         <span className="w-2 h-2 rounded-full bg-blue-400" />
                         <span>Storyboard:</span>
                         <span className="ml-auto font-medium">{b.metadata?.storyboardStatus as string ?? "Pending"}</span>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-3">Created {fmtDate(b.createdAt)}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-3">Created {fmtDate(b.createdAt)}</p>
                   </div>
                 ))}
               </div>
@@ -347,51 +347,51 @@ export default function ContentStudioPage() {
           {/* Documents */}
           {tab === "documents" && (
             documents.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No documents</h3>
-                <p className="text-xs text-gray-500 mb-4">Create a document with AI assistance.</p>
-                <button onClick={() => openChatWithContext("Create a new document.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Document</button>
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No documents</h3>
+                <p className="text-xs text-[var(--text-secondary)] mb-4">Create a document with AI assistance.</p>
+                <button onClick={() => openChatWithContext("Create a new document.")} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">New Document</button>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Name</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Type</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Versions</th>
-                      <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-5 py-3">Last Updated</th>
+                    <tr className="border-b border-[var(--border)] bg-[var(--bg-base)]">
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Name</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Type</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Versions</th>
+                      <th className="text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider px-5 py-3">Last Updated</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[var(--border)]">
                     {documents.map((doc) => (
-                      <tr key={doc.id} onClick={() => setExpandedId(expandedId === doc.id ? null : doc.id)} className="hover:bg-gray-50 cursor-pointer">
+                      <tr key={doc.id} onClick={() => setExpandedId(expandedId === doc.id ? null : doc.id)} className="hover:bg-[var(--bg-hover)] cursor-pointer">
                         <td className="px-5 py-4" colSpan={expandedId === doc.id ? 4 : undefined}>
                           {expandedId === doc.id ? (
                             <div>
-                              <h3 className="text-sm font-semibold text-gray-900 mb-2">{doc.name}</h3>
-                              <p className="text-xs text-gray-500 mb-2">Type: {doc.assetType} | Updated: {fmtDate(doc.updatedAt)}</p>
-                              <h4 className="text-xs font-medium text-gray-700 mb-1">Version History</h4>
+                              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2">{doc.name}</h3>
+                              <p className="text-xs text-[var(--text-secondary)] mb-2">Type: {doc.assetType} | Updated: {fmtDate(doc.updatedAt)}</p>
+                              <h4 className="text-xs font-medium text-[var(--text-secondary)] mb-1">Version History</h4>
                               {doc.versions && doc.versions.length > 0 ? (
                                 <div className="space-y-1">
                                   {doc.versions.map((v) => (
-                                    <div key={v.id} className="flex items-center gap-2 text-xs text-gray-600">
+                                    <div key={v.id} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                                       <span className="font-medium">v{v.versionNumber}</span>
-                                      <span className="text-gray-400">{fmtDate(v.createdAt)}</span>
+                                      <span className="text-[var(--text-tertiary)]">{fmtDate(v.createdAt)}</span>
                                     </div>
                                   ))}
                                 </div>
-                              ) : <p className="text-xs text-gray-400">No version history available.</p>}
+                              ) : <p className="text-xs text-[var(--text-tertiary)]">No version history available.</p>}
                             </div>
                           ) : (
-                            <span className="text-sm font-medium text-gray-900">{doc.name}</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{doc.name}</span>
                           )}
                         </td>
                         {expandedId !== doc.id && (
                           <>
-                            <td className="px-5 py-4 text-sm text-gray-600">{doc.assetType}</td>
-                            <td className="px-5 py-4 text-sm text-gray-600">{doc.versions?.length ?? 0}</td>
-                            <td className="px-5 py-4 text-sm text-gray-600">{fmtDate(doc.updatedAt)}</td>
+                            <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{doc.assetType}</td>
+                            <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{doc.versions?.length ?? 0}</td>
+                            <td className="px-5 py-4 text-sm text-[var(--text-secondary)]">{fmtDate(doc.updatedAt)}</td>
                           </>
                         )}
                       </tr>
@@ -406,8 +406,8 @@ export default function ContentStudioPage() {
           {tab === "calendar" && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-gray-900">This Week</h2>
-                <button onClick={() => openChatWithContext("Add a content deadline to my calendar.")} className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add to Calendar</button>
+                <h2 className="text-sm font-semibold text-[var(--text-primary)]">This Week</h2>
+                <button onClick={() => openChatWithContext("Add a content deadline to my calendar.")} className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Add to Calendar</button>
               </div>
               <div className="grid grid-cols-7 gap-2">
                 {week.map((day) => {
@@ -415,12 +415,12 @@ export default function ContentStudioPage() {
                   const dayBriefs = briefsByDate[key] ?? [];
                   const isToday = key === new Date().toISOString().slice(0, 10);
                   return (
-                    <div key={key} className={`bg-white border rounded-xl p-3 min-h-[140px] ${isToday ? "border-indigo-300 ring-1 ring-indigo-100" : "border-gray-200"}`}>
-                      <div className="text-xs font-medium text-gray-500 mb-1">{day.toLocaleDateString("en-US", { weekday: "short" })}</div>
-                      <div className={`text-lg font-bold mb-2 ${isToday ? "text-indigo-600" : "text-gray-900"}`}>{day.getDate()}</div>
+                    <div key={key} className={`bg-[var(--bg-base)] border rounded-xl p-3 min-h-[140px] ${isToday ? "border-indigo-300 ring-1 ring-indigo-100" : "border-[var(--border)]"}`}>
+                      <div className="text-xs font-medium text-[var(--text-secondary)] mb-1">{day.toLocaleDateString("en-US", { weekday: "short" })}</div>
+                      <div className={`text-lg font-bold mb-2 ${isToday ? "text-[var(--accent)]" : "text-[var(--text-primary)]"}`}>{day.getDate()}</div>
                       <div className="space-y-1">
                         {dayBriefs.map((b) => (
-                          <div key={b.id} className={`px-2 py-1 rounded text-xs font-medium truncate ${STATUS_COLOR[b.status] ?? "bg-gray-100 text-gray-600"}`}>{b.title}</div>
+                          <div key={b.id} className={`px-2 py-1 rounded text-xs font-medium truncate ${STATUS_COLOR[b.status] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{b.title}</div>
                         ))}
                       </div>
                     </div>

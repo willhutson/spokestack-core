@@ -102,13 +102,13 @@ export default function TaskDetailDrawer({
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
 
       {/* Drawer */}
-      <div className="relative w-[400px] max-w-full h-full bg-white shadow-xl flex flex-col">
+      <div className="relative w-[400px] max-w-full h-full bg-[var(--bg-base)] shadow-xl flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Task Details</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Task Details</h2>
           <button
             onClick={onClose}
-            className="p-1 text-gray-400 hover:text-gray-600 transition-colors rounded"
+            className="p-1 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors rounded"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -120,34 +120,34 @@ export default function TaskDetailDrawer({
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               placeholder="Add a description..."
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent resize-none"
             />
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as Task["status"])}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             >
               <option value="TODO">To Do</option>
               <option value="IN_PROGRESS">In Progress</option>
@@ -157,11 +157,11 @@ export default function TaskDetailDrawer({
 
           {/* Priority */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Priority</label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as Task["priority"])}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -172,18 +172,18 @@ export default function TaskDetailDrawer({
 
           {/* Due Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Due Date</label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full border border-[var(--border-strong)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+        <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-between">
           {/* Delete */}
           {confirmDelete ? (
             <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export default function TaskDetailDrawer({
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                className="px-3 py-1.5 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-md hover:bg-[var(--bg-hover)] transition-colors"
               >
                 No
               </button>
@@ -217,7 +217,7 @@ export default function TaskDetailDrawer({
           <button
             onClick={handleSave}
             disabled={!title.trim() || saving}
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

@@ -127,22 +127,22 @@ export default function RevealPage() {
   });
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gray-50 transition-opacity duration-700 ${beat === "handoff" ? "opacity-0" : "opacity-100"}`}>
+    <div data-theme="obsidian" className={`min-h-screen flex items-center justify-center bg-[var(--bg-base)] transition-opacity duration-700 ${beat === "handoff" ? "opacity-0" : "opacity-100"}`}>
       <div className="w-full max-w-2xl mx-auto px-6">
         {/* Beat 1: Summary */}
         {beat === "summary" && (
           <div className="text-center animate-[fadeIn_0.6s_ease-out]">
-            <div className="bg-white border border-gray-200 rounded-2xl p-10 shadow-sm">
+            <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-2xl p-10 shadow-sm">
               <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">Workspace ready</h1>
+              <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">Workspace ready</h1>
               {statsLine && (
-                <p className="text-sm text-gray-500 mb-6">{statsLine}</p>
+                <p className="text-sm text-[var(--text-secondary)] mb-6">{statsLine}</p>
               )}
-              <p className="text-base text-gray-700 italic">
+              <p className="text-base text-[var(--text-secondary)] italic">
                 &ldquo;Let me introduce your team.&rdquo;
               </p>
             </div>
@@ -152,7 +152,7 @@ export default function RevealPage() {
         {/* Beat 2: Agent Cards */}
         {beat === "agents" && (
           <div className="animate-[fadeIn_0.4s_ease-out]">
-            <h2 className="text-center text-lg font-bold text-gray-900 mb-6">Your team</h2>
+            <h2 className="text-center text-lg font-bold text-[var(--text-primary)] mb-6">Your team</h2>
             <div className="grid grid-cols-2 gap-4">
               {cards.map((card, i) => {
                 const isVisible = i < visibleCards;
@@ -163,8 +163,8 @@ export default function RevealPage() {
                       isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     } ${
                       card.active
-                        ? "bg-white border-indigo-200 shadow-md"
-                        : "bg-gray-50 border-gray-200"
+                        ? "bg-[var(--bg-base)] border-[var(--accent)] shadow-md"
+                        : "bg-[var(--bg-surface)] border-[var(--border)]"
                     }`}
                   >
                     {/* Status dot + name */}
@@ -172,13 +172,13 @@ export default function RevealPage() {
                       <div
                         className={`w-3 h-3 rounded-full border-2 ${
                           card.active
-                            ? "bg-indigo-600 border-indigo-600"
-                            : "bg-transparent border-gray-300"
+                            ? "bg-[var(--accent)] border-[var(--accent)]"
+                            : "bg-transparent border-[var(--border-strong)]"
                         }`}
                       />
                       <h3
                         className={`text-sm font-semibold ${
-                          card.active ? "text-gray-900" : "text-gray-400"
+                          card.active ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"
                         }`}
                       >
                         {card.name}
@@ -187,7 +187,7 @@ export default function RevealPage() {
 
                     <p
                       className={`text-xs mb-3 ${
-                        card.active ? "text-gray-600" : "text-gray-400"
+                        card.active ? "text-[var(--text-secondary)]" : "text-[var(--text-tertiary)]"
                       }`}
                     >
                       {card.description}
@@ -198,13 +198,13 @@ export default function RevealPage() {
                       <>
                         {card.alreadyKnows && card.alreadyKnows.length > 0 && (
                           <div className="mb-4">
-                            <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+                            <p className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                               Already knows
                             </p>
                             <ul className="space-y-1">
                               {card.alreadyKnows.map((item, j) => (
-                                <li key={j} className="text-xs text-gray-600 flex items-center gap-1.5">
-                                  <span className="w-1 h-1 rounded-full bg-indigo-400 shrink-0" />
+                                <li key={j} className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
+                                  <span className="w-1 h-1 rounded-full bg-[var(--accent)] shrink-0" />
                                   {item}
                                 </li>
                               ))}
@@ -213,7 +213,7 @@ export default function RevealPage() {
                         )}
                         <button
                           onClick={handleStartWorking}
-                          className="w-full py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                          className="w-full py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
                         >
                           Start working
                         </button>
@@ -223,10 +223,10 @@ export default function RevealPage() {
                     {/* Gated card: tier info */}
                     {!card.active && (
                       <div className="mt-auto pt-2">
-                        <p className="text-xs text-gray-400 mb-2">
+                        <p className="text-xs text-[var(--text-tertiary)] mb-2">
                           {card.tierName} plan
                         </p>
-                        <button className="text-xs font-medium text-indigo-500 hover:text-indigo-700 transition-colors">
+                        <button className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors">
                           {card.tierPrice} &rarr;
                         </button>
                       </div>

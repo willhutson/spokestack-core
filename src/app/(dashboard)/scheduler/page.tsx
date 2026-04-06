@@ -164,7 +164,7 @@ export default function SchedulerCalendarPage() {
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Scheduler</h1>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Scheduler</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               Manage appointments and schedule.
             </p>
@@ -266,7 +266,7 @@ export default function SchedulerCalendarPage() {
               Next
             </button>
           </div>
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             {MONTH_NAMES[month]} {year}
           </h2>
         </div>
@@ -349,7 +349,7 @@ export default function SchedulerCalendarPage() {
 
           {/* Day Detail Panel */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
               {selectedDay
                 ? `${MONTH_NAMES[month]} ${selectedDay}`
                 : "Select a day"}
@@ -366,7 +366,7 @@ export default function SchedulerCalendarPage() {
                       key={a.id}
                       className="bg-white border border-gray-200 rounded-xl p-3"
                     >
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-[var(--text-primary)]">
                         {a.key}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">

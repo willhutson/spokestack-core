@@ -81,19 +81,19 @@ function CreateEventForm({ onCreated, onCancel }: { onCreated: () => void; onCan
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">Create Event</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">Create Event</h2>
         <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Event Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Event name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Event name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Venue</label>
-            <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Venue name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Venue name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Date</label>
-            <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-            <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Brief description" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Brief description" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
         </div>
         <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
@@ -194,7 +194,7 @@ export default function EventsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Events</h1>
           <p className="text-sm text-gray-500 mt-0.5">Plan events, manage guest lists, and track budgets.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function EventsPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Total Events</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{events.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{events.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Guests Confirmed</p>
@@ -217,7 +217,7 @@ export default function EventsPage() {
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Run of Show Items</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{tasks.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{tasks.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Total Budget</p>
@@ -242,7 +242,7 @@ export default function EventsPage() {
           {tab === "events" && (
             events.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No events yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No events yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Create your first event to get started.</p>
                 <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Event</button>
               </div>
@@ -256,7 +256,7 @@ export default function EventsPage() {
                         <div key={ev.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h4 className="text-sm font-semibold text-gray-900">{ev.name}</h4>
+                              <h4 className="text-sm font-semibold text-[var(--text-primary)]">{ev.name}</h4>
                               {ev.metadata?.venue ? <p className="text-xs text-gray-500 mt-0.5">{String(ev.metadata.venue)}</p> : null}
                             </div>
                             <StatusBadge status={ev.status} />
@@ -278,7 +278,7 @@ export default function EventsPage() {
           {tab === "guests" && (
             guests.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No guests yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No guests yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Add guests and track RSVP status for your events.</p>
                 <button onClick={() => openChatWithContext("Help me create a guest list for an upcoming event.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Guests</button>
               </div>
@@ -301,7 +301,7 @@ export default function EventsPage() {
                     <tbody className="divide-y divide-gray-100">
                       {guests.map(g => { const d = parseVal(g.value); const rsvp = (d.rsvp as string) || "pending"; return (
                         <tr key={g.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-5 py-4 text-sm font-medium text-gray-900">{g.key}</td>
+                          <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{g.key}</td>
                           <td className="px-5 py-4 text-sm text-gray-600">{(d.organization as string) || "-"}</td>
                           <td className="px-5 py-4 text-sm text-gray-600">{(d.email as string) || "-"}</td>
                           <td className="px-5 py-4">
@@ -323,7 +323,7 @@ export default function EventsPage() {
           {tab === "run_of_show" && (
             tasks.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No run of show items</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No run of show items</h3>
                 <p className="text-xs text-gray-500 mb-4">Build your event timeline with scheduled activities.</p>
                 <button onClick={() => openChatWithContext("Help me create a run of show timeline for an event.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Build Timeline</button>
               </div>
@@ -345,7 +345,7 @@ export default function EventsPage() {
                             <div>
                               <div className="flex items-center gap-2">
                                 {time && <span className="text-xs font-mono font-medium text-indigo-600">{time}</span>}
-                                <h4 className="text-sm font-medium text-gray-900">{t.title}</h4>
+                                <h4 className="text-sm font-medium text-[var(--text-primary)]">{t.title}</h4>
                               </div>
                               {t.metadata?.notes ? <p className="text-xs text-gray-500 mt-0.5">{String(t.metadata.notes)}</p> : null}
                             </div>
@@ -366,7 +366,7 @@ export default function EventsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
                   <p className="text-xs font-medium text-gray-500 mb-1">Total Budget</p>
-                  <p className="text-2xl font-bold text-gray-900">{fmtAED(budgetTotal / 100)}</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)]">{fmtAED(budgetTotal / 100)}</p>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
                   <p className="text-xs font-medium text-gray-500 mb-1">Paid</p>
@@ -380,7 +380,7 @@ export default function EventsPage() {
 
               {orders.length === 0 ? (
                 <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                  <h3 className="text-sm font-medium text-gray-900 mb-1">No vendor costs yet</h3>
+                  <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No vendor costs yet</h3>
                   <p className="text-xs text-gray-500 mb-4">Track vendor contracts and payments for your events.</p>
                   <button onClick={() => openChatWithContext("Help me set up event vendor budget tracking.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Vendor</button>
                 </div>
@@ -397,10 +397,10 @@ export default function EventsPage() {
                     <tbody className="divide-y divide-gray-100">
                       {orders.map(o => (
                         <tr key={o.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-5 py-4 text-sm font-medium text-gray-900">{o.client?.name || (o.metadata?.vendor as string) || `Vendor #${o.id.slice(-6)}`}</td>
+                          <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{o.client?.name || (o.metadata?.vendor as string) || `Vendor #${o.id.slice(-6)}`}</td>
                           <td className="px-5 py-4 text-sm text-gray-600">{(o.metadata?.description as string) || "-"}</td>
                           <td className="px-5 py-4"><StatusBadge status={o.status} /></td>
-                          <td className="px-5 py-4 text-right text-sm font-medium text-gray-900">{fmtAED(o.totalCents / 100)}</td>
+                          <td className="px-5 py-4 text-right text-sm font-medium text-[var(--text-primary)]">{fmtAED(o.totalCents / 100)}</td>
                           <td className="px-5 py-4 text-right text-xs text-gray-500">{fmtDate(o.createdAt)}</td>
                         </tr>
                       ))}

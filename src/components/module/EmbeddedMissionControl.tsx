@@ -113,7 +113,7 @@ export function EmbeddedMissionControl({
                   <span className="text-sm font-medium truncate">
                     {selectedArtifact.title}
                   </span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 shrink-0">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)] shrink-0">
                     {ARTIFACT_CONFIG[selectedArtifact.type as ArtifactType]?.label ?? selectedArtifact.type}
                   </span>
                 </div>
@@ -172,7 +172,7 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
           <thead>
             <tr className="border-b">
               {columns.map((col) => (
-                <th key={col} className="text-left px-3 py-2 font-medium text-gray-700 bg-gray-50">
+                <th key={col} className="text-left px-3 py-2 font-medium text-[var(--text-primary)] bg-[var(--bg-base)]">
                   {String(col)}
                 </th>
               ))}
@@ -180,9 +180,9 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+              <tr key={i} className={i % 2 === 0 ? "bg-[var(--bg-base)]" : "bg-[var(--bg-base)]"}>
                 {columns.map((col) => (
-                  <td key={col} className="px-3 py-2 text-gray-600 border-b border-gray-100">
+                  <td key={col} className="px-3 py-2 text-[var(--text-secondary)] border-b border-[var(--border)]">
                     {String((row as Record<string, unknown>)[col] ?? "")}
                   </td>
                 ))}
@@ -205,13 +205,13 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
           return (
             <div key={i} className="flex gap-3">
               <div className="flex flex-col items-center">
-                <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 mt-1.5" />
-                {i < items.length - 1 && <div className="w-0.5 flex-1 bg-gray-200 mt-1" />}
+                <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] mt-1.5" />
+                {i < items.length - 1 && <div className="w-0.5 flex-1 bg-[var(--bg-surface)] mt-1" />}
               </div>
               <div className="pb-4">
-                <p className="text-xs text-gray-400">{String(it.date ?? it.time ?? it.startAt ?? "")}</p>
-                <p className="text-sm font-medium text-gray-900">{String(it.title ?? it.name ?? "")}</p>
-                {(it.description as string) && <p className="text-xs text-gray-500 mt-0.5">{String(it.description)}</p>}
+                <p className="text-xs text-[var(--text-tertiary)]">{String(it.date ?? it.time ?? it.startAt ?? "")}</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{String(it.title ?? it.name ?? "")}</p>
+                {(it.description as string) && <p className="text-xs text-[var(--text-secondary)] mt-0.5">{String(it.description)}</p>}
               </div>
             </div>
           );
@@ -229,14 +229,14 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
         {slides.map((slide, i) => {
           const s = slide as Record<string, unknown>;
           return (
-            <div key={i} className="bg-gray-50 rounded-lg p-4 border">
+            <div key={i} className="bg-[var(--bg-base)] rounded-lg p-4 border">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-gray-400">Slide {i + 1}</span>
+                <span className="text-xs font-bold text-[var(--text-tertiary)]">Slide {i + 1}</span>
               </div>
-              <h4 className="text-sm font-semibold text-gray-900">{String(s.title ?? "")}</h4>
-              {(s.body as string) && <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap">{String(s.body)}</p>}
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">{String(s.title ?? "")}</h4>
+              {(s.body as string) && <p className="text-xs text-[var(--text-secondary)] mt-1 whitespace-pre-wrap">{String(s.body)}</p>}
               {Array.isArray(s.bullets) && (
-                <ul className="list-disc list-inside text-xs text-gray-600 mt-1 space-y-0.5">
+                <ul className="list-disc list-inside text-xs text-[var(--text-secondary)] mt-1 space-y-0.5">
                   {(s.bullets as string[]).map((b, j) => <li key={j}>{b}</li>)}
                 </ul>
               )}
@@ -254,13 +254,13 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
 
     return (
       <div className="prose prose-sm max-w-none">
-        {content && <p className="text-sm text-gray-700 whitespace-pre-wrap">{content}</p>}
+        {content && <p className="text-sm text-[var(--text-primary)] whitespace-pre-wrap">{content}</p>}
         {sections.map((section, i) => {
           const sec = section as Record<string, unknown>;
           return (
             <div key={i} className="mt-4">
-              <h3 className="text-sm font-semibold text-gray-900">{String(sec.title ?? sec.heading ?? "")}</h3>
-              <p className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">{String(sec.content ?? sec.body ?? "")}</p>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">{String(sec.title ?? sec.heading ?? "")}</h3>
+              <p className="text-sm text-[var(--text-secondary)] mt-1 whitespace-pre-wrap">{String(sec.content ?? sec.body ?? "")}</p>
             </div>
           );
         })}
@@ -275,7 +275,7 @@ function ArtifactRenderer({ artifact }: { artifact: Artifact }) {
 
 function JsonFallback({ data }: { data: unknown }) {
   return (
-    <pre className="text-xs bg-gray-50 rounded-lg p-4 overflow-auto text-gray-600 border">
+    <pre className="text-xs bg-[var(--bg-base)] rounded-lg p-4 overflow-auto text-[var(--text-secondary)] border">
       {JSON.stringify(data, null, 2)}
     </pre>
   );
@@ -283,7 +283,7 @@ function JsonFallback({ data }: { data: unknown }) {
 
 function EmptyArtifact() {
   return (
-    <div className="text-center py-8 text-sm text-gray-400">
+    <div className="text-center py-8 text-sm text-[var(--text-tertiary)]">
       No data to display
     </div>
   );

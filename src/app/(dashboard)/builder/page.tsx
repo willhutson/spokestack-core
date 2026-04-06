@@ -17,7 +17,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xl font-bold text-[var(--text-primary)]">{value}</p>
     </div>
   );
 }
@@ -51,7 +51,7 @@ export default function BuilderPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Builder</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Builder</h1>
           <p className="text-sm text-gray-500 mt-0.5">Enterprise template management and workflow builder.</p>
         </div>
         <button
@@ -103,7 +103,7 @@ export default function BuilderPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5" />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No templates yet</h3>
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No templates yet</h3>
             <p className="text-xs text-gray-500 mb-4">Build reusable enterprise templates for your team workflows.</p>
             <button
               onClick={() => openChatWithContext("Help me create a new enterprise template.")}
@@ -126,7 +126,7 @@ export default function BuilderPage() {
               <tbody className="divide-y divide-gray-100">
                 {templates.map((t) => (
                   <tr key={t.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{t.name}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{t.name}</td>
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                         {t.type}

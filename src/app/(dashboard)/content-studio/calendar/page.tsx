@@ -135,14 +135,14 @@ export default function CalendarPage() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Content Calendar</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Plan and track your content schedule.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Content Calendar</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Plan and track your content schedule.</p>
         </div>
         <div className="flex items-center gap-3">
           <select
             value={platform}
             onChange={(e) => setPlatform(e.target.value)}
-            className="h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           >
             {PLATFORMS.map((p) => (
               <option key={p} value={p}>{p === "all" ? "All Platforms" : p.charAt(0).toUpperCase() + p.slice(1)}</option>
@@ -153,15 +153,15 @@ export default function CalendarPage() {
 
       {/* Month navigation */}
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">&larr; Prev</button>
-        <h2 className="text-lg font-semibold text-gray-900">{monthLabel(year, month)}</h2>
-        <button onClick={nextMonth} className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Next &rarr;</button>
+        <button onClick={prevMonth} className="px-3 py-1.5 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">&larr; Prev</button>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)]">{monthLabel(year, month)}</h2>
+        <button onClick={nextMonth} className="px-3 py-1.5 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Next &rarr;</button>
       </div>
 
       {loading ? (
         <div className="animate-pulse space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 bg-gray-100 rounded-lg" />
+            <div key={i} className="h-24 bg-[var(--bg-surface)] rounded-lg" />
           ))}
         </div>
       ) : (
@@ -169,14 +169,14 @@ export default function CalendarPage() {
           {/* Day headers */}
           <div className="grid grid-cols-7 gap-1 mb-1">
             {DAYS.map((d) => (
-              <div key={d} className="text-xs font-medium text-gray-500 text-center py-1">{d}</div>
+              <div key={d} className="text-xs font-medium text-[var(--text-secondary)] text-center py-1">{d}</div>
             ))}
           </div>
 
           {/* Calendar grid */}
           <div className="grid grid-cols-7 gap-1">
             {weeks.flat().map((day, idx) => {
-              if (!day) return <div key={`empty-${idx}`} className="min-h-[100px] bg-gray-50 rounded-lg" />;
+              if (!day) return <div key={`empty-${idx}`} className="min-h-[100px] bg-[var(--bg-base)] rounded-lg" />;
               const key = dateKey(day);
               const dayItems = itemsByDate[key] ?? [];
               const isToday = key === todayKey;
@@ -187,26 +187,26 @@ export default function CalendarPage() {
                   key={key}
                   onClick={() => setSelectedDay(isSelected ? null : key)}
                   className={cn(
-                    "min-h-[100px] bg-white border rounded-lg p-2 cursor-pointer hover:border-gray-300 transition-colors",
+                    "min-h-[100px] bg-[var(--bg-base)] border rounded-lg p-2 cursor-pointer hover:border-[var(--border-strong)] transition-colors",
                     isToday && "border-indigo-300 ring-1 ring-indigo-100",
                     isSelected && "border-indigo-500 ring-2 ring-indigo-200",
-                    !isToday && !isSelected && "border-gray-200"
+                    !isToday && !isSelected && "border-[var(--border)]"
                   )}
                 >
-                  <div className={cn("text-sm font-medium mb-1", isToday ? "text-indigo-600" : "text-gray-700")}>
+                  <div className={cn("text-sm font-medium mb-1", isToday ? "text-[var(--accent)]" : "text-[var(--text-secondary)]")}>
                     {day.getDate()}
                   </div>
                   <div className="space-y-1">
                     {dayItems.slice(0, 3).map((item) => (
                       <div key={item.id} className="flex items-center gap-1 text-xs truncate">
                         <span>{TYPE_ICON[item.type] ?? ""}</span>
-                        {item.platform && <span className="text-gray-400">{PLATFORM_ICON[item.platform] ?? ""}</span>}
+                        {item.platform && <span className="text-[var(--text-tertiary)]">{PLATFORM_ICON[item.platform] ?? ""}</span>}
                         <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", STATUS_DOT[item.status] ?? "bg-gray-400")} />
-                        <span className="truncate text-gray-600">{item.title}</span>
+                        <span className="truncate text-[var(--text-secondary)]">{item.title}</span>
                       </div>
                     ))}
                     {dayItems.length > 3 && (
-                      <div className="text-xs text-gray-400">+{dayItems.length - 3} more</div>
+                      <div className="text-xs text-[var(--text-tertiary)]">+{dayItems.length - 3} more</div>
                     )}
                   </div>
                 </div>
@@ -216,26 +216,26 @@ export default function CalendarPage() {
 
           {/* Selected day detail */}
           {selectedDay && (
-            <div className="mt-6 bg-white border border-gray-200 rounded-xl p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">
+            <div className="mt-6 bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
                 {new Date(selectedDay + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
               </h3>
               {selectedItems.length === 0 ? (
-                <p className="text-sm text-gray-500">No content scheduled for this day.</p>
+                <p className="text-sm text-[var(--text-secondary)]">No content scheduled for this day.</p>
               ) : (
                 <div className="space-y-2">
                   {selectedItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div key={item.id} className="flex items-center gap-3 p-3 bg-[var(--bg-base)] rounded-lg">
                       <span className="text-lg">{TYPE_ICON[item.type] ?? ""}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.title}</p>
+                        <p className="text-xs text-[var(--text-secondary)]">
                           {item.category}{item.platform ? ` \u00b7 ${item.platform}` : ""}
                         </p>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span className={cn("w-2 h-2 rounded-full", STATUS_DOT[item.status] ?? "bg-gray-400")} />
-                        <span className="text-xs text-gray-600 capitalize">{item.status}</span>
+                        <span className="text-xs text-[var(--text-secondary)] capitalize">{item.status}</span>
                       </div>
                     </div>
                   ))}

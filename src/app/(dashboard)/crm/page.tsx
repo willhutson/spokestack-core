@@ -51,7 +51,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group"
+      className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--border-strong)] hover:shadow-sm transition-all group"
     >
       <div className="flex items-center gap-3 mb-2">
         <div
@@ -62,11 +62,11 @@ function QuickLink({
         >
           {title.charAt(0)}
         </div>
-        <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
           {title}
         </h3>
       </div>
-      <p className="text-xs text-gray-500">{description}</p>
+      <p className="text-xs text-[var(--text-secondary)]">{description}</p>
     </Link>
   );
 }
@@ -84,12 +84,12 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+    <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+      <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-1">
         {label}
       </p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+      <p className="text-2xl font-bold text-[var(--text-primary)]">{value}</p>
+      {sub && <p className="text-xs text-[var(--text-tertiary)] mt-1">{sub}</p>}
     </div>
   );
 }
@@ -166,8 +166,8 @@ export default function CRMOverviewPage() {
       <div className="p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">CRM</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">CRM</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Manage contacts, deals, companies, and tasks.
           </p>
         </div>
@@ -179,10 +179,10 @@ export default function CRMOverviewPage() {
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-5 animate-pulse"
+                className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5 animate-pulse"
               >
-                <div className="h-3 w-20 bg-gray-200 rounded mb-3" />
-                <div className="h-7 w-24 bg-gray-200 rounded" />
+                <div className="h-3 w-20 bg-[var(--bg-surface)] rounded mb-3" />
+                <div className="h-7 w-24 bg-[var(--bg-surface)] rounded" />
               </div>
             ))}
           </div>
@@ -209,7 +209,7 @@ export default function CRMOverviewPage() {
             </div>
 
             {/* Quick Links */}
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
               Quick Access
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -242,37 +242,37 @@ export default function CRMOverviewPage() {
             {/* Recent Activity Rows */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Recent Contacts */}
-              <div className="bg-white border border-gray-200 rounded-xl">
-                <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-                  <h3 className="text-sm font-semibold text-gray-900">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]">
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                     Recent Contacts
                   </h3>
                   <Link
                     href="/crm/contacts"
-                    className="text-xs text-indigo-600 hover:text-indigo-700"
+                    className="text-xs text-[var(--accent)] hover:text-[var(--accent-hover)]"
                   >
                     View all
                   </Link>
                 </div>
                 {recentContacts.length === 0 ? (
-                  <div className="px-5 py-8 text-center text-xs text-gray-400">
+                  <div className="px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                     No contacts yet.
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-[var(--border)]">
                     {recentContacts.map((c) => (
                       <div
                         key={c.id}
                         className="px-5 py-3 flex items-center gap-3"
                       >
-                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-700">
+                        <div className="w-8 h-8 rounded-full bg-[var(--accent-subtle)] flex items-center justify-center text-xs font-semibold text-[var(--accent)]">
                           {c.key.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">
                             {c.key}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">
+                          <p className="text-xs text-[var(--text-secondary)] truncate">
                             {(c.value.email as string) ||
                               (c.value.company as string) ||
                               "No details"}
@@ -297,41 +297,41 @@ export default function CRMOverviewPage() {
               </div>
 
               {/* Recent Deals */}
-              <div className="bg-white border border-gray-200 rounded-xl">
-                <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-                  <h3 className="text-sm font-semibold text-gray-900">
+              <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]">
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                     Recent Deals
                   </h3>
                   <Link
                     href="/crm/deals"
-                    className="text-xs text-indigo-600 hover:text-indigo-700"
+                    className="text-xs text-[var(--accent)] hover:text-[var(--accent-hover)]"
                   >
                     View all
                   </Link>
                 </div>
                 {recentDeals.length === 0 ? (
-                  <div className="px-5 py-8 text-center text-xs text-gray-400">
+                  <div className="px-5 py-8 text-center text-xs text-[var(--text-tertiary)]">
                     No deals yet.
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-[var(--border)]">
                     {recentDeals.map((d) => (
                       <div
                         key={d.id}
                         className="px-5 py-3 flex items-center gap-3"
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">
                             {d.key}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">
+                          <p className="text-xs text-[var(--text-secondary)] truncate">
                             {(d.value.company as string) || "No company"}
                           </p>
                         </div>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-sm font-semibold text-[var(--text-primary)]">
                           {fmtCurrency(Number(d.value.value) || 0)}
                         </p>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--bg-surface)] text-[var(--text-secondary)]">
                           {(d.value.stage as string) || "LEAD"}
                         </span>
                       </div>

@@ -142,7 +142,7 @@ export default function FormBuilderPage() {
             type="text"
             value={formName}
             onChange={(e) => setFormName(e.target.value)}
-            className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 w-auto"
+            className="text-2xl font-bold text-[var(--text-primary)] bg-transparent border-none focus:outline-none focus:ring-0 w-auto"
             placeholder="Form Name"
           />
           <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function FormBuilderPage() {
         {preview ? (
           /* Preview Mode */
           <div className="max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">{formName}</h2>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">{formName}</h2>
             <div className="space-y-5">
               {fields.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-8">No fields added yet.</p>
@@ -170,7 +170,7 @@ export default function FormBuilderPage() {
                   <div key={field.id}>
                     {field.type === "SECTION_HEADER" ? (
                       <div className="border-b border-gray-200 pb-2 mb-2">
-                        <h3 className="text-sm font-semibold text-gray-900">{field.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)]">{field.title}</h3>
                         {field.description && <p className="text-xs text-gray-500">{field.description}</p>}
                       </div>
                     ) : (
@@ -217,7 +217,7 @@ export default function FormBuilderPage() {
             {/* Left Panel: Field List */}
             <div className="col-span-2">
               <div className="mb-4">
-                <h2 className="text-sm font-semibold text-gray-900 mb-2">Fields</h2>
+                <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Fields</h2>
                 {fields.length === 0 ? (
                   <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
                     <p className="text-sm text-gray-500 mb-2">No fields yet</p>
@@ -239,7 +239,7 @@ export default function FormBuilderPage() {
                           {FIELD_TYPES.find((t) => t.type === field.type)?.icon ?? "?"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 truncate">{field.type === "SECTION_HEADER" ? (field.title ?? "Section") : field.label}</div>
+                          <div className="text-sm font-medium text-[var(--text-primary)] truncate">{field.type === "SECTION_HEADER" ? (field.title ?? "Section") : field.label}</div>
                           <div className="text-xs text-gray-400">{field.type}{field.required ? " (required)" : ""}</div>
                         </div>
                         <div className="flex items-center gap-1">
@@ -270,37 +270,37 @@ export default function FormBuilderPage() {
             <div>
               {selectedField ? (
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Edit: {selectedField.type}</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Edit: {selectedField.type}</h3>
                   <div className="space-y-4">
                     {selectedField.type === "SECTION_HEADER" ? (
                       <>
                         <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
-                          <input type="text" value={selectedField.title ?? ""} onChange={(e) => updateField(selectedField.id, { title: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <input type="text" value={selectedField.title ?? ""} onChange={(e) => updateField(selectedField.id, { title: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         </div>
                         <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                          <input type="text" value={selectedField.description ?? ""} onChange={(e) => updateField(selectedField.id, { description: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <input type="text" value={selectedField.description ?? ""} onChange={(e) => updateField(selectedField.id, { description: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         </div>
                       </>
                     ) : (
                       <>
                         <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">Label</label>
-                          <input type="text" value={selectedField.label} onChange={(e) => updateField(selectedField.id, { label: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <input type="text" value={selectedField.label} onChange={(e) => updateField(selectedField.id, { label: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         </div>
 
                         {(selectedField.type === "TEXT" || selectedField.type === "EMAIL" || selectedField.type === "PHONE" || selectedField.type === "TEXTAREA") && (
                           <div>
                             <label className="block text-xs font-medium text-gray-700 mb-1">Placeholder</label>
-                            <input type="text" value={selectedField.placeholder ?? ""} onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <input type="text" value={selectedField.placeholder ?? ""} onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                           </div>
                         )}
 
                         {(selectedField.type === "TEXT" || selectedField.type === "EMAIL" || selectedField.type === "PHONE") && (
                           <div>
                             <label className="block text-xs font-medium text-gray-700 mb-1">Validation Pattern</label>
-                            <input type="text" value={selectedField.validation ?? ""} onChange={(e) => updateField(selectedField.id, { validation: e.target.value })} placeholder="e.g. ^[a-zA-Z]+$" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <input type="text" value={selectedField.validation ?? ""} onChange={(e) => updateField(selectedField.id, { validation: e.target.value })} placeholder="e.g. ^[a-zA-Z]+$" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                           </div>
                         )}
 
@@ -308,11 +308,11 @@ export default function FormBuilderPage() {
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="block text-xs font-medium text-gray-700 mb-1">Min</label>
-                              <input type="number" value={selectedField.min ?? ""} onChange={(e) => updateField(selectedField.id, { min: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <input type="number" value={selectedField.min ?? ""} onChange={(e) => updateField(selectedField.id, { min: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                             </div>
                             <div>
                               <label className="block text-xs font-medium text-gray-700 mb-1">Max</label>
-                              <input type="number" value={selectedField.max ?? ""} onChange={(e) => updateField(selectedField.id, { max: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <input type="number" value={selectedField.max ?? ""} onChange={(e) => updateField(selectedField.id, { max: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                             </div>
                           </div>
                         )}
@@ -323,7 +323,7 @@ export default function FormBuilderPage() {
                             <div className="space-y-1.5">
                               {(selectedField.options ?? []).map((opt, idx) => (
                                 <div key={idx} className="flex items-center gap-1.5">
-                                  <input type="text" value={opt} onChange={(e) => updateOption(selectedField.id, idx, e.target.value)} className="flex-1 h-8 px-2 text-sm border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                  <input type="text" value={opt} onChange={(e) => updateOption(selectedField.id, idx, e.target.value)} className="flex-1 h-8 px-2 text-sm border border-gray-300 rounded-md bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                   <button onClick={() => removeOption(selectedField.id, idx)} className="text-xs text-red-400 hover:text-red-600 px-1">x</button>
                                 </div>
                               ))}
@@ -343,11 +343,11 @@ export default function FormBuilderPage() {
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="block text-xs font-medium text-gray-700 mb-1">Rows</label>
-                              <input type="number" min={1} max={20} value={selectedField.rows ?? 4} onChange={(e) => updateField(selectedField.id, { rows: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <input type="number" min={1} max={20} value={selectedField.rows ?? 4} onChange={(e) => updateField(selectedField.id, { rows: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                             </div>
                             <div>
                               <label className="block text-xs font-medium text-gray-700 mb-1">Max Length</label>
-                              <input type="number" min={0} value={selectedField.maxLength ?? 500} onChange={(e) => updateField(selectedField.id, { maxLength: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              <input type="number" min={0} value={selectedField.maxLength ?? 500} onChange={(e) => updateField(selectedField.id, { maxLength: Number(e.target.value) })} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                             </div>
                           </div>
                         )}

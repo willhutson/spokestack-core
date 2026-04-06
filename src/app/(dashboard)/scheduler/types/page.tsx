@@ -100,7 +100,7 @@ export default function AppointmentTypesPage() {
     <ModuleLayoutShell moduleType="TIME_LEAVE">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Scheduler</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Scheduler</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Manage appointment types and durations.
           </p>
@@ -110,7 +110,7 @@ export default function AppointmentTypesPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Appointment Types
           </h2>
           <button
@@ -251,7 +251,7 @@ export default function AppointmentTypesPage() {
                   {/* Details */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-gray-900">
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                         {t.key}
                       </h3>
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">

@@ -46,7 +46,7 @@ function StatCard({
       <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
         {label}
       </p>
-      <p className={cn("text-2xl font-bold", color || "text-gray-900")}>
+      <p className={cn("text-2xl font-bold", color || "text-[var(--text-primary)]")}>
         {value}
       </p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
@@ -104,7 +104,7 @@ export default function RfpOverviewPage() {
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">RFP</h1>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               Request for Proposal tracking and management.
             </p>
@@ -165,7 +165,7 @@ export default function RfpOverviewPage() {
                 href="/rfp/active"
                 className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group"
               >
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
                   Active RFPs
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">
@@ -176,7 +176,7 @@ export default function RfpOverviewPage() {
                 href="/rfp/closed"
                 className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group"
               >
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
                   Closed RFPs
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">
@@ -186,7 +186,7 @@ export default function RfpOverviewPage() {
             </div>
 
             {/* Recent RFPs */}
-            <h2 className="text-sm font-semibold text-gray-900 mb-3">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
               Recent RFPs
             </h2>
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -208,13 +208,13 @@ export default function RfpOverviewPage() {
                         className="px-5 py-3 flex items-center gap-3 hover:bg-gray-50"
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">
                             {rfp.title}
                           </p>
                           <p className="text-xs text-gray-500">{client}</p>
                         </div>
                         {value > 0 && (
-                          <p className="text-sm font-semibold text-gray-900">
+                          <p className="text-sm font-semibold text-[var(--text-primary)]">
                             {fmtCurrency(value)}
                           </p>
                         )}

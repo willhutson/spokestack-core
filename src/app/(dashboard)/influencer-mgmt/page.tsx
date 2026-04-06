@@ -80,23 +80,23 @@ function AddInfluencerForm({ onCreated, onCancel }: { onCreated: () => void; onC
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-900">Add Influencer</h2>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)]">Add Influencer</h2>
         <button onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Influencer name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Influencer name" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Handle</label>
-            <input value={handle} onChange={e => setHandle(e.target.value)} placeholder="@handle" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input value={handle} onChange={e => setHandle(e.target.value)} placeholder="@handle" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Platform</label>
-            <select value={platform} onChange={e => setPlatform(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={platform} onChange={e => setPlatform(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-indigo-500">
               <option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X (Twitter)</option><option>LinkedIn</option>
             </select></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Followers</label>
-            <input type="number" value={followers} onChange={e => setFollowers(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input type="number" value={followers} onChange={e => setFollowers(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
           <div><label className="block text-xs font-medium text-gray-700 mb-1">Rate (AED)</label>
-            <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
+            <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="0" className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" /></div>
         </div>
         <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
           {err && <p className="text-xs text-red-600 mr-auto">{err}</p>}
@@ -197,7 +197,7 @@ export default function InfluencerMgmtPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Influencer Management</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Influencer Management</h1>
           <p className="text-sm text-gray-500 mt-0.5">Manage influencer partnerships, campaigns, and deliverables.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -212,11 +212,11 @@ export default function InfluencerMgmtPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Influencers</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{influencers.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{influencers.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Campaigns</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{campaigns.length}</p>
+          <p className="text-xl font-bold text-[var(--text-primary)] mt-1">{campaigns.length}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-gray-500">Total Spend</p>
@@ -245,7 +245,7 @@ export default function InfluencerMgmtPage() {
           {tab === "influencers" && (
             influencers.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No influencers yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No influencers yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Add influencer contacts to start managing partnerships.</p>
                 <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Influencer</button>
               </div>
@@ -262,11 +262,11 @@ export default function InfluencerMgmtPage() {
                   <tbody className="divide-y divide-gray-100">
                     {influencers.map(inf => { const d = parseVal(inf.value); return (
                       <tr key={inf.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-medium text-gray-900">{inf.key}</td>
+                        <td className="px-5 py-4 text-sm font-medium text-[var(--text-primary)]">{inf.key}</td>
                         <td className="px-5 py-4 text-sm text-indigo-600">{(d.handle as string) || "-"}</td>
                         <td className="px-5 py-4 text-sm text-gray-600">{(d.platform as string) || "-"}</td>
-                        <td className="px-5 py-4 text-right text-sm text-gray-900">{fmtFollowers(Number(d.followers) || 0)}</td>
-                        <td className="px-5 py-4 text-right text-sm font-medium text-gray-900">{fmtAED(Number(d.rateAED) || 0)}</td>
+                        <td className="px-5 py-4 text-right text-sm text-[var(--text-primary)]">{fmtFollowers(Number(d.followers) || 0)}</td>
+                        <td className="px-5 py-4 text-right text-sm font-medium text-[var(--text-primary)]">{fmtAED(Number(d.rateAED) || 0)}</td>
                       </tr>
                     ); })}
                   </tbody>
@@ -279,7 +279,7 @@ export default function InfluencerMgmtPage() {
           {tab === "campaigns" && (
             campaigns.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No campaigns yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No campaigns yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Create an influencer campaign to start tracking.</p>
                 <button onClick={() => openChatWithContext("Create a new influencer marketing campaign.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">New Campaign</button>
               </div>
@@ -288,7 +288,7 @@ export default function InfluencerMgmtPage() {
                 {campaigns.map(c => (
                   <div key={c.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition-colors">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-gray-900">{c.name}</h3>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{c.name}</h3>
                       <StatusBadge status={c.status} />
                     </div>
                     {c.description && <p className="text-xs text-gray-500 mb-3 line-clamp-2">{c.description}</p>}
@@ -303,7 +303,7 @@ export default function InfluencerMgmtPage() {
           {tab === "deliverables" && (
             tasks.length === 0 ? (
               <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <h3 className="text-sm font-medium text-gray-900 mb-1">No deliverables yet</h3>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No deliverables yet</h3>
                 <p className="text-xs text-gray-500 mb-4">Track influencer deliverables and content submissions.</p>
                 <button onClick={() => openChatWithContext("Help me set up influencer deliverable tracking.")} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Add Deliverable</button>
               </div>
@@ -318,7 +318,7 @@ export default function InfluencerMgmtPage() {
                     <div className="space-y-2">
                       {(kanban[col] ?? []).map(t => (
                         <div key={t.id} className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-                          <h4 className="text-xs font-medium text-gray-900 mb-1">{t.title}</h4>
+                          <h4 className="text-xs font-medium text-[var(--text-primary)] mb-1">{t.title}</h4>
                           {t.dueDate && <p className="text-xs text-gray-400">Due {fmtDate(t.dueDate)}</p>}
                         </div>
                       ))}
@@ -335,7 +335,7 @@ export default function InfluencerMgmtPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
                   <p className="text-xs font-medium text-gray-500 mb-1">Total Investment</p>
-                  <p className="text-2xl font-bold text-gray-900">{fmtAED(roiData.totalSpend)}</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)]">{fmtAED(roiData.totalSpend)}</p>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
                   <p className="text-xs font-medium text-gray-500 mb-1">Total Reach</p>
@@ -343,12 +343,12 @@ export default function InfluencerMgmtPage() {
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl p-5">
                   <p className="text-xs font-medium text-gray-500 mb-1">Cost per Reach</p>
-                  <p className="text-2xl font-bold text-gray-900">{roiData.totalReach > 0 ? fmtAED(roiData.totalSpend / roiData.totalReach) : "AED 0.00"}</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)]">{roiData.totalReach > 0 ? fmtAED(roiData.totalSpend / roiData.totalReach) : "AED 0.00"}</p>
                 </div>
               </div>
 
               <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-sm font-semibold text-gray-900 mb-4">Spend by Platform</h3>
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Spend by Platform</h3>
                 {roiData.entries.length === 0 ? (
                   <div className="text-center py-6">
                     <p className="text-sm text-gray-400">No influencer data available yet.</p>
@@ -359,7 +359,7 @@ export default function InfluencerMgmtPage() {
                       <div key={platform}>
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm text-gray-700">{platform}</span>
-                          <span className="text-sm font-medium text-gray-900">{fmtAED(data.spend)}</span>
+                          <span className="text-sm font-medium text-[var(--text-primary)]">{fmtAED(data.spend)}</span>
                         </div>
                         <div className="w-full bg-gray-100 rounded-full h-3">
                           <div className="bg-indigo-500 h-3 rounded-full transition-all" style={{ width: `${(data.spend / roiData.maxSpend) * 100}%` }} />

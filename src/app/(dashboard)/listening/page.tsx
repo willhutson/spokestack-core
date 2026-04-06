@@ -65,7 +65,7 @@ export default function ListeningPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Listening</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Listening</h1>
           <p className="text-sm text-gray-500 mt-0.5">Brand monitoring and sentiment tracking</p>
         </div>
         <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function ListeningPage() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Enter a brand name or keyword to track..."
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button
               type="submit"
@@ -146,7 +146,7 @@ export default function ListeningPage() {
                         </span>
                         <span className="text-xs text-gray-400">{entry.category}</span>
                       </div>
-                      <p className="text-sm font-medium text-gray-900">{entry.key}</p>
+                      <p className="text-sm font-medium text-[var(--text-primary)]">{entry.key}</p>
                       <p className="text-sm text-gray-600 mt-0.5 line-clamp-2">{entry.value}</p>
                       {entry.confidence != null && (
                         <div className="flex items-center gap-2 mt-2">

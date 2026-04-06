@@ -99,7 +99,7 @@ export default function BriefsTriagePage() {
         <BriefsNav />
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Triage</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Triage</h1>
           <p className="text-sm text-gray-500 mt-1">
             Review incoming briefs and decide whether to accept or reject them
           </p>
@@ -111,7 +111,7 @@ export default function BriefsTriagePage() {
           </div>
         ) : briefs.length === 0 ? (
           <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No briefs awaiting triage</h3>
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No briefs awaiting triage</h3>
             <p className="text-xs text-gray-500">
               New briefs submitted through the creation form will appear here for review.
             </p>
@@ -128,7 +128,7 @@ export default function BriefsTriagePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">{brief.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">{brief.title}</h3>
                         {briefType && (
                           <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-indigo-50 text-indigo-700">
                             {briefType}
@@ -158,7 +158,7 @@ export default function BriefsTriagePage() {
                         onChange={(e) => setRejectionNote(e.target.value)}
                         placeholder="Reason for rejection (optional)"
                         rows={2}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                   )}

@@ -88,7 +88,7 @@ export default function ActiveRfpPage() {
     <ModuleLayoutShell moduleType="BRIEFS">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">RFP</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">RFP</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Active proposals requiring attention.
           </p>
@@ -96,7 +96,7 @@ export default function ActiveRfpPage() {
 
         <RfpNav />
 
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           Active RFPs ({rfps.length})
         </h2>
 
@@ -151,12 +151,12 @@ export default function ActiveRfpPage() {
                   return (
                     <tr key={rfp.id} className="hover:bg-gray-50">
                       <td className="px-5 py-3">
-                        <p className="font-medium text-gray-900 truncate max-w-xs">
+                        <p className="font-medium text-[var(--text-primary)] truncate max-w-xs">
                           {rfp.title}
                         </p>
                       </td>
                       <td className="px-5 py-3 text-gray-600">{client}</td>
-                      <td className="px-5 py-3 text-right font-medium text-gray-900">
+                      <td className="px-5 py-3 text-right font-medium text-[var(--text-primary)]">
                         {value > 0 ? fmtCurrency(value) : "--"}
                       </td>
                       <td className="px-5 py-3 text-gray-600">

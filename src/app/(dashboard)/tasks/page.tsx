@@ -246,15 +246,15 @@ export default function TasksPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Tasks</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             {tasks.length} task{tasks.length !== 1 ? "s" : ""} across all lists
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -282,8 +282,8 @@ export default function TasksPage() {
             onClick={() => setActiveFilter(f.key)}
             className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
               activeFilter === f.key
-                ? "bg-indigo-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-[var(--accent)] text-[var(--primary-foreground)]"
+                : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"
             }`}
           >
             {f.label}
@@ -294,7 +294,7 @@ export default function TasksPage() {
       {/* Kanban board */}
       {loading ? (
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-sm text-gray-400">Loading tasks...</div>
+          <div className="text-sm text-[var(--text-tertiary)]">Loading tasks...</div>
         </div>
       ) : (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -304,15 +304,15 @@ export default function TasksPage() {
               return (
                 <div
                   key={col.key}
-                  className="flex flex-col bg-gray-50 rounded-xl border border-gray-200"
+                  className="flex flex-col bg-[var(--bg-base)] rounded-xl border border-[var(--border)]"
                 >
                   {/* Column header */}
                   <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-gray-700">
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                         {col.label}
                       </h3>
-                      <span className="text-xs font-medium text-gray-400 bg-gray-200 rounded-full px-2 py-0.5">
+                      <span className="text-xs font-medium text-[var(--text-tertiary)] bg-[var(--bg-surface)] rounded-full px-2 py-0.5">
                         {colTasks.length}
                       </span>
                     </div>
@@ -321,7 +321,7 @@ export default function TasksPage() {
                         setInlineColumn(col.key);
                         setInlineValue("");
                       }}
-                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                      className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
                       title={`Add task to ${col.label}`}
                     >
                       <svg
@@ -348,13 +348,13 @@ export default function TasksPage() {
                         {...provided.droppableProps}
                         className={`flex-1 overflow-y-auto px-3 pb-3 space-y-2 transition-colors rounded-b-xl ${
                           snapshot.isDraggingOver
-                            ? "bg-indigo-50"
+                            ? "bg-[var(--accent-subtle)]"
                             : ""
                         }`}
                       >
                         {/* Inline creation input */}
                         {inlineColumn === col.key && (
-                          <div className="bg-white border border-indigo-300 rounded-lg p-2 shadow-sm">
+                          <div className="bg-[var(--bg-base)] border border-[var(--accent)] rounded-lg p-2 shadow-sm">
                             <input
                               type="text"
                               autoFocus
@@ -370,14 +370,14 @@ export default function TasksPage() {
                               }}
                               onBlur={() => handleInlineCreate(col.key)}
                               placeholder="Task title... (Enter to save)"
-                              className="w-full text-sm text-gray-900 placeholder-gray-400 outline-none bg-transparent"
+                              className="w-full text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none bg-transparent"
                             />
                           </div>
                         )}
 
                         {colTasks.length === 0 && inlineColumn !== col.key ? (
-                          <div className="flex items-center justify-center h-24 border-2 border-dashed border-gray-300 rounded-lg">
-                            <p className="text-xs text-gray-400">No tasks</p>
+                          <div className="flex items-center justify-center h-24 border-2 border-dashed border-[var(--border-strong)] rounded-lg">
+                            <p className="text-xs text-[var(--text-tertiary)]">No tasks</p>
                           </div>
                         ) : (
                           colTasks.map((task, index) => (

@@ -29,7 +29,7 @@ export default function MediaBuyingPage() {
       <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Media Buying</h1>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Media Buying</h1>
           <p className="text-sm text-gray-500">Plan campaigns, allocate budgets, and track ad spend.</p>
         </div>
       </div>
@@ -41,20 +41,20 @@ export default function MediaBuyingPage() {
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <p className="text-sm text-gray-500">Active Campaigns</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">0</p>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <p className="text-sm text-gray-500">Total Spend (MTD)</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">AED 0</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">AED 0</p>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <p className="text-sm text-gray-500">Clients</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{clients.length}</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">{clients.length}</p>
             </div>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Campaign Pipeline</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Campaign Pipeline</h2>
             <div className="text-center py-8">
               <p className="text-sm text-gray-400 mb-3">No campaigns yet.</p>
             </div>

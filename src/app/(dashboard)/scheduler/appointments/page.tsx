@@ -87,7 +87,7 @@ export default function AppointmentsListPage() {
     <ModuleLayoutShell moduleType="TIME_LEAVE">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Scheduler</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Scheduler</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             View and manage all appointments.
           </p>
@@ -175,7 +175,7 @@ export default function AppointmentsListPage() {
                           {TYPE_ICONS[type] || "G"}
                         </div>
                       </td>
-                      <td className="px-5 py-3 font-medium text-gray-900">
+                      <td className="px-5 py-3 font-medium text-[var(--text-primary)]">
                         {appt.key}
                       </td>
                       <td className="px-5 py-3 text-gray-600">

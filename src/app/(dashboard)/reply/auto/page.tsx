@@ -86,7 +86,7 @@ export default function AutoReplyPage() {
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Reply</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Manage auto-reply rules for incoming messages.
           </p>
@@ -96,7 +96,7 @@ export default function AutoReplyPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Auto-Reply Rules
           </h2>
           <button
@@ -214,7 +214,7 @@ export default function AutoReplyPage() {
               <tbody className="divide-y divide-gray-100">
                 {rules.map((rule) => (
                   <tr key={rule.id} className="hover:bg-gray-50">
-                    <td className="px-5 py-3 font-medium text-gray-900">
+                    <td className="px-5 py-3 font-medium text-[var(--text-primary)]">
                       {rule.key}
                     </td>
                     <td className="px-5 py-3 text-gray-600">

@@ -52,9 +52,9 @@ export default function InsightsPage() {
     return (
       <div className="max-w-3xl mx-auto py-10 px-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-48" />
-          <div className="h-4 bg-gray-200 rounded w-80" />
-          <div className="h-32 bg-gray-100 rounded mt-8" />
+          <div className="h-8 bg-[var(--bg-surface)] rounded w-48" />
+          <div className="h-4 bg-[var(--bg-surface)] rounded w-80" />
+          <div className="h-32 bg-[var(--bg-surface)] rounded mt-8" />
         </div>
       </div>
     );
@@ -63,10 +63,10 @@ export default function InsightsPage() {
   return (
     <div className="max-w-3xl mx-auto py-10 px-6">
       <div className="mb-8">
-        <h1 className="text-xl font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
           Weekly Insights
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">
           Synthesized from your organization&apos;s recent activity across all
           modules.
         </p>

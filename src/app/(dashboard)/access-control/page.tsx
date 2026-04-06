@@ -18,7 +18,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xl font-bold text-[var(--text-primary)]">{value}</p>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export default function AccessControlPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Access Control</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Access Control</h1>
           <p className="text-sm text-gray-500 mt-0.5">Enterprise role-based access control and policy management.</p>
         </div>
         <button
@@ -116,7 +116,7 @@ export default function AccessControlPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
               </svg>
             </div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No policies defined</h3>
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No policies defined</h3>
             <p className="text-xs text-gray-500 mb-4">Create access control policies to manage permissions across your organization.</p>
             <button
               onClick={() => openChatWithContext("Help me create a new access control policy with RBAC rules.")}
@@ -140,7 +140,7 @@ export default function AccessControlPage() {
               <tbody className="divide-y divide-gray-100">
                 {policies.map((p) => (
                   <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{p.name}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">{p.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-[200px]">{p.description ?? "--"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 text-right">{p.rulesCount}</td>
                     <td className="px-4 py-3">

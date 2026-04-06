@@ -77,12 +77,12 @@ export default function DecksPage() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Decks</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Create and manage presentation decks.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Decks</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Create and manage presentation decks.</p>
         </div>
         <Link
           href="/content-studio/decks/new"
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
         >
           New Deck
         </Link>
@@ -91,21 +91,21 @@ export default function DecksPage() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-xl p-5">
-              <div className="h-32 bg-gray-100 rounded-lg mb-3" />
-              <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
-              <div className="h-3 w-20 bg-gray-200 rounded" />
+            <div key={i} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-5">
+              <div className="h-32 bg-[var(--bg-surface)] rounded-lg mb-3" />
+              <div className="h-4 w-32 bg-[var(--bg-surface)] rounded mb-2" />
+              <div className="h-3 w-20 bg-[var(--bg-surface)] rounded" />
             </div>
           ))}
         </div>
       ) : decks.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
           <div className="text-4xl mb-3">&#x1F4CA;</div>
-          <h3 className="text-sm font-medium text-gray-900 mb-1">No decks yet</h3>
-          <p className="text-xs text-gray-500 mb-4">Create your first presentation deck.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No decks yet</h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">Create your first presentation deck.</p>
           <Link
             href="/content-studio/decks/new"
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors"
           >
             New Deck
           </Link>
@@ -113,30 +113,30 @@ export default function DecksPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {decks.map((deck) => (
-            <div key={deck.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors">
+            <div key={deck.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--border-strong)] transition-colors">
               {/* Thumbnail placeholder */}
-              <div className="h-36 bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">
+              <div className="h-36 bg-gradient-to-br from-[var(--accent-subtle)] to-purple-50 flex items-center justify-center">
                 <span className="text-3xl text-indigo-300">&#x1F4CA;</span>
               </div>
               <div className="p-4">
-                <h3 className="text-sm font-semibold text-gray-900 truncate">{deck.value.title}</h3>
-                <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">{deck.value.title}</h3>
+                <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] mt-1">
                   <span>{deck.value.slides?.length ?? 0} slide{(deck.value.slides?.length ?? 0) !== 1 ? "s" : ""}</span>
                   <span>Edited {fmtDate(deck.updatedAt)}</span>
                 </div>
                 {deck.value.createdBy && (
-                  <p className="text-xs text-gray-400 mt-1 truncate">By {deck.value.createdBy}</p>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-1 truncate">By {deck.value.createdBy}</p>
                 )}
-                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[var(--border)]">
                   <Link
                     href={`/content-studio/decks/${deck.id}`}
-                    className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => handleDuplicate(deck)}
-                    className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
                   >
                     Duplicate
                   </button>

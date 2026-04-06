@@ -127,10 +127,10 @@ export default function RecipeDetailPage({
         </button>
 
         {/* Header */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="bg-white border border-[var(--border)] rounded-xl p-6 mb-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{recipe.name}</h1>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">{recipe.name}</h1>
               <p className="text-sm text-gray-500 mt-1">{recipe.description}</p>
             </div>
             <span className="text-xs font-medium px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full">
@@ -151,8 +151,8 @@ export default function RecipeDetailPage({
         </div>
 
         {/* Workflow Steps */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white border border-[var(--border)] rounded-xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Workflow Steps
           </h2>
           <div className="space-y-3">
@@ -178,8 +178,8 @@ export default function RecipeDetailPage({
         </div>
 
         {/* Required Configuration */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white border border-[var(--border)] rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Required Configuration
           </h2>
           <ul className="space-y-2">

@@ -36,7 +36,7 @@ export default function TaskActions({
       <button
         onClick={addToCanvas}
         title="Add to Mission Control Canvas"
-        className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"
+        className="p-1 text-[var(--text-tertiary)] hover:text-[var(--accent)] transition-colors"
       >
         <svg
           className="w-3.5 h-3.5"
@@ -57,7 +57,7 @@ export default function TaskActions({
           onAskAgent?.(`Tell me about task "${task.title}" [${task.status}]`)
         }
         title="Ask Agent about this task"
-        className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"
+        className="p-1 text-[var(--text-tertiary)] hover:text-[var(--accent)] transition-colors"
       >
         <svg
           className="w-3.5 h-3.5"

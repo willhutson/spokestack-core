@@ -51,12 +51,12 @@ export default function NewCanvasPage() {
         <div className="mb-8">
           <button
             onClick={() => router.push("/canvas")}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block"
+            className="text-sm text-[var(--text-secondary)] hover:text-gray-700 mb-2 inline-block"
           >
             &larr; Back to Canvases
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">New Workflow Canvas</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">New Workflow Canvas</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">
             Start from scratch or use a pre-built recipe
           </p>
         </div>
@@ -64,12 +64,12 @@ export default function NewCanvasPage() {
         {/* Two Options */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Blank Canvas */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <div className="bg-white border border-[var(--border)] rounded-xl p-6">
             <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
               <span className="text-indigo-600 font-bold text-lg">+</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">Blank Canvas</h2>
-            <p className="text-sm text-gray-500 mb-4">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Blank Canvas</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
               Start with an empty canvas and build your workflow from scratch.
             </p>
             <form onSubmit={handleCreateBlank} className="space-y-3">
@@ -78,14 +78,14 @@ export default function NewCanvasPage() {
                 placeholder="Canvas name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <textarea
                 placeholder="Description (optional)"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-[var(--text-primary)] placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               {formError && <p className="text-xs text-red-600">{formError}</p>}
               <button
@@ -99,12 +99,12 @@ export default function NewCanvasPage() {
           </div>
 
           {/* From Recipe */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col">
+          <div className="bg-white border border-[var(--border)] rounded-xl p-6 flex flex-col">
             <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-4">
               <span className="text-emerald-600 font-bold text-lg">&#9776;</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">From Recipe</h2>
-            <p className="text-sm text-gray-500 mb-4 flex-1">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">From Recipe</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4 flex-1">
               Choose from pre-built workflow templates to get started quickly.
             </p>
             <button

@@ -95,52 +95,52 @@ export default function SocialPublishingPage() {
 
   return (
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
-    <div className="p-6 bg-white min-h-full">
+    <div className="p-6 bg-[var(--bg-base)] min-h-full">
       <PublisherNav />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Social Publishing</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Schedule and publish across social channels.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Social Publishing</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Schedule and publish across social channels.</p>
         </div>
-        <button onClick={() => { setShowForm(true); setTab("queue"); }} className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+        <button onClick={() => { setShowForm(true); setTab("queue"); }} className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
           Create Post
         </button>
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-[var(--border)]">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === t.id ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}>{t.label}</button>
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === t.id ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"}`}>{t.label}</button>
         ))}
       </div>
 
-      {loading && <div className="text-center py-12 text-sm text-gray-400">Loading...</div>}
+      {loading && <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">Loading...</div>}
 
       {/* Create Post Form */}
       {!loading && tab === "queue" && showForm && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Create Post</h3>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Create Post</h3>
           <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="What would you like to share?" rows={4}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            className="w-full border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
           <div className="mb-3">
-            <p className="text-xs font-medium text-gray-500 mb-2">Platforms</p>
+            <p className="text-xs font-medium text-[var(--text-secondary)] mb-2">Platforms</p>
             <div className="flex gap-2">
               {PLATFORMS.map(p => (
                 <button key={p} onClick={() => togglePlatform(p)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${selPlatforms.includes(p) ? PLAT_COLORS[p] : "bg-gray-100 text-gray-400"}`}>{p}</button>
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${selPlatforms.includes(p) ? PLAT_COLORS[p] : "bg-[var(--bg-surface)] text-[var(--text-tertiary)]"}`}>{p}</button>
               ))}
             </div>
           </div>
           <div className="flex gap-3 mb-4">
-            <div><label className="text-xs text-gray-500 block mb-1">Date</label>
-              <input type="date" value={schedDate} onChange={e => setSchedDate(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" /></div>
-            <div><label className="text-xs text-gray-500 block mb-1">Time</label>
-              <input type="time" value={schedTime} onChange={e => setSchedTime(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" /></div>
+            <div><label className="text-xs text-[var(--text-secondary)] block mb-1">Date</label>
+              <input type="date" value={schedDate} onChange={e => setSchedDate(e.target.value)} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" /></div>
+            <div><label className="text-xs text-[var(--text-secondary)] block mb-1">Time</label>
+              <input type="time" value={schedTime} onChange={e => setSchedTime(e.target.value)} className="border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm" /></div>
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
-            <button onClick={() => savePost("Draft")} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">Save Draft</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Cancel</button>
+            <button onClick={() => savePost("Draft")} className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)] rounded-lg hover:bg-[var(--bg-hover)]">Save Draft</button>
             <button onClick={() => savePost("Scheduled")} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Schedule</button>
             <button onClick={() => savePost("Published")} className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Publish Now</button>
           </div>
@@ -150,22 +150,22 @@ export default function SocialPublishingPage() {
       {/* Queue Tab */}
       {!loading && tab === "queue" && !showForm && (
         posts.length === 0 ? (
-          <div className="text-center py-16 border border-gray-200 rounded-xl">
-            <p className="text-sm text-gray-500 mb-2">No posts in queue</p>
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100">Create Post</button>
+          <div className="text-center py-16 border border-[var(--border)] rounded-xl">
+            <p className="text-sm text-[var(--text-secondary)] mb-2">No posts in queue</p>
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)]">Create Post</button>
           </div>
         ) : (
           <div className="space-y-3">
             {posts.map(p => (
-              <div key={p.key} className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors">
+              <div key={p.key} className="border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border-strong)] transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 mb-2 line-clamp-2">{p.content || "No content"}</p>
+                    <p className="text-sm text-[var(--text-primary)] mb-2 line-clamp-2">{p.content || "No content"}</p>
                     <div className="flex flex-wrap gap-1.5 mb-2">
-                      {p.platforms.map(pl => <span key={pl} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${PLAT_COLORS[pl] ?? "bg-gray-100 text-gray-600"}`}>{pl}</span>)}
+                      {p.platforms.map(pl => <span key={pl} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${PLAT_COLORS[pl] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{pl}</span>)}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-400">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-gray-600"}`}>{p.status}</span>
+                    <div className="flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[p.status] ?? "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{p.status}</span>
                       {p.scheduledFor && <span>{new Date(p.scheduledFor).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>}
                     </div>
                   </div>
@@ -185,16 +185,16 @@ export default function SocialPublishingPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <button onClick={() => { if (calMonth === 0) { setCalMonth(11); setCalYear(calYear - 1); } else setCalMonth(calMonth - 1); }}
-              className="p-1 text-gray-400 hover:text-gray-600"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
-            <h3 className="text-sm font-semibold text-gray-900">{monthNames[calMonth]} {calYear}</h3>
+              className="p-1 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{monthNames[calMonth]} {calYear}</h3>
             <button onClick={() => { if (calMonth === 11) { setCalMonth(0); setCalYear(calYear + 1); } else setCalMonth(calMonth + 1); }}
-              className="p-1 text-gray-400 hover:text-gray-600"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              className="p-1 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
           </div>
-          <div className="grid grid-cols-7 border border-gray-200 rounded-xl overflow-hidden">
+          <div className="grid grid-cols-7 border border-[var(--border)] rounded-xl overflow-hidden">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
-              <div key={d} className="bg-gray-50 px-2 py-2 text-center text-xs font-medium text-gray-500 border-b border-gray-200">{d}</div>
+              <div key={d} className="bg-[var(--bg-base)] px-2 py-2 text-center text-xs font-medium text-[var(--text-secondary)] border-b border-[var(--border)]">{d}</div>
             ))}
-            {Array.from({ length: firstDow }, (_, i) => <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-gray-100" />)}
+            {Array.from({ length: firstDow }, (_, i) => <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-[var(--border)]" />)}
             {calDays.map(day => {
               const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
               const dayPosts = postsByDate[dateStr] ?? [];
@@ -202,29 +202,29 @@ export default function SocialPublishingPage() {
               const isSelected = dateStr === selectedDate;
               return (
                 <div key={day} onClick={() => setSelectedDate(isSelected ? null : dateStr)}
-                  className={`min-h-[80px] border-b border-r border-gray-100 p-1 cursor-pointer hover:bg-gray-50 ${isSelected ? "bg-indigo-50" : ""}`}>
-                  <span className={`text-xs font-medium ${isToday ? "bg-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center" : "text-gray-600"}`}>{day}</span>
+                  className={`min-h-[80px] border-b border-r border-[var(--border)] p-1 cursor-pointer hover:bg-[var(--bg-hover)] ${isSelected ? "bg-[var(--accent-subtle)]" : ""}`}>
+                  <span className={`text-xs font-medium ${isToday ? "bg-[var(--accent)] text-[var(--primary-foreground)] rounded-full w-5 h-5 flex items-center justify-center" : "text-[var(--text-secondary)]"}`}>{day}</span>
                   <div className="mt-1 space-y-0.5">
                     {dayPosts.slice(0, 2).map(p => (
                       <div key={p.key} className="rounded px-1 py-0.5 text-[9px] truncate text-white" style={{ backgroundColor: PLAT_CAL_COLORS[p.platforms[0]] ?? "#6b7280" }}>
                         {p.content.slice(0, 20)}
                       </div>
                     ))}
-                    {dayPosts.length > 2 && <span className="text-[9px] text-gray-400">+{dayPosts.length - 2}</span>}
+                    {dayPosts.length > 2 && <span className="text-[9px] text-[var(--text-tertiary)]">+{dayPosts.length - 2}</span>}
                   </div>
                 </div>
               );
             })}
           </div>
           {selectedDate && (
-            <div className="mt-4 border border-gray-200 rounded-xl p-4">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3">Posts for {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</h4>
+            <div className="mt-4 border border-[var(--border)] rounded-xl p-4">
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Posts for {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</h4>
               {(postsByDate[selectedDate] ?? []).length === 0
-                ? <p className="text-xs text-gray-400">No posts scheduled for this day.</p>
+                ? <p className="text-xs text-[var(--text-tertiary)]">No posts scheduled for this day.</p>
                 : (postsByDate[selectedDate] ?? []).map(p => (
-                  <div key={p.key} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
+                  <div key={p.key} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
                     <div className="flex gap-1">{p.platforms.map(pl => <span key={pl} className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${PLAT_COLORS[pl]}`}>{pl}</span>)}</div>
-                    <span className="text-sm text-gray-700 truncate flex-1">{p.content}</span>
+                    <span className="text-sm text-[var(--text-secondary)] truncate flex-1">{p.content}</span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_COLORS[p.status]}`}>{p.status}</span>
                   </div>
                 ))
@@ -240,19 +240,19 @@ export default function SocialPublishingPage() {
           {socialProviders.map(sp => {
             const isConnected = connectedProviders.has(sp.key);
             return (
-              <div key={sp.key} className={`border rounded-xl p-5 ${isConnected ? "border-green-200 bg-green-50" : "border-gray-200"}`}>
+              <div key={sp.key} className={`border rounded-xl p-5 ${isConnected ? "border-green-200 bg-green-50" : "border-[var(--border)]"}`}>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${isConnected ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${isConnected ? "bg-green-100 text-green-700" : "bg-[var(--bg-surface)] text-[var(--text-tertiary)]"}`}>
                     {sp.label[0]}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{sp.label}</p>
-                    <p className={`text-xs ${isConnected ? "text-green-600" : "text-gray-400"}`}>{isConnected ? "Connected" : "Not connected"}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{sp.label}</p>
+                    <p className={`text-xs ${isConnected ? "text-green-600" : "text-[var(--text-tertiary)]"}`}>{isConnected ? "Connected" : "Not connected"}</p>
                   </div>
                 </div>
                 {!isConnected && (
                   <button onClick={() => openChatWithContext(`Help me connect my ${sp.label} account for social publishing.`)}
-                    className="w-full px-3 py-2 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Connect</button>
+                    className="w-full px-3 py-2 text-xs font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--accent-subtle)] transition-colors">Connect</button>
                 )}
               </div>
             );
@@ -271,10 +271,10 @@ export default function SocialPublishingPage() {
             {[{ label: "Impressions", value: "--", desc: "Total reach across platforms" },
               { label: "Clicks", value: "--", desc: "Link clicks from posts" },
               { label: "Engagement Rate", value: "--%", desc: "Average across all posts" }].map(m => (
-              <div key={m.label} className="border border-gray-200 rounded-xl p-5">
-                <p className="text-xs font-medium text-gray-500 mb-1">{m.label}</p>
-                <p className="text-2xl font-bold text-gray-300">{m.value}</p>
-                <p className="text-[10px] text-gray-400 mt-1">{m.desc}</p>
+              <div key={m.label} className="border border-[var(--border)] rounded-xl p-5">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">{m.label}</p>
+                <p className="text-2xl font-bold text-[var(--text-tertiary)]">{m.value}</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] mt-1">{m.desc}</p>
               </div>
             ))}
           </div>

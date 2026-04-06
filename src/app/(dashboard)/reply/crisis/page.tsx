@@ -107,7 +107,7 @@ export default function CrisisPage() {
     <ModuleLayoutShell moduleType="SOCIAL_PUBLISHING">
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Reply</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reply</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Crisis management and escalation controls.
           </p>
@@ -128,7 +128,7 @@ export default function CrisisPage() {
 
         {/* Crisis Toggle */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Crisis Control
           </h2>
           <button
@@ -147,7 +147,7 @@ export default function CrisisPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Crisis Queue */}
           <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-sm font-semibold text-gray-900">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">
               High-Urgency Queue ({items.length})
             </h3>
 
@@ -178,7 +178,7 @@ export default function CrisisPage() {
                       <div className="w-2 h-2 rounded-full bg-red-500 mt-2 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-[var(--text-primary)]">
                             {(item.value.sender as string) || "Unknown"}
                           </span>
                           <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
@@ -203,7 +203,7 @@ export default function CrisisPage() {
             )}
 
             {/* Pre-approved Templates */}
-            <h3 className="text-sm font-semibold text-gray-900 mt-6">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mt-6">
               Pre-Approved Response Templates
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -212,7 +212,7 @@ export default function CrisisPage() {
                   key={tpl.name}
                   className="bg-white border border-gray-200 rounded-xl p-4"
                 >
-                  <h4 className="text-sm font-medium text-gray-900 mb-1">
+                  <h4 className="text-sm font-medium text-[var(--text-primary)] mb-1">
                     {tpl.name}
                   </h4>
                   <p className="text-xs text-gray-500 line-clamp-2">
@@ -228,7 +228,7 @@ export default function CrisisPage() {
 
           {/* Escalation Log */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">
               Escalation Log
             </h3>
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">

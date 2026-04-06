@@ -39,24 +39,24 @@ function NodeCard({ node, depth }: { node: OrgNode; depth: number }) {
       <div className="flex items-center gap-3 py-2">
         {depth > 0 && (
           <div className="flex items-center">
-            <div className="w-6 border-t border-gray-300" />
+            <div className="w-6 border-t border-[var(--border-strong)]" />
           </div>
         )}
-        <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 hover:shadow-sm transition-shadow">
+        <div className="flex items-center gap-3 bg-[var(--bg-base)] border border-[var(--border)] rounded-xl px-4 py-3 hover:shadow-sm transition-shadow">
           <div className={cn(
             "w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold",
-            depth === 0 ? "bg-amber-100 text-amber-700" : depth === 1 ? "bg-indigo-100 text-indigo-600" : "bg-gray-100 text-gray-600"
+            depth === 0 ? "bg-amber-100 text-amber-700" : depth === 1 ? "bg-[var(--accent-subtle)] text-[var(--accent)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"
           )}>
             {node.initials}
           </div>
           <div>
-            <div className="text-sm font-medium text-gray-900">{node.name}</div>
-            <div className="text-xs text-gray-500">{node.title}</div>
+            <div className="text-sm font-medium text-[var(--text-primary)]">{node.name}</div>
+            <div className="text-xs text-[var(--text-secondary)]">{node.title}</div>
           </div>
         </div>
       </div>
       {node.children.length > 0 && (
-        <div className="border-l border-gray-200 ml-4">
+        <div className="border-l border-[var(--border)] ml-4">
           {node.children.map((child, i) => (
             <NodeCard key={i} node={child} depth={depth + 1} />
           ))}
@@ -139,19 +139,19 @@ export default function OrgChartPage() {
       <div className="p-6">
         <TeamNav />
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Org Chart</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Organizational structure and reporting lines</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Org Chart</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Organizational structure and reporting lines</p>
         </div>
 
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">Loading...</div>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-8 text-center text-sm text-[var(--text-tertiary)]">Loading...</div>
         ) : members.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No team members</h3>
-            <p className="text-xs text-gray-500">Add team members to see the org chart.</p>
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+            <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No team members</h3>
+            <p className="text-xs text-[var(--text-secondary)]">Add team members to see the org chart.</p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 overflow-x-auto">
+          <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 overflow-x-auto">
             <NodeCard node={orgTree} depth={0} />
           </div>
         )}

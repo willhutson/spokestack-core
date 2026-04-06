@@ -33,7 +33,7 @@ const aedFmt = new Intl.NumberFormat("en-AE", { style: "currency", currency: "AE
 
 const PIPELINE = ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED"] as const;
 const COL_COLORS: Record<string, string> = {
-  PENDING: "border-gray-300 bg-gray-50",
+  PENDING: "border-[var(--border-strong)] bg-[var(--bg-base)]",
   CONFIRMED: "border-blue-300 bg-blue-50",
   IN_PROGRESS: "border-amber-300 bg-amber-50",
   COMPLETED: "border-emerald-300 bg-emerald-50",
@@ -166,12 +166,12 @@ export default function OrdersPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Track customer orders, invoices, and fulfillment</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Orders</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Track customer orders, invoices, and fulfillment</p>
         </div>
         <div className="flex items-center gap-2">
           {!showForm && (
-            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+            <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-colors">
               + Create Order
             </button>
           )}
@@ -180,49 +180,49 @@ export default function OrdersPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">Total Orders</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{totalOrders}</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">Total Orders</p>
+          <p className="text-2xl font-bold text-[var(--text-primary)] mt-1">{totalOrders}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">Pending</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">Pending</p>
           <p className="text-2xl font-bold text-amber-600 mt-1">{pendingCount}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase">Revenue (Completed)</p>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs font-medium text-[var(--text-secondary)] uppercase">Revenue (Completed)</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">{aedFmt.format(revenue)}</p>
         </div>
       </div>
 
       {/* Create Order Form */}
       {showForm && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-900">New Order</h2>
-            <button onClick={() => setShowForm(false)} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">New Order</h2>
+            <button onClick={() => setShowForm(false)} className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]">Cancel</button>
           </div>
           <form onSubmit={handleCreate} className="space-y-3">
-            <select value={formClient} onChange={(e) => setFormClient(e.target.value)} className="w-full h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={formClient} onChange={(e) => setFormClient(e.target.value)} className="w-full h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
               <option value="">Select client...</option>
               {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <div className="space-y-2">
               {formItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <input type="text" placeholder="Description" value={item.description} onChange={(e) => updateFormItem(idx, "description", e.target.value)} className="flex-1 h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                  <input type="number" min={1} value={item.quantity} onChange={(e) => updateFormItem(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))} className="w-20 h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                  <input type="number" min={0} step={0.01} placeholder="AED" value={item.unitPrice || ""} onChange={(e) => updateFormItem(idx, "unitPrice", parseFloat(e.target.value) || 0)} className="w-28 h-9 px-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                  <button type="button" onClick={() => formItems.length > 1 && setFormItems((p) => p.filter((_, i) => i !== idx))} disabled={formItems.length <= 1} className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors">&times;</button>
+                  <input type="text" placeholder="Description" value={item.description} onChange={(e) => updateFormItem(idx, "description", e.target.value)} className="flex-1 h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+                  <input type="number" min={1} value={item.quantity} onChange={(e) => updateFormItem(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))} className="w-20 h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+                  <input type="number" min={0} step={0.01} placeholder="AED" value={item.unitPrice || ""} onChange={(e) => updateFormItem(idx, "unitPrice", parseFloat(e.target.value) || 0)} className="w-28 h-9 px-3 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+                  <button type="button" onClick={() => formItems.length > 1 && setFormItems((p) => p.filter((_, i) => i !== idx))} disabled={formItems.length <= 1} className="h-9 w-9 flex items-center justify-center text-[var(--text-tertiary)] hover:text-red-500 disabled:opacity-30 transition-colors">&times;</button>
                 </div>
               ))}
-              <button type="button" onClick={() => setFormItems((p) => [...p, { description: "", quantity: 1, unitPrice: 0 }])} className="text-xs font-medium text-indigo-600 hover:text-indigo-700">+ Add Item</button>
+              <button type="button" onClick={() => setFormItems((p) => [...p, { description: "", quantity: 1, unitPrice: 0 }])} className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)]">+ Add Item</button>
             </div>
-            <textarea value={formNotes} onChange={(e) => setFormNotes(e.target.value)} rows={2} placeholder="Notes (optional)" className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-              <span className="text-sm text-gray-600">Total: <span className="font-semibold text-gray-900">{aedFmt.format(formTotal)}</span></span>
+            <textarea value={formNotes} onChange={(e) => setFormNotes(e.target.value)} rows={2} placeholder="Notes (optional)" className="w-full px-3 py-2 text-sm border border-[var(--border-strong)] rounded-lg bg-[var(--bg-base)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
+              <span className="text-sm text-[var(--text-secondary)]">Total: <span className="font-semibold text-[var(--text-primary)]">{aedFmt.format(formTotal)}</span></span>
               <div className="flex items-center gap-3">
                 {formError && <p className="text-xs text-red-600">{formError}</p>}
-                <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+                <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] bg-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
                   {submitting ? "Creating..." : "Create Order"}
                 </button>
               </div>
@@ -234,35 +234,35 @@ export default function OrdersPage() {
       {/* Pipeline */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="text-sm text-gray-400">Loading orders...</div>
+          <div className="text-sm text-[var(--text-tertiary)]">Loading orders...</div>
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">No orders yet</h3>
-          <p className="text-xs text-gray-500 mb-4">Create your first order to start tracking customer transactions.</p>
-          <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">Create Order</button>
+        <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-xl p-12 text-center">
+          <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">No orders yet</h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">Create your first order to start tracking customer transactions.</p>
+          <button onClick={() => setShowForm(true)} className="px-4 py-2 text-sm font-medium text-[var(--accent)] bg-[var(--accent-subtle)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">Create Order</button>
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
           {PIPELINE.map((col) => (
             <div key={col} className={`rounded-xl border-2 p-3 min-h-[300px] ${COL_COLORS[col]}`}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{col.replace(/_/g, " ")}</h3>
-                <span className="text-xs font-medium text-gray-500 bg-white rounded-full px-2 py-0.5">{buckets[col].length}</span>
+                <h3 className="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wide">{col.replace(/_/g, " ")}</h3>
+                <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-base)] rounded-full px-2 py-0.5">{buckets[col].length}</span>
               </div>
               <div className="space-y-3">
                 {buckets[col].map((order) => {
                   const isExpanded = expandedId === order.id;
                   const next = NEXT_STATUS[col];
                   return (
-                    <div key={order.id} className="bg-white border border-gray-200 rounded-lg p-3 transition-shadow hover:shadow-md">
+                    <div key={order.id} className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-3 transition-shadow hover:shadow-md">
                       <div className="cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : order.id)}>
                         <div className="flex items-start justify-between gap-1 mb-1">
-                          <span className="text-sm font-semibold text-gray-900">#{order.orderNumber}</span>
+                          <span className="text-sm font-semibold text-[var(--text-primary)]">#{order.orderNumber}</span>
                           <StatusBadge status={order.status} />
                         </div>
-                        <p className="text-xs text-gray-500">{order.customerName}</p>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
+                        <p className="text-xs text-[var(--text-secondary)]">{order.customerName}</p>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-[var(--text-tertiary)]">
                           <span>{aedFmt.format(order.total ?? 0)}</span>
                           <span>{order.items?.length ?? 0} item{(order.items?.length ?? 0) !== 1 ? "s" : ""}</span>
                           <span>{new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -271,18 +271,18 @@ export default function OrdersPage() {
 
                       {/* Expanded detail */}
                       {isExpanded && (
-                        <div className="mt-3 pt-3 border-t border-gray-100">
+                        <div className="mt-3 pt-3 border-t border-[var(--border)]">
                           {order.items?.length > 0 && (
                             <table className="w-full text-xs mb-2">
                               <thead>
-                                <tr className="text-gray-500">
+                                <tr className="text-[var(--text-secondary)]">
                                   <th className="text-left pb-1">Item</th>
                                   <th className="text-right pb-1">Qty</th>
                                   <th className="text-right pb-1">Price</th>
                                   <th className="text-right pb-1">Total</th>
                                 </tr>
                               </thead>
-                              <tbody className="text-gray-700">
+                              <tbody className="text-[var(--text-primary)]">
                                 {order.items.map((it, i) => (
                                   <tr key={i}>
                                     <td className="py-0.5">{it.description}</td>
@@ -294,8 +294,8 @@ export default function OrdersPage() {
                               </tbody>
                             </table>
                           )}
-                          {order.notes && <p className="text-xs text-gray-500 mb-2">Notes: {order.notes}</p>}
-                          {order.invoiceId && <p className="text-xs text-indigo-600 mb-2">Invoice: {order.invoiceId}</p>}
+                          {order.notes && <p className="text-xs text-[var(--text-secondary)] mb-2">Notes: {order.notes}</p>}
+                          {order.invoiceId && <p className="text-xs text-[var(--accent)] mb-2">Invoice: {order.invoiceId}</p>}
                         </div>
                       )}
 
