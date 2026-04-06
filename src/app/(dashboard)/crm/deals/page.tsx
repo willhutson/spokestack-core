@@ -8,6 +8,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -284,6 +290,36 @@ export default function DealsPage() {
     loadDeals();
   }, [loadDeals]);
 
+  async function handleDealDragEnd(result: DropResult) {
+    const { draggableId, destination } = result;
+    if (!destination) return;
+    const newStage = destination.droppableId;
+
+    // Optimistic update
+    const prev = [...deals];
+    setDeals((d) =>
+      d.map((deal) => {
+        if (deal.id !== draggableId) return deal;
+        const parsed = typeof deal.value === "string" ? JSON.parse(deal.value) : deal.value;
+        return { ...deal, value: { ...parsed, stage: newStage } };
+      })
+    );
+
+    try {
+      const deal = deals.find((d) => d.id === draggableId);
+      if (!deal) return;
+      const parsed = typeof deal.value === "string" ? JSON.parse(deal.value) : deal.value;
+      const headers = await getAuthHeaders();
+      await fetch("/api/v1/crm/deals", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ ...parsed, stage: newStage, name: deal.key }),
+      });
+    } catch {
+      setDeals(prev);
+    }
+  }
+
   const pipeline = useMemo(() => {
     const map: Record<string, DealEntry[]> = {};
     STAGES.forEach((s) => (map[s] = []));
@@ -362,13 +398,18 @@ export default function DealsPage() {
           </div>
         ) : (
           /* Kanban Board */
+          <DragDropContext onDragEnd={handleDealDragEnd}>
           <div className="flex gap-3 overflow-x-auto pb-4">
             {STAGES.map((stage) => (
+              <Droppable droppableId={stage} key={stage}>
+                {(provided, snapshot) => (
               <div
-                key={stage}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
                 className={cn(
-                  "min-w-[220px] flex-1 rounded-xl border p-3",
-                  STAGE_COLUMN_BG[stage]
+                  "min-w-[220px] flex-1 rounded-xl border p-3 transition-colors",
+                  STAGE_COLUMN_BG[stage],
+                  snapshot.isDraggingOver && "ring-2 ring-indigo-400"
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -380,9 +421,21 @@ export default function DealsPage() {
                   </span>
                 </div>
                 <div className="space-y-2">
-                  {(pipeline[stage] ?? []).map((deal) => (
-                    <DealCard key={deal.id} deal={deal} />
+                  {(pipeline[stage] ?? []).map((deal, index) => (
+                    <Draggable key={deal.id} draggableId={deal.id} index={index}>
+                      {(dragProvided, dragSnapshot) => (
+                        <div
+                          ref={dragProvided.innerRef}
+                          {...dragProvided.draggableProps}
+                          {...dragProvided.dragHandleProps}
+                          className={dragSnapshot.isDragging ? "shadow-lg ring-2 ring-indigo-300 rounded-lg" : ""}
+                        >
+                          <DealCard deal={deal} />
+                        </div>
+                      )}
+                    </Draggable>
                   ))}
+                  {provided.placeholder}
                   {(pipeline[stage] ?? []).length === 0 && (
                     <p className="text-xs text-gray-400 text-center py-4">
                       No deals
@@ -390,8 +443,11 @@ export default function DealsPage() {
                   )}
                 </div>
               </div>
+                )}
+              </Droppable>
             ))}
           </div>
+          </DragDropContext>
         )}
       </div>
     </ModuleLayoutShell>

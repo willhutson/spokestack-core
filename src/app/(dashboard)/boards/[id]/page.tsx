@@ -5,6 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { getAuthHeaders } from "@/lib/client-auth";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
 import { cn } from "@/lib/utils";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 
 interface Card {
   id: string;
@@ -145,6 +151,26 @@ export default function BoardDetailPage() {
 
   const cardsByColumn = (colKey: string) => cards.filter((c) => c.status === colKey);
 
+  async function handleBoardDragEnd(result: DropResult) {
+    const { draggableId, destination } = result;
+    if (!destination) return;
+    const newStatus = destination.droppableId;
+
+    const prev = [...cards];
+    setCards((c) => c.map((card) => card.id === draggableId ? { ...card, status: newStatus } : card));
+
+    try {
+      const headers = await getAuthHeaders();
+      await fetch(`/api/v1/tasks/${draggableId}`, {
+        method: "PATCH",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch {
+      setCards(prev);
+    }
+  }
+
   return (
     <ModuleLayoutShell moduleType="BOARDS">
       <div className="flex flex-col h-full bg-white">
@@ -165,12 +191,19 @@ export default function BoardDetailPage() {
             <p className="text-sm text-gray-400">Loading board...</p>
           </div>
         ) : (
+          <DragDropContext onDragEnd={handleBoardDragEnd}>
           <div className="flex-1 overflow-x-auto p-6">
             <div className="flex gap-4 min-h-full" style={{ minWidth: `${columns.length * 280}px` }}>
               {columns.map((col) => {
                 const colCards = cardsByColumn(col.key);
                 return (
-                  <div key={col.key} className="flex flex-col bg-gray-50 rounded-xl border border-gray-200 w-72 flex-shrink-0">
+                  <Droppable droppableId={col.key} key={col.key}>
+                    {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={cn("flex flex-col bg-gray-50 rounded-xl border border-gray-200 w-72 flex-shrink-0 transition-colors", snapshot.isDraggingOver && "ring-2 ring-indigo-400")}
+                  >
                     {/* Column Header */}
                     <div className="flex items-center justify-between px-4 py-3">
                       <div className="flex items-center gap-2">
@@ -190,8 +223,15 @@ export default function BoardDetailPage() {
                         </div>
                       )}
 
-                      {colCards.map((card) => (
-                        <div key={card.id} className="bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors cursor-pointer">
+                      {colCards.map((card, cardIndex) => (
+                        <Draggable key={card.id} draggableId={card.id} index={cardIndex}>
+                          {(dragProvided, dragSnapshot) => (
+                        <div
+                          ref={dragProvided.innerRef}
+                          {...dragProvided.draggableProps}
+                          {...dragProvided.dragHandleProps}
+                          className={cn("bg-white border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors cursor-grab", dragSnapshot.isDragging && "shadow-lg ring-2 ring-indigo-300")}
+                        >
                           <div className="flex items-start gap-2">
                             <span className={cn("w-2 h-2 rounded-full mt-1.5 flex-shrink-0", priorityDot(card.priority))} />
                             <div className="flex-1 min-w-0">
@@ -216,7 +256,10 @@ export default function BoardDetailPage() {
                             </div>
                           </div>
                         </div>
+                          )}
+                        </Draggable>
                       ))}
+                      {provided.placeholder}
 
                       {/* Add Card Form */}
                       {addingTo === col.key && (
@@ -250,10 +293,13 @@ export default function BoardDetailPage() {
                       </div>
                     )}
                   </div>
+                    )}
+                  </Droppable>
                 );
               })}
             </div>
           </div>
+          </DragDropContext>
         )}
       </div>
     </ModuleLayoutShell>

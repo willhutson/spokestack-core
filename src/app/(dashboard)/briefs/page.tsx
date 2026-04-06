@@ -7,6 +7,12 @@ import { useRouter } from "next/navigation";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { getAuthHeaders } from "@/lib/client-auth";
 import { openChatWithContext } from "@/lib/chat-event";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 
 interface Brief {
   id: string;
@@ -266,9 +272,21 @@ export default function BriefsPage() {
           </button>
         </div>
       ) : (
+        <DragDropContext onDragEnd={async (result: DropResult) => {
+          const { draggableId, destination } = result;
+          if (!destination) return;
+          const newStatus = destination.droppableId;
+          updateBriefStatus(draggableId, newStatus);
+        }}>
         <div className="grid grid-cols-4 gap-4">
           {PIPELINE_COLUMNS.map((col) => (
-            <div key={col} className={`rounded-xl border-2 p-3 min-h-[300px] ${COLUMN_COLORS[col]}`}>
+            <Droppable droppableId={col} key={col}>
+              {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={`rounded-xl border-2 p-3 min-h-[300px] transition-colors ${COLUMN_COLORS[col]} ${snapshot.isDraggingOver ? "ring-2 ring-indigo-400" : ""}`}
+            >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
                   {col.replace(/_/g, " ")}
@@ -278,7 +296,7 @@ export default function BriefsPage() {
                 </span>
               </div>
               <div className="space-y-3">
-                {buckets[col].map((brief) => {
+                {buckets[col].map((brief, index) => {
                   const phases = brief.phases ?? [];
                   const completedPhases = phases.filter(
                     (p) => p.status === "COMPLETED" || p.status === "completed"
@@ -286,9 +304,13 @@ export default function BriefsPage() {
                   const totalPhases = phases.length;
 
                   return (
+                    <Draggable key={brief.id} draggableId={brief.id} index={index}>
+                      {(dragProvided, dragSnapshot) => (
                     <div
-                      key={brief.id}
-                      className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer"
+                      ref={dragProvided.innerRef}
+                      {...dragProvided.draggableProps}
+                      {...dragProvided.dragHandleProps}
+                      className={`bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow cursor-grab ${dragSnapshot.isDragging ? "shadow-lg ring-2 ring-indigo-300" : ""}`}
                     >
                       <div onClick={() => router.push(`/briefs/${brief.id}`)}>
                         <div className="flex items-start justify-between gap-1 mb-1">
@@ -363,12 +385,18 @@ export default function BriefsPage() {
                         )}
                       </div>
                     </div>
+                      )}
+                    </Draggable>
                   );
                 })}
+                {provided.placeholder}
               </div>
             </div>
+              )}
+            </Droppable>
           ))}
         </div>
+        </DragDropContext>
       )}
     </div>
     </ModuleLayoutShell>
