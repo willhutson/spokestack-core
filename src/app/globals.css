@@ -1,6 +1,28 @@
 @import "tailwindcss";
 
 /* ============================================================
+   Tailwind v4 Theme Registration
+   Register CSS variable tokens as first-class Tailwind utilities
+   so bg-[var(--bg-base)] etc. generate actual CSS.
+   ============================================================ */
+@theme {
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-hover: var(--bg-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-neutral: var(--border-neutral);
+  --color-primary-foreground: var(--primary-foreground, #ffffff);
+}
+
+/* ============================================================
    SpokeStack Theme System — 7 Curated Themes
    Each theme defines 14 core tokens + typography + shadcn mapping.
    Activate by setting data-theme="x" on a parent element.
