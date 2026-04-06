@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import { LmsNav } from "./LmsNav";
 
 export default function LMSPage() {
   const [activeTab, setActiveTab] = useState<"courses" | "enrollments">("courses");
@@ -9,6 +10,7 @@ export default function LMSPage() {
   return (
     <ModuleLayoutShell moduleType="LMS">
       <div className="p-6">
+      <LmsNav />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">LMS</h1>

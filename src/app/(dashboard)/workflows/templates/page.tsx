@@ -60,8 +60,17 @@ export default function WorkflowTemplatesPage() {
       ? templates
       : templates.filter((t) => t.category === category);
 
-  function handleInstall(template: Template) {
-    console.log("Install template:", template.id, template.name);
+  async function handleInstall(template: Template) {
+    const headers = await getAuthHeaders();
+    const res = await fetch("/api/v1/canvas", {
+      method: "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ name: template.name, description: template.description }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      window.location.href = `/canvas/${data.canvas?.id || ""}`;
+    }
   }
 
   return (

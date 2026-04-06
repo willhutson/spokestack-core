@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   const entry = await prisma.contextEntry.create({
     data: {
       organizationId: auth.organizationId,
-      entryType: "STRUCTURED",
+      entryType: "ENTITY",
       category: "form",
       key,
       value: {
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         fields: fields ?? [],
         status: status ?? "DRAFT",
         responseCount: 0,
-        createdBy: auth.userId,
+        createdBy: auth.user.id,
         createdAt: new Date().toISOString(),
       },
     },

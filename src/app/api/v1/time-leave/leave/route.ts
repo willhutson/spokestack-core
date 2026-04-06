@@ -50,16 +50,16 @@ export async function POST(req: NextRequest) {
     return error("type, startDate, and endDate are required");
   }
 
-  const key = `leave_request_${auth.userId}_${Date.now()}`;
+  const key = `leave_request_${auth.user.id}_${Date.now()}`;
 
   const entry = await prisma.contextEntry.create({
     data: {
       organizationId: auth.organizationId,
-      entryType: "STRUCTURED",
+      entryType: "ENTITY",
       category: "leave_request",
       key,
       value: {
-        userId: auth.userId,
+        userId: auth.user.id,
         type,
         startDate,
         endDate,

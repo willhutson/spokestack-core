@@ -1,9 +1,15 @@
 /**
- * Dispatch a custom event to open the chat panel with a pre-filled message.
- * Used by module pages to connect "Talk to Agent" buttons to the chat panel.
+ * Open the embedded agent chat panel.
+ * Dispatches a synthetic Cmd+J keydown event which ModuleLayoutShell listens for.
+ * The message parameter is currently unused — the agent panel opens to a blank state.
  */
-export function openChatWithContext(message: string): void {
+export function openChatWithContext(_message: string): void {
   window.dispatchEvent(
-    new CustomEvent("spokestack:open-chat", { detail: { message } })
+    new KeyboardEvent("keydown", {
+      key: "j",
+      metaKey: true,
+      ctrlKey: true,
+      bubbles: true,
+    })
   );
 }

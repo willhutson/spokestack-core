@@ -156,7 +156,11 @@ export default function WorkflowDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => console.log("Run workflow", id)}
+                  onClick={async () => {
+                    const h = await getAuthHeaders();
+                    await fetch(`/api/v1/canvas/${id}/run`, { method: "POST", headers: { ...h, "Content-Type": "application/json" } });
+                    window.location.reload();
+                  }}
                   className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
                 >
                   Run Now

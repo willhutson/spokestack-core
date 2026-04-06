@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     },
     create: {
       organizationId: auth.organizationId,
-      entryType: "STRUCTURED",
+      entryType: "ENTITY",
       category: "department",
       key,
       value: { name, head: head ?? null, description: description ?? "", memberCount: 0 },

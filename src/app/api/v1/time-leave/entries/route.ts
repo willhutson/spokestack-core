@@ -57,16 +57,16 @@ export async function POST(req: NextRequest) {
     return error("date is required");
   }
 
-  const key = `time_entry_${auth.userId}_${date}_${Date.now()}`;
+  const key = `time_entry_${auth.user.id}_${date}_${Date.now()}`;
 
   const entry = await prisma.contextEntry.create({
     data: {
       organizationId: auth.organizationId,
-      entryType: "STRUCTURED",
+      entryType: "ENTITY",
       category: "time_entry",
       key,
       value: {
-        userId: auth.userId,
+        userId: auth.user.id,
         project: project ?? null,
         startTime: startTime ?? null,
         endTime: endTime ?? null,
