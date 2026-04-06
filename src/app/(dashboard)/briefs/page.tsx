@@ -306,8 +306,34 @@ export default function BriefsPage() {
                         </div>
                       </div>
 
-                      {/* Action buttons */}
+                      {/* Status transition buttons */}
                       <div className="mt-2 flex flex-wrap gap-1.5">
+                        {col === "DRAFT" && (
+                          <button
+                            disabled={updating === brief.id}
+                            onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "ACTIVE"); }}
+                            className="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 disabled:opacity-50 transition-colors"
+                          >
+                            → Activate
+                          </button>
+                        )}
+                        {col === "ACTIVE" && (
+                          <>
+                            <button
+                              disabled={updating === brief.id}
+                              onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "IN_REVIEW"); }}
+                              className="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-50 rounded hover:bg-purple-100 disabled:opacity-50 transition-colors"
+                            >
+                              → Submit for Review
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); openChatWithContext(`Generate an artifact for brief: ${brief.title}`); }}
+                              className="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors"
+                            >
+                              Generate Artifact
+                            </button>
+                          </>
+                        )}
                         {col === "IN_REVIEW" && (
                           <>
                             <button
@@ -315,26 +341,24 @@ export default function BriefsPage() {
                               onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "COMPLETED"); }}
                               className="px-2 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 rounded hover:bg-emerald-100 disabled:opacity-50 transition-colors"
                             >
-                              Approve
+                              ✓ Approve
                             </button>
                             <button
                               disabled={updating === brief.id}
-                              onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "DRAFT"); }}
+                              onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "ACTIVE"); }}
                               className="px-2 py-1 text-xs font-medium text-amber-700 bg-amber-50 rounded hover:bg-amber-100 disabled:opacity-50 transition-colors"
                             >
-                              Request Revisions
+                              ← Revisions
                             </button>
                           </>
                         )}
-                        {col === "ACTIVE" && (
+                        {col === "COMPLETED" && (
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openChatWithContext(`Generate an artifact for brief: ${brief.title}`);
-                            }}
-                            className="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors"
+                            disabled={updating === brief.id}
+                            onClick={(e) => { e.stopPropagation(); updateBriefStatus(brief.id, "ACTIVE"); }}
+                            className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-50 transition-colors"
                           >
-                            Generate Artifact
+                            ← Reopen
                           </button>
                         )}
                       </div>

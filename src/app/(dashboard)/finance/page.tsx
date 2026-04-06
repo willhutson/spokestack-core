@@ -75,6 +75,36 @@ export default function FinancePage() {
 
   const orderCount = orders.length;
 
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [invClient, setInvClient] = useState("");
+  const [invAmount, setInvAmount] = useState("");
+  const [invDueDate, setInvDueDate] = useState("");
+  const [invSubmitting, setInvSubmitting] = useState(false);
+
+  async function handleCreateInvoice(e: React.FormEvent) {
+    e.preventDefault();
+    if (!invAmount) return;
+    setInvSubmitting(true);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: invClient.trim() || undefined,
+          currency: "AED",
+          items: [{ description: "Invoice item", quantity: 1, unitPriceCents: Math.round(parseFloat(invAmount) * 100) }],
+        }),
+      });
+      if (res.ok) {
+        setShowInvoiceForm(false);
+        setInvClient(""); setInvAmount(""); setInvDueDate("");
+        setLoading(true);
+        loadData();
+      }
+    } catch { /* ignore */ } finally { setInvSubmitting(false); }
+  }
+
   return (
     <ModuleLayoutShell moduleType="FINANCE">
       <div className="p-6">
@@ -86,8 +116,25 @@ export default function FinancePage() {
           <p className="text-sm text-gray-500 mt-0.5">Financial tracking, invoices, and orders.</p>
         </div>
         <div className="flex gap-2">
+          <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+            {showInvoiceForm ? "Cancel" : "+ New Transaction"}
+          </button>
         </div>
       </div>
+
+      {showInvoiceForm && (
+        <form onSubmit={handleCreateInvoice} className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900">New Transaction</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input type="text" value={invClient} onChange={(e) => setInvClient(e.target.value)} placeholder="Client name (optional)" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="number" step="0.01" value={invAmount} onChange={(e) => setInvAmount(e.target.value)} placeholder="Amount (AED) *" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" value={invDueDate} onChange={(e) => setInvDueDate(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <button type="submit" disabled={invSubmitting || !invAmount} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            {invSubmitting ? "Creating..." : "Create Transaction"}
+          </button>
+        </form>
+      )}
 
       {/* Summary cards */}
       {loading ? (

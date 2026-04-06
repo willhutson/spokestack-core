@@ -34,32 +34,73 @@ export default function ProjectsPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formDesc, setFormDesc] = useState("");
+  const [formStartDate, setFormStartDate] = useState("");
+  const [formEndDate, setFormEndDate] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  async function loadProjects() {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/projects", { headers });
+      if (res.ok) {
+        const data = await res.json();
+        const raw: Project[] = data.projects ?? data ?? [];
+        const seen = new Set<string>();
+        const unique = raw.filter((p) => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return true;
+        });
+        setProjects(unique);
+      }
+    } catch {
+      // API not yet available
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadProjects() {
-      try {
-        const headers = await getAuthHeaders();
-        const res = await fetch("/api/v1/projects", { headers });
-        if (res.ok) {
-          const data = await res.json();
-          const raw: Project[] = data.projects ?? data ?? [];
-          // Deduplicate by project ID (includes with relations can cause duplicates)
-          const seen = new Set<string>();
-          const unique = raw.filter((p) => {
-            if (seen.has(p.id)) return false;
-            seen.add(p.id);
-            return true;
-          });
-          setProjects(unique);
-        }
-      } catch {
-        // API not yet available
-      } finally {
-        setLoading(false);
-      }
-    }
     loadProjects();
   }, []);
+
+  async function handleCreateProject(e: React.FormEvent) {
+    e.preventDefault();
+    if (!formName.trim()) { setFormError("Project name is required."); return; }
+    setFormError(null);
+    setSubmitting(true);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch("/api/v1/projects", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formName.trim(),
+          description: formDesc.trim() || undefined,
+          startDate: formStartDate || undefined,
+          endDate: formEndDate || undefined,
+          status: "PLANNING",
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setFormError(body?.error || "Failed to create project");
+        return;
+      }
+      setFormName(""); setFormDesc(""); setFormStartDate(""); setFormEndDate("");
+      setShowForm(false);
+      setLoading(true);
+      loadProjects();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Unexpected error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <ModuleLayoutShell moduleType="PROJECTS">
@@ -72,9 +113,28 @@ export default function ProjectsPage() {
             Manage workflows, timelines, and milestones
           </p>
         </div>
-        <div className="flex items-center gap-2">
-        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          {showForm ? "Cancel" : "+ New Project"}
+        </button>
       </div>
+
+      {showForm && (
+        <form onSubmit={handleCreateProject} className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-3">
+          {formError && <p className="text-sm text-red-600">{formError}</p>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Project name *" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="text" value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="Description (optional)" className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} className="h-9 px-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <button type="submit" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            {submitting ? "Creating..." : "Create Project"}
+          </button>
+        </form>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
