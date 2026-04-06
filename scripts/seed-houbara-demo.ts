@@ -80,6 +80,44 @@ function log(icon: string, msg: string) {
   console.log(`  ${icon} ${msg}`);
 }
 
+// ── Org Setup (tier + modules) ───────────────────────────────────
+
+async function setupOrg() {
+  log("⚙️", "Setting up org tier and modules...");
+
+  // Upgrade billing tier to ENTERPRISE (unlocks all core modules)
+  await api("POST", "/api/v1/admin/seed", {
+    tier: "ENTERPRISE",
+    onboardingComplete: true,
+  });
+  log("✔", "Billing tier → ENTERPRISE");
+
+  // Install the 6 comms modules + CRM
+  const modules = [
+    "MEDIA_RELATIONS",
+    "PRESS_RELEASES",
+    "CRISIS_COMMS",
+    "CLIENT_REPORTING",
+    "INFLUENCER_MGMT",
+    "EVENTS",
+    "CRM",
+    "CONTENT_STUDIO",
+    "ANALYTICS",
+    "SOCIAL_PUBLISHING",
+  ];
+
+  for (const moduleType of modules) {
+    await api("POST", "/api/v1/modules/install", { moduleType });
+    log("✔", `Module installed: ${moduleType}`);
+  }
+
+  // Set branding theme to Indigo
+  await api("PATCH", "/api/v1/settings/branding", {
+    theme: "indigo",
+  });
+  log("✔", "Theme → Indigo");
+}
+
 // ── Seed Data ────────────────────────────────────────────────────
 
 async function seedClients() {
@@ -394,6 +432,8 @@ async function main() {
     process.exit(1);
   }
 
+  await setupOrg();
+  console.log();
   await seedClients();
   console.log();
   await seedJournalists();
@@ -410,6 +450,8 @@ async function main() {
 
   console.log("\n  " + "─".repeat(50));
   console.log("  ✅ Houbara demo instance seeded:");
+  console.log("     Tier: ENTERPRISE (all modules unlocked)");
+  console.log("     10 modules installed");
   console.log("     2 clients");
   console.log("     8 journalists in media database");
   console.log("     2 media lists");
