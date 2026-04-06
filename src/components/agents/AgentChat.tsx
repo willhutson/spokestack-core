@@ -71,11 +71,41 @@ export function AgentChat({
         setMessages((prev) => [...prev, { role: "agent", content: "" }]);
 
         if (reader) {
+          let sseBuffer = "";
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            agentContent += chunk;
+            sseBuffer += decoder.decode(value, { stream: true });
+
+            // Parse SSE lines from buffer
+            const lines = sseBuffer.split("\n");
+            sseBuffer = lines.pop() ?? ""; // keep incomplete line in buffer
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed.startsWith("event:")) continue;
+
+              if (trimmed.startsWith("data: ")) {
+                const jsonStr = trimmed.slice(6);
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  if (parsed.type === "message:stream" && parsed.text) {
+                    agentContent += parsed.text;
+                  } else if (parsed.type === "message:complete" && parsed.text) {
+                    agentContent = parsed.text;
+                  } else if (typeof parsed === "string") {
+                    agentContent += parsed;
+                  }
+                } catch {
+                  // Not JSON — treat as plain text (non-SSE stream)
+                  agentContent += jsonStr;
+                }
+              } else if (!trimmed.startsWith(":")) {
+                // Plain text chunk (non-SSE response)
+                agentContent += trimmed;
+              }
+            }
+
             setMessages((prev) => [
               ...prev.slice(0, -1),
               { role: "agent", content: agentContent },

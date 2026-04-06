@@ -175,7 +175,9 @@ export async function POST(req: NextRequest) {
     });
 
     if (!runtimeResponse.ok) {
-      return error("Agent runtime error", runtimeResponse.status);
+      const errBody = await runtimeResponse.text().catch(() => "");
+      console.error(`[agents/chat] Agent runtime error ${runtimeResponse.status}: ${errBody}`);
+      return error(`Agent runtime error: ${runtimeResponse.status} — ${runtimeResponse.statusText}`, runtimeResponse.status);
     }
 
     // Fire-and-forget: update Mission Control canvas after agent interaction
