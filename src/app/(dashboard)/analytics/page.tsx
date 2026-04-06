@@ -1,5 +1,6 @@
 "use client";
 import { ModuleLayoutShell } from "@/components/module/ModuleLayoutShell";
+import { AnalyticsNav } from "./AnalyticsNav";
 
 import { useState, useEffect, useCallback } from "react";
 import { getAuthHeaders } from "@/lib/client-auth";
@@ -118,6 +119,7 @@ export default function AnalyticsPage() {
   return (
     <ModuleLayoutShell moduleType="ANALYTICS">
     <div className="p-6 bg-white min-h-full">
+      <AnalyticsNav />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>

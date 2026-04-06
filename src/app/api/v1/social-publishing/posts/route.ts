@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   let posts = entries.map((e) => {
     let parsed: Record<string, unknown> = {};
     try {
-      parsed = JSON.parse(e.value);
+      parsed = JSON.parse(typeof e.value === "string" ? e.value : JSON.stringify(e.value));
     } catch {
       /* ignore */
     }
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
   const entry = await prisma.contextEntry.create({
     data: {
       organizationId: auth.organizationId,
-      entryType: "STRUCTURED",
+      entryType: "ENTITY",
       category: "social_post",
       key,
       value: JSON.stringify({
