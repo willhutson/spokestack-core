@@ -242,22 +242,29 @@ export default function BrowseModulesPage() {
             <div
               key={m.id}
               onClick={() => router.push(`/marketplace/${m.slug}`)}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer"
+              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full min-h-[180px]"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="text-sm font-semibold text-gray-900 leading-tight">{m.name}</h3>
-                <span className="text-[10px] text-gray-400 font-mono ml-2 shrink-0">v{m.version}</span>
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="text-sm font-semibold text-gray-900 leading-tight truncate">{m.name}</h3>
+                <span className="text-[10px] text-gray-400 font-mono shrink-0">v{m.version}</span>
               </div>
-              <p className="text-xs text-gray-500 mb-3 line-clamp-2">{m.shortDescription}</p>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                <span className="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full capitalize">
+
+              {/* Description — clamped */}
+              <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mb-3">{m.shortDescription}</p>
+
+              {/* Tags — fixed row, no wrap overflow */}
+              <div className="flex items-center gap-1.5 mb-auto">
+                <span className="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full capitalize shrink-0">
                   {m.category}
                 </span>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${pricingBadgeClasses(m.pricing.type)}`}>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ${pricingBadgeClasses(m.pricing.type)}`}>
                   {formatPrice(m.pricing)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-gray-400">
+
+              {/* Footer — pinned bottom */}
+              <div className="flex items-center justify-between text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100">
                 <div className="flex items-center gap-1">
                   <div className="flex">{renderStars(m.avgRating)}</div>
                   <span>({m.reviewCount})</span>

@@ -197,14 +197,9 @@ export default function MarketplacePage() {
           return (
             <div
               key={m.moduleType}
-              className="relative cursor-pointer"
+              className="cursor-pointer"
               onClick={() => router.push(`/marketplace/${m.moduleType}`)}
             >
-              {hasDemo(m.moduleType) && (
-                <span className="absolute top-3 right-3 z-10 text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
-                  Preview
-                </span>
-              )}
               <ModuleCard
                 moduleType={m.moduleType}
                 name={m.name}
@@ -223,22 +218,6 @@ export default function MarketplacePage() {
                   }
                 }}
               />
-              {isInstalled && uninstalling !== m.moduleType && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUninstall(m.moduleType);
-                  }}
-                  className="absolute bottom-5 right-5 text-[10px] font-medium text-red-600 bg-red-50 px-2 py-1 rounded-md hover:bg-red-100 transition-colors z-10"
-                >
-                  Uninstall
-                </button>
-              )}
-              {uninstalling === m.moduleType && (
-                <div className="absolute bottom-5 right-5 text-[10px] font-medium text-gray-400 px-2 py-1 z-10">
-                  Removing...
-                </div>
-              )}
             </div>
           );
         })}
