@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
 import { getAgentSystemPrompt } from "@/lib/mission-control/onboarding-agent-prompt";
+import { fetchOrgContext } from "@/lib/agents/context-fetcher";
 
 interface RouteContext {
   params: Promise<{ chatId: string }>;
@@ -117,6 +118,11 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
     return encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   }
 
+  // Fetch org context for injection (non-blocking on failure)
+  const orgContextForAgent = await fetchOrgContext(auth.organizationId).catch(
+    () => ({ contextEntries: [], integrations: [], recentEvents: [] })
+  );
+
   const stream = new ReadableStream({
     async start(controller) {
       controller.enqueue(
@@ -156,6 +162,7 @@ export async function POST(req: NextRequest, ctx: RouteContext) {
                 sseEvent,
                 systemPrompt,
                 history,
+                orgContextForAgent,
                 agentType,
                 auth.organizationId
               );
@@ -248,6 +255,7 @@ async function streamFromAgentRuntime(
   sseEvent: (event: string, data: unknown) => Uint8Array,
   systemPrompt: string,
   history: { role: string; content: string }[],
+  orgContext: { contextEntries: unknown[]; integrations: unknown[]; recentEvents: unknown[] },
   agentType: string,
   organizationId: string
 ): Promise<string> {
@@ -265,6 +273,9 @@ async function streamFromAgentRuntime(
       task: history[history.length - 1]?.content ?? "",
       conversation_history: history,
       org_id: organizationId,
+      context_entries: orgContext?.contextEntries ?? [],
+      integrations: orgContext?.integrations ?? [],
+      recent_events: orgContext?.recentEvents ?? [],
       stream: true,
     }),
   });

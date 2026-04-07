@@ -4,6 +4,7 @@ import { authenticate } from "@/lib/auth";
 import { unauthorized, error } from "@/lib/api";
 import { detectCorrection } from "@/lib/context/correction-detector";
 import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
+import { fetchOrgContext, fetchModuleContext } from "@/lib/agents/context-fetcher";
 
 /**
  * POST /api/v1/agents/chat
@@ -67,6 +68,19 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── Fetch org context for injection ─────────────────────────────
+  const orgContext = agentType && agentType !== "general"
+    ? await fetchModuleContext(auth.organizationId, agentType).catch(() => ({
+        contextEntries: [],
+        integrations: [],
+        recentEvents: [],
+      }))
+    : await fetchOrgContext(auth.organizationId).catch(() => ({
+        contextEntries: [],
+        integrations: [],
+        recentEvents: [],
+      }));
+
   // ── Build payload shared by both paths ──────────────────────────
   const payload = {
     message,
@@ -74,6 +88,9 @@ export async function POST(req: NextRequest) {
     orgId: auth.organizationId,
     userId: auth.user.id,
     surface: surface ?? "WEB",
+    context_entries: orgContext.contextEntries,
+    integrations: orgContext.integrations,
+    recent_events: orgContext.recentEvents,
     metadata: {
       agentType: agentType ?? "general",
       instructions:
@@ -169,6 +186,9 @@ export async function POST(req: NextRequest) {
         task: payload.message,
         org_id: payload.orgId,
         user_id: payload.userId,
+        context_entries: payload.context_entries,
+        integrations: payload.integrations,
+        recent_events: payload.recent_events,
         stream: true,
         conversation_history: chatHistory ?? [],
       }),

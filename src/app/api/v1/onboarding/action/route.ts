@@ -3,13 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/auth";
 import { json, error, unauthorized } from "@/lib/api";
 
+import { seedIndustryContext } from "@/lib/onboarding/industry-context-seed";
+
 type OnboardingAction =
   | { type: "CREATE_BRIEF"; data: { title: string; description?: string; clientId?: string } }
   | { type: "CREATE_PROJECT"; data: { name: string; description?: string } }
   | { type: "CREATE_ORDER"; data: { clientId?: string; notes?: string; items?: Array<{ description: string; quantity: number; unitPriceCents: number }> } }
   | { type: "CREATE_TASK"; data: { title: string; description?: string; status?: string } }
   | { type: "COMPLETE_ONBOARDING" }
-  | { type: "CONNECT_INTEGRATION"; provider: string };
+  | { type: "CONNECT_INTEGRATION"; provider: string }
+  | { type: "SEED_CONTEXT"; payload: { industry: string; org_name: string; region?: string; team_size?: string; clients?: string[] } };
 
 export async function POST(req: NextRequest) {
   const auth = await authenticate(req);
@@ -105,6 +108,20 @@ export async function POST(req: NextRequest) {
         success: true,
         connectFlow: { provider: action.provider, endpoint: "/api/v1/integrations/connect" },
       });
+    }
+
+    case "SEED_CONTEXT": {
+      await seedIndustryContext(
+        auth.organizationId,
+        action.payload.industry,
+        {
+          name: action.payload.org_name,
+          region: action.payload.region,
+          size: action.payload.team_size,
+          clients: action.payload.clients,
+        }
+      );
+      return json({ success: true, seeded: action.payload.industry });
     }
 
     default:

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { authenticate } from "@/lib/auth";
 import { json, unauthorized, error } from "@/lib/api";
 import { updateCanvasFromAgentAction } from "@/lib/mission-control/canvas-updater";
+import { fetchModuleContext, fetchOrgContext } from "@/lib/agents/context-fetcher";
 
 /**
  * POST /api/v1/agents/ask
@@ -14,15 +15,31 @@ export async function POST(req: NextRequest) {
   if (!auth) return unauthorized();
 
   const body = await req.json();
-  const { message, surface, agentType } = body;
+  const { message, surface, agentType, moduleType } = body;
 
   if (!message) return error("message is required");
+
+  // Fetch context — use module-filtered if moduleType provided
+  const orgContext = moduleType
+    ? await fetchModuleContext(auth.organizationId, moduleType).catch(() => ({
+        contextEntries: [],
+        integrations: [],
+        recentEvents: [],
+      }))
+    : await fetchOrgContext(auth.organizationId).catch(() => ({
+        contextEntries: [],
+        integrations: [],
+        recentEvents: [],
+      }));
 
   const payload = {
     message,
     orgId: auth.organizationId,
     userId: auth.user.id,
     surface: surface ?? "CLI",
+    context_entries: orgContext.contextEntries,
+    integrations: orgContext.integrations,
+    recent_events: orgContext.recentEvents,
     metadata: {
       agentType: agentType ?? "general",
       instructions:
@@ -74,6 +91,9 @@ export async function POST(req: NextRequest) {
       task: payload.message,
       org_id: auth.organizationId,
       user_id: auth.user.id,
+      context_entries: payload.context_entries,
+      integrations: payload.integrations,
+      recent_events: payload.recent_events,
       stream: false,
     }),
   });
