@@ -55,14 +55,14 @@ export function EmbeddedMissionControl({
     <div
       className={cn(
         "border-l bg-background flex overflow-hidden transition-all duration-300 ease-in-out shrink-0 h-full",
-        isOpen ? (selectedArtifact ? "w-[800px]" : "w-[400px]") : "w-0"
+        isOpen ? (selectedArtifact ? "w-[840px]" : "w-[420px]") : "w-0"
       )}
       aria-hidden={!isOpen}
     >
       {isOpen && activeAgent && (
         <>
           {/* Chat column */}
-          <div className="w-[400px] flex flex-col shrink-0 border-r">
+          <div className="w-[420px] flex flex-col shrink-0 border-r">
             <div className="h-12 flex items-center justify-between px-4 border-b shrink-0">
               {availableAgents.length > 1 ? (
                 <select
